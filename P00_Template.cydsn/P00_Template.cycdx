@@ -184,14 +184,12 @@
   <block name="VICON_Sync" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="MOD1_IO02" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="MOD1_IO03" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="DIO_12_FSW_BUT12" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="cy_constant_6" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="cy_constant_5" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="cy_constant_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="cy_constant_4" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="AIO_15_MOT2_ANOUT2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="AIO_14_MOT2_ANOUT1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="Bootloadable_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="AIO_13_MOT1_ANOUT2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="USBUART_1" BASE="0x0" SIZE="0x0" desc="USBFS" visible="true" hidden="false">
     <block name="ep_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="ZeroTerminal_4" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
@@ -1049,6 +1047,7 @@
       <field name="RA9" from="0" to="0" access="RW" resetVal="" desc="Read Address for EP MSB." hidden="false" />
     </register>
   </block>
+  <block name="AIO_15_MOT2_ANOUT2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="KEY2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="LED_B" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="BUZZER" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
@@ -1057,12 +1056,7 @@
   <block name="cy_constant_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="cy_constant_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="LED_G" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="AIO_11_BAT_VOLT" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="AMuxSeq_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="AIO_1_L_FSR_FOREFOOT" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="AIO_0_L_FSR_HEEL" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="DIO_14_FSW_BATT_STATE" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="DIO_13_FSW_BUT13" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="ADC_SAR_1" BASE="0x0" SIZE="0x0" desc="SAR ADC" visible="true" hidden="false">
     <block name="ZeroTerminal_8" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="ZeroTerminal_7" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
@@ -1102,13 +1096,18 @@
     <register name="SAR_CLK" address="0x40005B27" bitWidth="8" desc="SAR Clock Selection Register" hidden="false" />
     <register name="SAR_WRK" address="0x40005BA0" bitWidth="16" desc="SAR working register" hidden="false" />
   </block>
+  <block name="AIO_0_L_FSR_HEEL" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="AIO_11_BAT_VOLT" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="DIO_13_FSW_BUT13" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="DIO_12_FSW_BUT12" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="DIO_15_STIM_SHDN" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="AIO_7_R_KNEE_ENC" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="DIO_14_FSW_BATT_STATE" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="AIO_6_L_KNEE_ENC" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="AIO_13_MOT1_ANOUT2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="AIO_12_MOT1_ANOUT1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="AIO_3_R_FSR_FOREFOOT" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="AIO_2_R_FSR_HEEL" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="AIO_5_R_HIP_ENC" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="AIO_12_MOT1_ANOUT1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="AIO_7_R_KNEE_ENC" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="AIO_2_R_FSR_HEEL" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="AIO_1_L_FSR_FOREFOOT" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="AIO_4_L_HIP_ENC" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="AIO_3_R_FSR_FOREFOOT" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
 </blockRegMap>
