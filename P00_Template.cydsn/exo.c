@@ -289,68 +289,6 @@ static void setParameters(pkt_generic_t *packet,
   joint_t *const r_knee_joint = (joint_t *) &exo->r_knee_joint;
   joint_t *const l_knee_joint = (joint_t *) &exo->l_knee_joint;
 
-  /* PID CONSTANTS */
-  l_knee_joint->bc_current = parameter_packet->float_params[L_KNEE_BC_CURRENT];
-  l_knee_joint->bc_threshold = parameter_packet->float_params[L_KNEE_BC_THRESH];
-
-  r_knee_joint->bc_current = parameter_packet->float_params[R_KNEE_BC_CURRENT];
-  r_knee_joint->bc_threshold = parameter_packet->float_params[R_KNEE_BC_THRESH];
-
-  pid_setConstants(&r_knee_joint->position_pid,
-    parameter_packet->float_params[R_KNEE_POSITION_PID_KP],
-    parameter_packet->float_params[R_KNEE_POSITION_PID_KI],
-    parameter_packet->float_params[R_KNEE_POSITION_PID_KD],
-    parameter_packet->float_params[R_KNEE_POSITION_PID_AW_LB],
-    parameter_packet->float_params[R_KNEE_POSITION_PID_AW_UB]);
-
-  pid_setConstants(&r_knee_joint->speed_pid,
-    parameter_packet->float_params[R_KNEE_SPEED_PID_KP],
-    parameter_packet->float_params[R_KNEE_SPEED_PID_KI],
-    parameter_packet->float_params[R_KNEE_SPEED_PID_KD],
-    parameter_packet->float_params[R_KNEE_SPEED_PID_AW_LB],
-    parameter_packet->float_params[R_KNEE_SPEED_PID_AW_UB]);
-
-  r_knee_joint->fc_alpha = parameter_packet->float_params[R_KNEE_FC_ALPHA];
-
-  pid_setConstants(&l_knee_joint->position_pid,
-    parameter_packet->float_params[L_KNEE_POSITION_PID_KP],
-    parameter_packet->float_params[L_KNEE_POSITION_PID_KI],
-    parameter_packet->float_params[L_KNEE_POSITION_PID_KD],
-    parameter_packet->float_params[L_KNEE_POSITION_PID_AW_LB],
-    parameter_packet->float_params[L_KNEE_POSITION_PID_AW_UB]);
-
-
-  pid_setConstants(&l_knee_joint->speed_pid,
-    parameter_packet->float_params[L_KNEE_SPEED_PID_KP],
-    parameter_packet->float_params[L_KNEE_SPEED_PID_KI],
-    parameter_packet->float_params[L_KNEE_SPEED_PID_KD],
-    parameter_packet->float_params[L_KNEE_SPEED_PID_AW_LB],
-    parameter_packet->float_params[L_KNEE_SPEED_PID_AW_UB]);
-
-  l_knee_joint->fc_alpha = parameter_packet->float_params[L_KNEE_FC_ALPHA];
-
-  /* FSR CONSTANTS */
-  exo->r_low_fsr_thresh = parameter_packet->float_params[R_LOW_FSR_THRESH];
-  exo->r_high_fsr_thresh = parameter_packet->float_params[R_HIGH_FSR_THRESH];
-  exo->r_weight_acc_fsr_thresh =
-    parameter_packet->float_params[R_WEIGHT_ACC_FSR_THRESH];
-
-  exo->l_low_fsr_thresh = parameter_packet->float_params[L_LOW_FSR_THRESH];
-  exo->l_high_fsr_thresh = parameter_packet->float_params[L_HIGH_FSR_THRESH];
-  exo->l_weight_acc_fsr_thresh =
-    parameter_packet->float_params[L_WEIGHT_ACC_FSR_THRESH];
-
-  /* EXTENSION/FLEXION THRESHOLDS CONSTANTS */
-  exo->l_knee_extension_thresh =
-    parameter_packet->float_params[L_KNEE_EXTENSION_THRESH];
-  exo->l_hip_flexion_thresh =
-    parameter_packet->float_params[L_HIP_FLEXION_THRESH];
-
-  exo->r_knee_extension_thresh =
-    parameter_packet->float_params[R_KNEE_EXTENSION_THRESH];
-  exo->r_hip_flexion_thresh =
-    parameter_packet->float_params[R_HIP_FLEXION_THRESH];
-
   exo->min_hip_angle = parameter_packet->float_params[MIN_HIP_ANGLE];
   exo->max_hip_angle = parameter_packet->float_params[MAX_HIP_ANGLE];
   exo->max_knee_angle = parameter_packet->float_params[MAX_KNEE_ANGLE];
@@ -389,82 +327,11 @@ static void getParameters(volatile exo_t *exo) {
 
   pkt_get_params_t *parameter_packet = pkt_interp(pkt_get_params_t, output_packet);
 
-  parameter_packet->float_params[R_KNEE_POSITION_PID_KP] =
-    r_knee_joint->position_pid.proportional_gain;
-  parameter_packet->float_params[R_KNEE_POSITION_PID_KI] =
-    r_knee_joint->position_pid.integral_gain;
-  parameter_packet->float_params[R_KNEE_POSITION_PID_KD] =
-    r_knee_joint->position_pid.derivative_gain;
-  parameter_packet->float_params[R_KNEE_POSITION_PID_AW_UB] =
-    r_knee_joint->position_pid.max_integral_guard;
-  parameter_packet->float_params[R_KNEE_POSITION_PID_AW_LB] =
-    r_knee_joint->position_pid.min_integral_guard;
-
-  parameter_packet->float_params[R_KNEE_SPEED_PID_KP] =
-    r_knee_joint->speed_pid.proportional_gain;
-  parameter_packet->float_params[R_KNEE_SPEED_PID_KI] =
-    r_knee_joint->speed_pid.integral_gain;
-  parameter_packet->float_params[R_KNEE_SPEED_PID_KD] =
-    r_knee_joint->speed_pid.derivative_gain;
-  parameter_packet->float_params[R_KNEE_SPEED_PID_AW_UB] =
-    r_knee_joint->speed_pid.max_integral_guard;
-  parameter_packet->float_params[R_KNEE_SPEED_PID_AW_LB] =
-    r_knee_joint->speed_pid.min_integral_guard;
-  parameter_packet->float_params[R_KNEE_FC_ALPHA] =
-    r_knee_joint->fc_alpha;
-
-  parameter_packet->float_params[L_KNEE_POSITION_PID_KP] =
-    l_knee_joint->position_pid.proportional_gain;
-  parameter_packet->float_params[L_KNEE_POSITION_PID_KI] =
-    l_knee_joint->position_pid.integral_gain;
-  parameter_packet->float_params[L_KNEE_POSITION_PID_KD] =
-    l_knee_joint->position_pid.derivative_gain;
-  parameter_packet->float_params[L_KNEE_POSITION_PID_AW_UB] =
-    l_knee_joint->position_pid.max_integral_guard;
-  parameter_packet->float_params[L_KNEE_POSITION_PID_AW_LB] =
-    l_knee_joint->position_pid.min_integral_guard;
-
-  parameter_packet->float_params[L_KNEE_SPEED_PID_KP] =
-    l_knee_joint->speed_pid.proportional_gain;
-  parameter_packet->float_params[L_KNEE_SPEED_PID_KI] =
-    l_knee_joint->speed_pid.integral_gain;
-  parameter_packet->float_params[L_KNEE_SPEED_PID_KD] =
-    l_knee_joint->speed_pid.derivative_gain;
-  parameter_packet->float_params[L_KNEE_SPEED_PID_AW_UB] =
-    l_knee_joint->speed_pid.max_integral_guard;
-  parameter_packet->float_params[L_KNEE_SPEED_PID_AW_LB] =
-    l_knee_joint->speed_pid.min_integral_guard;
-  parameter_packet->float_params[L_KNEE_FC_ALPHA] =
-    l_knee_joint->fc_alpha;
-
-  parameter_packet->float_params[R_LOW_FSR_THRESH] = exo->r_low_fsr_thresh;
-  parameter_packet->float_params[R_HIGH_FSR_THRESH] = exo->r_high_fsr_thresh;
-  parameter_packet->float_params[R_WEIGHT_ACC_FSR_THRESH] =
-    exo->r_weight_acc_fsr_thresh;
-
-  parameter_packet->float_params[L_LOW_FSR_THRESH] = exo->l_low_fsr_thresh;
-  parameter_packet->float_params[L_HIGH_FSR_THRESH] = exo->l_high_fsr_thresh;
-  parameter_packet->float_params[L_WEIGHT_ACC_FSR_THRESH] =
-    exo->l_weight_acc_fsr_thresh;
-
-
-  parameter_packet->float_params[L_KNEE_EXTENSION_THRESH] = exo->l_knee_extension_thresh;
-  parameter_packet->float_params[L_HIP_FLEXION_THRESH] = exo->l_hip_flexion_thresh;
-
-  parameter_packet->float_params[R_KNEE_EXTENSION_THRESH] = exo->r_knee_extension_thresh;
-  parameter_packet->float_params[R_HIP_FLEXION_THRESH] = exo->r_hip_flexion_thresh;
-
   parameter_packet->float_params[MIN_HIP_ANGLE] = exo->min_hip_angle;
   parameter_packet->float_params[MAX_HIP_ANGLE] = exo->max_hip_angle;
   parameter_packet->float_params[MAX_KNEE_ANGLE] = exo->max_knee_angle;
   parameter_packet->float_params[POSITION_CONTROL] = exo->position_control;
   parameter_packet->float_params[AUTO_WALK] = exo->auto_walk;
-
-  parameter_packet->float_params[L_KNEE_BC_CURRENT] = l_knee_joint->bc_current;
-  parameter_packet->float_params[L_KNEE_BC_THRESH] = l_knee_joint->bc_threshold;
-
-  parameter_packet->float_params[R_KNEE_BC_CURRENT] = r_knee_joint->bc_current;
-  parameter_packet->float_params[R_KNEE_BC_THRESH] = r_knee_joint->bc_threshold;
 
   parameter_packet->float_params[MOTOR_FORCE_OFF] = exo->motor_force_off;
 

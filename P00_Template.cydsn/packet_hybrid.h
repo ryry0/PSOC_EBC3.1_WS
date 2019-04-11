@@ -42,34 +42,21 @@ typedef enum pkt_type_e {
   PARAM(MAX_HIP_ANGLE)              \
   PARAM(MIN_HIP_ANGLE)              \
   PARAM(MAX_KNEE_ANGLE)             \
-  PARAM(L_KNEE_POSITION_PID_KP)     \
-  PARAM(L_KNEE_POSITION_PID_KI)     \
-  PARAM(L_KNEE_POSITION_PID_KD)     \
-  PARAM(L_KNEE_POSITION_PID_AW_UB)  \
-  PARAM(L_KNEE_POSITION_PID_AW_LB)  \
-  PARAM(L_KNEE_SPEED_PID_KP)        \
-  PARAM(L_KNEE_SPEED_PID_KI)        \
-  PARAM(L_KNEE_SPEED_PID_KD)        \
-  PARAM(L_KNEE_SPEED_PID_AW_UB)     \
-  PARAM(L_KNEE_SPEED_PID_AW_LB)     \
-  PARAM(L_KNEE_FC_ALPHA)            \
-  PARAM(R_KNEE_POSITION_PID_KP)     \
-  PARAM(R_KNEE_POSITION_PID_KI)     \
-  PARAM(R_KNEE_POSITION_PID_KD)     \
-  PARAM(R_KNEE_POSITION_PID_AW_UB)  \
-  PARAM(R_KNEE_POSITION_PID_AW_LB)  \
-  PARAM(R_KNEE_SPEED_PID_KP)        \
-  PARAM(R_KNEE_SPEED_PID_KI)        \
-  PARAM(R_KNEE_SPEED_PID_KD)        \
-  PARAM(R_KNEE_SPEED_PID_AW_UB)     \
-  PARAM(R_KNEE_SPEED_PID_AW_LB)     \
-  PARAM(R_KNEE_FC_ALPHA)            \
+  PARAM(HEAD_MODULE_POSITION_PID_KP)     \
+  PARAM(HEAD_MODULE_POSITION_PID_KI)     \
+  PARAM(HEAD_MODULE_POSITION_PID_KD)     \
+  PARAM(HEAD_MODULE_POSITION_PID_AW_UB)  \
+  PARAM(HEAD_MODULE_POSITION_PID_AW_LB)  \
+  PARAM(HEAD_MODULE_SPEED_PID_KP)        \
+  PARAM(HEAD_MODULE_SPEED_PID_KI)        \
+  PARAM(HEAD_MODULE_SPEED_PID_KD)        \
+  PARAM(HEAD_MODULE_SPEED_PID_AW_UB)     \
+  PARAM(HEAD_MODULE_SPEED_PID_AW_LB)     \
+  PARAM(HEAD_MODULE_FC_ALPHA)            \
   PARAM(TF)                         \
   PARAM(TPS_PERC)                   \
-  PARAM(L_KNEE_BC_THRESH)           \
-  PARAM(L_KNEE_BC_CURRENT)          \
-  PARAM(R_KNEE_BC_THRESH)           \
-  PARAM(R_KNEE_BC_CURRENT)          \
+  PARAM(HEAD_MODULE_BC_THRESH)           \
+  PARAM(HEAD_MODULE_BC_CURRENT)          \
   PARAM(R_WEIGHT_ACC_FSR_THRESH)      \
   PARAM(R_LOW_FSR_THRESH)             \
   PARAM(R_HIGH_FSR_THRESH)            \
@@ -236,15 +223,9 @@ typedef struct {
 /*----------------------------------------------------------------------------*/
 
 typedef struct {
-
-
+  pkt_module_data_t module_data[4];
 
   uint32_t timestamp;
-
-  uint16_t an_0_l_fsr_heel;
-  uint16_t an_2_r_fsr_heel;
-  uint16_t an_1_l_fsr_ff;
-  uint16_t an_3_r_fsr_ff;
   uint16_t an_11_bat_volt;
 
   uint8_t state;

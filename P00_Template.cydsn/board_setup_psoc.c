@@ -78,7 +78,7 @@ void setupExoVars(volatile exo_t *exo) {
   exo->send_log = false;
 
   ged_init((ged_state_machine_t *) &exo->state_machine, (exo_t *)exo);
-  ml_init(&exo->module_logger);
+  ml_init((module_logger_t* ) &exo->module_logger);
 }
 
 void setupRightKneeJoint(joint_t *r_knee_joint) {
@@ -172,10 +172,10 @@ void setupBoard() {
 }
 
 void setupStim(volatile exo_t *exo) {
-  stim_pattern_t *const pattern_brd1  = &exo->pattern_brd1;
-  stim_pattern_t *const pattern_brd2  = &exo->pattern_brd2;
-  cwru_stim_struct_t *const cwru_stim_brd1  = &exo->cwru_stim_brd1;
-  cwru_stim_struct_t *const cwru_stim_brd2  = &exo->cwru_stim_brd2;
+  stim_pattern_t *const pattern_brd1  = (stim_pattern_t *) &exo->pattern_brd1;
+  stim_pattern_t *const pattern_brd2  = (stim_pattern_t *) &exo->pattern_brd2;
+  cwru_stim_struct_t *const cwru_stim_brd1  = (cwru_stim_struct_t *) &exo->cwru_stim_brd1;
+  cwru_stim_struct_t *const cwru_stim_brd2  = (cwru_stim_struct_t *) &exo->cwru_stim_brd2;
 
   stimpat_initPattern(pattern_brd1,
       &gait_stand_B1_PP,
