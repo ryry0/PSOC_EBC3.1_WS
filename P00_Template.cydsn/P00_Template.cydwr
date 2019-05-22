@@ -401,6 +401,7 @@
     <Group key="Pin">
       <Data key="0a8f5e24-469c-4d77-8e21-77479c2e6273" value="DIO_12_FSW_BUT12" />
       <Data key="0b50f4ba-799a-4c32-9624-c91e4cfd56e0" value="VICON_Sync" />
+      <Data key="0dc4fcd6-21f7-47c2-aeab-431ade684bc9" value="CAN_TXD" />
       <Data key="2a41c928-e004-4d8e-b07e-4f0204967ca2" value="AIO_1_L_FSR_FOREFOOT" />
       <Data key="02f2cf2c-2c7a-49df-9246-7a3435c21be3" value="IMU_SCL" />
       <Data key="2f5568ae-93aa-443f-bf91-27970022118e" value="AIO_6_L_KNEE_ENC" />
@@ -430,6 +431,7 @@
       <Data key="49004e2a-e02d-4c1e-b716-924ae87605bb" value="DIO_4_MOT1_DIN1" />
       <Data key="13073764-409e-4c04-b43f-e7b1476899b4" value="AIO_13_MOT1_ANOUT2" />
       <Data key="77715107-f8d5-47e5-a629-0fb83101ac6b" value="AIO_0_L_FSR_HEEL" />
+      <Data key="a3d1f02b-d1d8-45c0-9abb-646d4218d16f" value="CAN_RXD" />
       <Data key="a728ae34-699b-4a51-8068-86324330926b" value="SAIO_1" />
       <Data key="a7483e6b-08cd-4674-b2ad-1a1e416270db" value="RPi_TXD0" />
       <Data key="ae72f9d0-61ab-4950-ae10-7063091e94ed" value="MOD1_IO02" />
@@ -3546,6 +3548,11 @@
         <Data key="Port Format" value="1,3" />
       </Group>
     </Group>
+    <Group key="0dc4fcd6-21f7-47c2-aeab-431ade684bc9">
+      <Group key="0">
+        <Data key="Port Format" value="12,6" />
+      </Group>
+    </Group>
     <Group key="2a41c928-e004-4d8e-b07e-4f0204967ca2">
       <Group key="0">
         <Data key="Port Format" value="4,6" />
@@ -3689,6 +3696,11 @@
     <Group key="77715107-f8d5-47e5-a629-0fb83101ac6b">
       <Group key="0">
         <Data key="Port Format" value="4,7" />
+      </Group>
+    </Group>
+    <Group key="a3d1f02b-d1d8-45c0-9abb-646d4218d16f">
+      <Group key="0">
+        <Data key="Port Format" value="12,7" />
       </Group>
     </Group>
     <Group key="a728ae34-699b-4a51-8068-86324330926b">
