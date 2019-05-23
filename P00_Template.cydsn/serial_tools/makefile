@@ -16,14 +16,14 @@ WIN64CC=x86_64-w64-mingw32-gcc
 WIN32CC=i686-w64-mingw32-gcc
 CC=gcc
 
-ALLCFLAGS =-c -I. -std=c11 -I$(LIB_DIR)/algo -I$(LIB_DIR)/drivers/serial -pthread -I.. -O1
+ALLCFLAGS =-c -I. -std=c11 -I$(LIB_DIR)/algo -I$(LIB_DIR)/drivers/serial -I$(LIB_DIR)/drivers/terminal -pthread -I.. -O1
 ALLLDFLAGS = -static
 
 WINCFLAGS=$(ALLCFLAGS)
 WINLDFLAGS=$(ALLLDFLAGS)
 
 LINCFLAGS=$(ALLCFLAGS)
-LINLDFLAGS=$(ALLLDFLAGS)
+LINLDFLAGS=$(ALLLDFLAGS) -lpthread
 
 DFLAGS=-DDEBUG -ggdb3 -Wall
 RFLAGS=-O2

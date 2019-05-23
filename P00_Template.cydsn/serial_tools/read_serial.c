@@ -1,10 +1,16 @@
-#include <serial.h>
+#ifdef __linux__
+#include <getch.h>
+#else
+#include <conio.h>
+#endif
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
 #include <pthread.h>
-#include <conio.h>
+
+#include <serial.h>
+
 #include <packet_hybrid.h>
 #include <packet.h>
 #include <ged_fsm.h>
@@ -14,6 +20,7 @@
 
 sr_port_t serial_port;
 bool print_hex = false;
+bool print_char = true;
 bool raw_write = false;
 
 void sequentialWrite(sr_port_t serial_port, uint8_t *buff, size_t len) {
@@ -51,6 +58,17 @@ void *readThread(void *args) {
   pkt_generic_t packet;
 
   for (;;) {
+    if (print_char) {
+      sr_ReadPort(serial_port, &input, 1);
+      printf("%c", input);
+      fflush(stdout);
+    }
+    else if (print_hex) {
+      sr_ReadPort(serial_port, &input, 1);
+      printf("%x", input);
+      fflush(stdout);
+    }
+    else {
       getPacket(&packet);
       if (packet.type == PKT_LOG_CAN_DATA) {
         size_t length = pkt_getTotalLength(&packet);
@@ -66,13 +84,13 @@ void *readThread(void *args) {
         printf("\n");
       }
       pkt_clear(&packet);
+    }
   }
 }
 
 
 void writeThread() {
   char user_input = 0;
-  user_input = getch();
   char buff[100] =  "testingtestingab";
   char buff2[100] = "abcdefgasfecegle";
   char buff3[100] = "\0\3\0s";
@@ -94,9 +112,17 @@ void writeThread() {
   pkt_setHeaderTypeOnly(&start_message, PKT_DATA_START);
   */
 
+  user_input = getch();
+
   switch (user_input) {
+    case '!':
+      print_char = !print_char;
+      printf("char output: %d", print_char);
+      break;
+
     case 3:
       print_hex = !print_hex;
+      printf("hex output: %d", print_hex);
       break;
 
     case 2:
@@ -180,11 +206,17 @@ int main(int argc, char ** argv) {
   if (serial_port == NULL)
     return 1;
 
+  printf("Serial opened\n");
   if (sr_InitPort(serial_port, 115200) == false)
     return 1;
 
+  printf("Serial Initialized\n");
   pthread_create(&read_thread, NULL, readThread, NULL);
 
+  printf("Thread spawned\n");
+
+
+  printf("Entering writeThread\n");
   for (;;)
     writeThread();
 
