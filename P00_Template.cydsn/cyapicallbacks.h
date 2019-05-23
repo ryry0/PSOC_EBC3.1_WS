@@ -16,6 +16,9 @@
     /*Define your macro callbacks here */
     /*For more information, refer to the Writing Code topic in the PSoC Creator Help.*/
 
+#define CAN_RECEIVE_MSG_CALLBACK
+void CAN_ReceiveMsg_Callback(uint8 rxMailbox);
+
     
 #endif /* CYAPICALLBACKS_H */   
 /* [] */

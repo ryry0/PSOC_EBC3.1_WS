@@ -1,5 +1,6 @@
 /* ========================================
  *
+ *
  * Copyright YOUR COMPANY, THE YEAR
  * All Rights Reserved
  * UNPUBLISHED, LICENSED SOFTWARE.
@@ -22,7 +23,7 @@ volatile uint8 isrFlag = 0u;
 volatile static size_t rec_length = 0;
 volatile uint8_t can_buffer[120] = {0};
 
-//#define USE_CAN
+#define USE_CAN
 
 /**
  * \brief Sends an arbitrary sized packet over CAN on mailbox 0.

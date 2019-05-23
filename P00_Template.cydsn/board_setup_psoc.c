@@ -48,11 +48,13 @@ void setupThreads(struct coop_task_list_s *task_list, struct coop_task_s
   };
 
 
+  /*
   task_arr[EXO_QUERY_TASK]= (struct coop_task_s) {
     .task_func = exoQueryThread,
     .period = 10, //5ms
     .countdown = 0
   };
+  */
 
   //set up the task list
   task_list->num_tasks = EXO_TASK_MAX;
