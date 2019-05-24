@@ -35,7 +35,7 @@ static void getPacket(pkt_generic_t *packet) {
 
   //wait for whole packet to populate
   do {
-    sr_ReadPort(serial_port, &input_byte, 1);
+    while(sr_ReadPort(serial_port, &input_byte, 1) == 0);
   } while (!pkt_readByte(packet, input_byte));
   pkt_decodePacket(packet);
 }
@@ -59,14 +59,16 @@ void *readThread(void *args) {
 
   for (;;) {
     if (print_char) {
-      sr_ReadPort(serial_port, &input, 1);
-      printf("%c", input);
-      fflush(stdout);
+      if (sr_ReadPort(serial_port, &input, 1) != 0) {
+        printf("%c", input);
+        fflush(stdout);
+      }
     }
     else if (print_hex) {
-      sr_ReadPort(serial_port, &input, 1);
-      printf("%x", input);
-      fflush(stdout);
+      if (sr_ReadPort(serial_port, &input, 1) != 0) {
+        printf("%2.2X", input);
+        fflush(stdout);
+      }
     }
     else {
       getPacket(&packet);

@@ -3,8 +3,6 @@
 #include <termios.h>
 #include <stdio.h>
 
-namespace term
-{
 static struct termios old_settings, new_settings;
 
 /* Initialize new terminal i/o settings */
@@ -43,7 +41,6 @@ char getch(void)
 char getche(void)
 {
   return getch_(1);
-}
 }
 
 #endif
