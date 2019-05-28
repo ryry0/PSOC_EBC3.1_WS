@@ -333,17 +333,6 @@ void ged_rightStepOnEntry(void *v_exo) {
 void ged_rightStepRun(void *v_exo) {
   exo_t *exo = (exo_t *) v_exo;
   bd_inputs_t *const sensor_inputs = &exo->sensor_inputs;
-
-  const uint16_t R_HIP_INDEX_MIN = bd_rHipAngleToAnalog(exo->min_hip_angle,
-      exo->r_hip_zero_offset);
-  const uint16_t R_HIP_INDEX_MAX = bd_rHipAngleToAnalog(exo->max_hip_angle,
-      exo->r_hip_zero_offset);
-
-  float setpoint = tr_indexKneeLUT(exo->knee_traj_lut,
-      tr_getRIndex,
-      R_HIP_INDEX_MIN,
-      R_HIP_INDEX_MAX,
-      bd_getAin(sensor_inputs, BD_AN_5_R_HIP_ENC));
 }
 
 void ged_rightStepCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {

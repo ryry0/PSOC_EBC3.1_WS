@@ -279,6 +279,7 @@ void handlePacketMsg(
       break;
       */
 
+      /*
     case PKT_MODULE_DATA:
       {
         pkt_module_data_t *module_data_received =
@@ -295,6 +296,7 @@ void handlePacketMsg(
         }
       }
       break;
+      */
 
     default:
       break;
