@@ -162,9 +162,11 @@ void setupBoard() {
 
   /* Place your initialization/startup code here (e.g. MyInst_Start()) */
   /* Initialize the serial communications interface */
+  /*
   USBUART_1_Start(0, USBUART_1_3V_OPERATION);//!!NOTE!! Make sure this matches your board voltage!
   while(!USBUART_1_bGetConfiguration());
   USBUART_1_CDC_Init();
+  */
   AMuxSeq_1_Init();
   ADC_SAR_1_Start(); //initialize the adc
   Counter_1_Start();
