@@ -21,7 +21,9 @@
 /* Global variable used to store ISR flag */
 volatile uint8 isrFlag = 0u;
 volatile static size_t rec_length = 0;
-volatile uint8_t can_buffer[120] = {0};
+#define CAN_BUFFER_SIZE 1000
+#define MAX_CAN_READ 128
+volatile uint8_t can_buffer[CAN_BUFFER_SIZE] = {0};
 
 #define USE_CAN
 
@@ -69,12 +71,12 @@ void bd_writeCAN(uint8_t *data, size_t len) {
  * \brief reads arbitrary sized packet over CAN
  */
 size_t bd_readCAN(uint8_t *data) {
-  size_t rec_length_return = rec_length;
+  size_t rec_length_return = nm_constrain(rec_length, 0, MAX_CAN_READ);
 
 #ifdef USE_CAN
   memcpy(data, can_buffer, rec_length);
   //reset length to zero
-  rec_length = 0;
+  rec_length -= rec_length_return;
 
 #endif
   return rec_length_return;
@@ -86,12 +88,18 @@ size_t bd_readCAN(uint8_t *data) {
 void CAN_ReceiveMsg_Callback(uint8 rxMailbox) {
 #ifdef USE_CAN
   size_t rec_length_prev = rec_length;
+  size_t bytes_read = 0;
 
-  rec_length += CAN_GET_DLC(rxMailbox);
+  bytes_read = CAN_GET_DLC(rxMailbox);
 
-  for (int i = 0; i < rec_length; ++i) {
-    can_buffer[i + rec_length_prev] = CAN_RX_DATA_BYTE(rxMailbox, i);
+  for (int i = 0; i < bytes_read; ++i) {
+    if ((i + rec_length) >= CAN_BUFFER_SIZE)
+        rec_length = 0;
+
+    can_buffer[i + rec_length] = CAN_RX_DATA_BYTE(rxMailbox, i);
   }
+
+  rec_length += bytes_read;
 #endif
 }
 

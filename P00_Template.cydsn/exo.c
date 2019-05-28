@@ -403,8 +403,8 @@ void CANInputThread(coop_args_t *args) {
     }
 
     //If we send a one byte message
-    if (pkt_getIndex(input_packet) == 0)
-      handleSingleByteMsg(can_buffer[0], exo);
+    //if (pkt_getIndex(input_packet) == 0)
+      //handleSingleByteMsg(can_buffer[0], exo);
 
   } //end if(can_count
 }

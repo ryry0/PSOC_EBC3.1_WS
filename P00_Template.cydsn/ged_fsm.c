@@ -40,8 +40,10 @@ static void ged_sendStateMsg(uint8_t state) {
 
   set_state_payload->state = state;
 
+  /*
   bd_writeCAN(pkt_encodeBuffer(&state_message),
       pkt_getTotalLength(&state_message));
+      */
 }
 
 /*----------------------------------------------------------------------------*/

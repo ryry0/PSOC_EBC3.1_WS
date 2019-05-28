@@ -141,11 +141,11 @@ void writeThread() {
       break;
 
     case 'l':
-      sendStateMsg(GED_UNLOCKED);
+      sendStateMsg(GED_LOCKED);
       break;
 
     case 'u':
-      sendStateMsg(GED_LOCKED);
+      sendStateMsg(GED_UNLOCKED);
       break;
 
     case '1':
