@@ -23,6 +23,7 @@ void setupExo(
 void setupThreads(struct coop_task_list_s *task_list, struct coop_task_s
     *task_arr) {
   //setup the task array
+  /*
   task_arr[EXO_USB_OUTPUT_TASK] = (struct coop_task_s) {
     .task_func = USBOutputThread,
     .period = 10, //10 @ 10 ms/100Hz
@@ -34,6 +35,7 @@ void setupThreads(struct coop_task_list_s *task_list, struct coop_task_s
     .period = 0, //always scheduled
     .countdown = 0
   };
+  */
 
   task_arr[EXO_STIM_TASK]= (struct coop_task_s) {
     .task_func = stimThread,

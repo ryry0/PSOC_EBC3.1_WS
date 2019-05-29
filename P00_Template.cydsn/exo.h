@@ -102,8 +102,8 @@ typedef struct exo_s {
 } exo_t;
 
 typedef enum {
-  EXO_USB_OUTPUT_TASK,
-  EXO_USB_INPUT_TASK,
+  //EXO_USB_OUTPUT_TASK,
+  //EXO_USB_INPUT_TASK,
   EXO_CAN_INPUT_TASK,
   //EXO_QUERY_TASK,
   EXO_STIM_TASK,
