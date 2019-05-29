@@ -22,7 +22,7 @@
 volatile uint8 isrFlag = 0u;
 volatile static size_t rec_length = 0;
 #define CAN_BUFFER_SIZE 1000
-#define MAX_CAN_READ 128
+#define MAX_CAN_READ 1000
 volatile uint8_t can_buffer[CAN_BUFFER_SIZE] = {0};
 
 #define USE_CAN
@@ -118,6 +118,22 @@ int bd_checkCAN() {
  */
 void bd_initCAN() {
 #ifdef USE_CAN
+  uint32_t amr_value, acr_value = 0;
+
+  /* pass messages with ID from 0x10 to 0x1f */
+  amr_value = (0x0000000f << 21);
+  acr_value = (0x00000010 << 21);
+
+
+  /*
+  for (size_t i = 0; i < 4; ++i) {
+    CAN_RXRegisterInit((reg32 *) &CAN_RX[i].rxamr, amr_value);
+    CAN_RXRegisterInit((reg32 *) &CAN_RX[i].rxacr, acr_value);
+  }
+  */
+
+  CAN_Init();
   CAN_Start();
+
 #endif
 }

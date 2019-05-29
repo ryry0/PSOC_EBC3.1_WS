@@ -388,7 +388,7 @@ void CANInputThread(coop_args_t *args) {
   volatile exo_t *exo = args->exo;
 
   size_t can_count;
-  uint8_t can_buffer[128];
+  uint8_t can_buffer[1000];
   pkt_generic_t *input_packet = (pkt_generic_t *) &exo->input_packet;
 
   /* Check for input data from PC */
