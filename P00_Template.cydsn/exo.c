@@ -260,7 +260,6 @@ void handlePacketMsg(
       break;
 
 
-    /*
     case PKT_QUERY_MODULE:
       {
         pkt_query_module_t *query_payload = pkt_interpPtr(pkt_query_module_t, packet);
@@ -268,16 +267,17 @@ void handlePacketMsg(
         const uint8_t command_state = query_payload->command_state;
 
         //force a state change if the host has a different state.
-        if (command_state != ged_getStateID((ged_state_machine_t *) &module->state_machine))
-          ged_forceTrans((ged_state_machine_t *) &module->state_machine,
-              (void *) module, (ged_state_id_t) command_state);
+        if (command_state != ged_getStateID((ged_state_machine_t *) &exo->state_machine))
+          ged_forceTrans((ged_state_machine_t *) &exo->state_machine,
+              (void *) exo, (ged_state_id_t) command_state);
 
+        /*
         //if this module is the queried one, reply.
         if (module_id == MODULE_ID)
           moduleReply(module);
+          */
       }
       break;
-      */
 
       /*
     case PKT_MODULE_DATA:
