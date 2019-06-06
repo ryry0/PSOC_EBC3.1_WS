@@ -3,6 +3,10 @@
 
 #define BD_DELAY 100 //set this?
 
+static void checkdata();
+
+static char getPCdata();
+
 /*
  * to start associated serial: hal_uart_start(cwru_stim_brd1.port_id);
  * to init: stim_initpercboard
@@ -164,32 +168,289 @@ void stimpat_applyPatternPercLoop(cwru_stim_struct_t
     stimpat_deactivatePatternWhenComplete(stim_pattern);
   }
 }
-void checkdata() {
-    uint8_t data = 0;
-    char array[30] = {0};
 
-  do {
-    data = UART_STIM_0_GetChar();
-    sprintf(array, "%x", data);
-    //bd_putLargeDataReady(&data, 1);
+void stim_crtPercSchedEvents(cwru_stim_struct_t *stim_board, uint8_t ipi) {
+  const int NUM_EVENTS = 12;
 
-    bd_putStringReady(array);
-    bd_putStringReady(" Check\n");
-  } while (data != 0);
+  stimint_initPercBoard(stim_board, ipi);
+
+  stim_cmd_crt_sched(stim_board, UECU_SYNC_MSG, ipi); // Sync signal = 0xAA, duration 29msec.
+  CyDelay(BD_DELAY); //this delay needs to be here
+
+  for (size_t i = 0; i < NUM_EVENTS; ++i) {
+    stim_cmd_crt_evnt(stim_board,
+        1,  // sched_id = 1
+        0,  // delay = 0msec
+        0,  // priority = 0
+        3,  // event_type = 3, for for Stimulus Event
+        i,  // port_chn_id = 0;
+        0, // pulse_width set to 0,
+        0x10, // amplitude set to 0,
+        0); // zone not implemented;
+  }
 }
 
-char getPCdata() {
-  char uart_buffer[128] = {0};
-  uint8_t uart_count = USBUART_1_GetCount();
+void stimpat_initPattern(stim_pattern_t *stim_pattern,
+  uint16_t (*Active_LUT_PP)[12][8],
+  uint8_t  (*Active_LUT_PW)[12][8],
+  float pattern_time,
+  uint16_t counts_per_second) {
 
-  /* Check for input data from PC */
-  if(uart_count != 0) {
-    USBUART_1_GetAll(uart_buffer);
-    bd_usbTimeout();
+  stimpat_resetTimeAndPercent(stim_pattern);
+  stimpat_setActivePattern(stim_pattern,
+      Active_LUT_PP,
+      Active_LUT_PW);
 
-    return uart_buffer[0];
-  } //end if(uart_count
-  return 0;
+  stimpat_setPatternTime(stim_pattern, pattern_time);
+  stimpat_setCountsPerSecond(stim_pattern, counts_per_second);
+  stimpat_deactivatePattern(stim_pattern);
+}
+
+void stimint_initPercBoardUART(cwru_stim_struct_t *stim_board,
+    uint8_t port_id) {
+  stim_board->brd_type = STIM_BRD_PERC;
+  stim_board->port_id = port_id;
+  stim_board->setting = STIM_SETTING_DEFAULT | STIM_SETTING_SINGLE_SCHEDULER;
+
+  hal_uart_start(stim_board->port_id);
+  //bd_putStringReady("Uart started\n");
+  CyDelay(BD_DELAY);
+}
+
+/* TODO:
+ * set all zero
+ * x check if all chan works
+ * x? setup stim thread
+ * x mock time
+ * add state for sit to stand
+ * x does zero after step?
+ * x increment counter
+ * x calc perc pattern due to properties
+ * test ipi changing
+ */
+
+
+/* TEST FUNCTIONS FOUND BELOW: -----------------------------------------------
+ */
+
+/* example usage:
+ * to set up the stim board:
+ *
+ * create a pattern:
+ *  stim_pattern_t active_stim_pattern;
+ *  stimpat_initPattern(&active_stim_pattern,
+ *      &gait_stand_B1_PP,
+ *      &gait_stand_B1_PW,
+ *      2.0,
+ *      1000);
+ *
+ * Initialize the board:
+ *   stimint_initPercBoardUART(&cwru_stim_brd1, STIM_UART_PORT_1);
+ *   stim_crtPercSchedEvents(&cwru_stim_brd1, 30);
+ *
+ * Send a sync message to start it
+ *   stim_cmd_sync_msg(&cwru_stim_brd1, UECU_SYNC_MSG);
+ *
+ * Apply the pattern, increment the counter
+ *  stimpat_applyPatternPercLoop(&cwru_stim_brd1, &active_stim_pattern);
+ *  stimpat_incrementCounter(&active_stim_pattern, 20);
+ *
+ * Reset time and percent for next cycle
+ *  stimpat_resetTimeAndPercent(&active_stim_pattern);
+ *
+ * Set the pattern as active
+ *  stimpat_activatePattern(&active_stim_pattern);
+ */
+void stimpat_test_new() {
+  cwru_stim_struct_t cwru_stim_brd1;
+  cwru_stim_struct_t cwru_stim_brd2;
+  /* ... wtf there's something about it needing to be
+   * 100ms
+   */
+  uint16_t cycle_percent = 0;
+  char pc_input = 0;
+  stim_pattern_t active_stim_pattern;
+  stimpat_initPattern(&active_stim_pattern,
+      &gait_stand_B1_PP,
+      &gait_stand_B1_PW,
+      2.0,
+      1000);
+
+  //setupBoard();
+
+  stimint_initPercBoardUART(&cwru_stim_brd1, STIM_UART_PORT_1);
+  stim_crtPercSchedEvents(&cwru_stim_brd1, 30);
+  stim_cmd_sync_msg(&cwru_stim_brd1, UECU_SYNC_MSG);
+
+  CyDelay(5000);
+  bd_putStringReady("end delay\n");
+
+  //checkdata();
+
+  bool start_simulation = false;
+  for (;;) {
+    const uint8_t THREAD_DELAY = 20;
+    char new_val[30] = {0};
+
+    pc_input = getPCdata();
+
+    if (pc_input != 0) {
+      switch(pc_input) {
+        case '+':
+          cycle_percent += 200;
+          break;
+        case '-':
+          cycle_percent -= 200;
+          break;
+
+        case ' ':
+          stimpat_resetTimeAndPercent(&active_stim_pattern);
+          stimpat_activatePattern(&active_stim_pattern);
+
+          break;
+      }
+
+      /*
+      stimpat_applyPatternPWPercOneChannel(&cwru_stim_brd1,
+          &active_stim_pattern, 0, 1, 38);
+          */
+    } //end if
+
+    stimpat_applyPatternPercLoop(&cwru_stim_brd1, &active_stim_pattern);
+    stimpat_incrementCounter(&active_stim_pattern, 20);
+    CyDelay(THREAD_DELAY);
+
+  } //end for(;;);
+}
+
+void stimpat_test_lib() {
+  int8_t sucessStatus = 1u;
+  cwru_stim_struct_t cwru_stim_brd1;
+  cwru_stim_struct_t cwru_stim_brd2;
+
+  uint8_t cmd = 0;
+  uint8_t mode = 0;
+  uint8_t setting = 0;
+  float param = 5000.0;
+  char pc_input = 0;
+
+  CyDelay(5000);
+
+  bd_putStringReady("end delay\n");
+
+  for (size_t i = 0; i < STIM_CHANNEL_MAX; ++i) {
+    cwru_stim_brd1._current_pw_gains[i] = 1;
+    cwru_stim_brd1._current_amp_gains[i] = 1;
+
+    cwru_stim_brd2._current_pw_gains[i] = 1;
+    cwru_stim_brd2._current_amp_gains[i] = 1;
+  }
+
+  // CwruStimLib Related
+  sucessStatus *= cwru_stim_init(&cwru_stim_brd1,
+      STIM_MODE_PERC, //USE MODE
+      STIM_UART_PORT_0,
+      STIM_SETTING_SINGLE_SCHEDULER | STIM_SETTING_DEFAULT);
+  CyDelay(BD_DELAY);
+  checkdata();
+
+  /*
+  sucessStatus *= cwru_stim_init(&cwru_stim_brd2,
+      STIM_BRD_PERC,
+      STIM_UART_PORT_1,
+      STIM_SETTING_DEFAULT);
+  CyDelay(BD_DELAY);
+  checkdata();
+  */
+
+  // Call start func to send sync message to brds
+  //sucessStatus *= cwru_stim_start(cwru_stim_struct_t *cwru_stim, const uint8_t sync_signal)
+  //sucessStatus *= cwru_stim_start(&cwru_stim_brd1, UECU_SYNC_MSG);
+  stim_cmd_sync_msg(&cwru_stim_brd1, UECU_SYNC_MSG);
+  CyDelay(BD_DELAY);
+  checkdata();
+
+  cmd = STIM_UPDATE_GAIT_CYCLE;
+  mode = VCK5_BRD1|AMP; // (Board type with id) with (IPI or PW or AMP)
+  setting = PATTERN_STAND;
+  sucessStatus *= cwru_stim_update(&cwru_stim_brd1, cmd, mode, setting, param);
+
+  /*
+  sucessStatus *= cwru_stim_start(&cwru_stim_brd2, UECU_SYNC_MSG);
+  CyDelay(BD_DELAY);
+  checkdata();
+  */
+
+  for(;;)
+  {
+    // CwruStimLib Related
+    char new_val[30] = {0};
+    uint8_t data = 0;
+
+    pc_input = getPCdata();
+
+    if (pc_input != 0) {
+
+      switch(pc_input) {
+        case '+':
+          bd_putStringReady("plus\n");
+          param += 500.0;
+          break;
+
+        case '-':
+          bd_putStringReady("minus\n");
+          param -= 500.0;
+          break;
+
+        case 'c':
+          checkdata();
+          for (size_t i = 0; i < 8; ++i) {
+            sprintf(new_val, "%d %d\n", cwru_stim_brd1._current_amplitude[i],
+                cwru_stim_brd1._current_pulse_width[i]);
+            bd_putStringReady(new_val);
+          }
+          break;
+      }
+      sprintf(new_val, "%d\n", (int) param);
+      bd_putStringReady(new_val);
+    }
+
+    data = UART_STIM_0_GetChar();
+    if (data != 0) {
+      sprintf(new_val, "%x\n", (int) data);
+      bd_putStringReady(new_val);
+    }
+
+    // Example 1: update IPI or PW or AMP based on preset pattern
+    //          and gait percentage value from GED
+    cmd = STIM_UPDATE_GAIT_CYCLE;
+    mode = VCK5_BRD1|PW; // (Board type with id) with (IPI or PW or AMP)
+    setting = PATTERN_STAND;
+    //param = 5000; // 0-10000 for 0%-100% gait cycle
+    // update board 1, based on VCK5 Board 1 Stand pattern, change PW value
+    sucessStatus *= cwru_stim_update(&cwru_stim_brd1, cmd, mode, setting, param);
+
+    /*
+    cmd = STIM_UPDATE_GAIT_CYCLE;
+    mode = VCK5_BRD2|PW; // (Board type with id) with (IPI or PW or AMP)
+    setting = PATTERN_STAND;
+    //param = 5000; // 0-10000 for 0%-100% gait cycle
+    // update board 2, based on VCK5 Board 2 Stand pattern, change PW value
+    sucessStatus *= cwru_stim_update(&cwru_stim_brd2, cmd, mode, setting, param);
+    */
+
+    /*
+    // Example 1: update IPI or PW or AMP based on preset pattern
+    //          and gait percentage value from GED
+    cmd = STIM_UPDATE_GAIN;
+    mode = PW; // PW or AMP
+    setting = 1; // Channel ID 0-STIM_CHANNEL_USED
+    //param = 0.5; // 0-1 for float for 0%-100% of gain factor
+    // update board 1, change channel 1 PW gain factor to 50%.
+    sucessStatus *= cwru_stim_update(&cwru_stim_brd1, cmd, mode, setting, param);
+    */
+
+  } // end for(;;)
 }
 
 void stimpat_test() {
@@ -338,254 +599,31 @@ void stimpat_test() {
   }
 }
 
-void stimpat_test_lib() {
-  int8_t sucessStatus = 1u;
-  cwru_stim_struct_t cwru_stim_brd1;
-  cwru_stim_struct_t cwru_stim_brd2;
-
-  uint8_t cmd = 0;
-  uint8_t mode = 0;
-  uint8_t setting = 0;
-  float param = 5000.0;
-  char pc_input = 0;
-
-  CyDelay(5000);
-
-  bd_putStringReady("end delay\n");
-
-  for (size_t i = 0; i < STIM_CHANNEL_MAX; ++i) {
-    cwru_stim_brd1._current_pw_gains[i] = 1;
-    cwru_stim_brd1._current_amp_gains[i] = 1;
-
-    cwru_stim_brd2._current_pw_gains[i] = 1;
-    cwru_stim_brd2._current_amp_gains[i] = 1;
-  }
-
-  // CwruStimLib Related
-  sucessStatus *= cwru_stim_init(&cwru_stim_brd1,
-      STIM_MODE_PERC, //USE MODE
-      STIM_UART_PORT_0,
-      STIM_SETTING_SINGLE_SCHEDULER | STIM_SETTING_DEFAULT);
-  CyDelay(BD_DELAY);
-  checkdata();
-
-  /*
-  sucessStatus *= cwru_stim_init(&cwru_stim_brd2,
-      STIM_BRD_PERC,
-      STIM_UART_PORT_1,
-      STIM_SETTING_DEFAULT);
-  CyDelay(BD_DELAY);
-  checkdata();
-  */
-
-  // Call start func to send sync message to brds
-  //sucessStatus *= cwru_stim_start(cwru_stim_struct_t *cwru_stim, const uint8_t sync_signal)
-  //sucessStatus *= cwru_stim_start(&cwru_stim_brd1, UECU_SYNC_MSG);
-  stim_cmd_sync_msg(&cwru_stim_brd1, UECU_SYNC_MSG);
-  CyDelay(BD_DELAY);
-  checkdata();
-
-  cmd = STIM_UPDATE_GAIT_CYCLE;
-  mode = VCK5_BRD1|AMP; // (Board type with id) with (IPI or PW or AMP)
-  setting = PATTERN_STAND;
-  sucessStatus *= cwru_stim_update(&cwru_stim_brd1, cmd, mode, setting, param);
-
-  /*
-  sucessStatus *= cwru_stim_start(&cwru_stim_brd2, UECU_SYNC_MSG);
-  CyDelay(BD_DELAY);
-  checkdata();
-  */
-
-  for(;;)
-  {
-    // CwruStimLib Related
-    char new_val[30] = {0};
+static void checkdata() {
     uint8_t data = 0;
+    char array[30] = {0};
 
-    pc_input = getPCdata();
-
-    if (pc_input != 0) {
-
-      switch(pc_input) {
-        case '+':
-          bd_putStringReady("plus\n");
-          param += 500.0;
-          break;
-
-        case '-':
-          bd_putStringReady("minus\n");
-          param -= 500.0;
-          break;
-
-        case 'c':
-          checkdata();
-          for (size_t i = 0; i < 8; ++i) {
-            sprintf(new_val, "%d %d\n", cwru_stim_brd1._current_amplitude[i],
-                cwru_stim_brd1._current_pulse_width[i]);
-            bd_putStringReady(new_val);
-          }
-          break;
-      }
-      sprintf(new_val, "%d\n", (int) param);
-      bd_putStringReady(new_val);
-    }
-
+  do {
     data = UART_STIM_0_GetChar();
-    if (data != 0) {
-      sprintf(new_val, "%x\n", (int) data);
-      bd_putStringReady(new_val);
-    }
+    sprintf(array, "%x", data);
+    //bd_putLargeDataReady(&data, 1);
 
-    // Example 1: update IPI or PW or AMP based on preset pattern
-    //          and gait percentage value from GED
-    cmd = STIM_UPDATE_GAIT_CYCLE;
-    mode = VCK5_BRD1|PW; // (Board type with id) with (IPI or PW or AMP)
-    setting = PATTERN_STAND;
-    //param = 5000; // 0-10000 for 0%-100% gait cycle
-    // update board 1, based on VCK5 Board 1 Stand pattern, change PW value
-    sucessStatus *= cwru_stim_update(&cwru_stim_brd1, cmd, mode, setting, param);
-
-    /*
-    cmd = STIM_UPDATE_GAIT_CYCLE;
-    mode = VCK5_BRD2|PW; // (Board type with id) with (IPI or PW or AMP)
-    setting = PATTERN_STAND;
-    //param = 5000; // 0-10000 for 0%-100% gait cycle
-    // update board 2, based on VCK5 Board 2 Stand pattern, change PW value
-    sucessStatus *= cwru_stim_update(&cwru_stim_brd2, cmd, mode, setting, param);
-    */
-
-    /*
-    // Example 1: update IPI or PW or AMP based on preset pattern
-    //          and gait percentage value from GED
-    cmd = STIM_UPDATE_GAIN;
-    mode = PW; // PW or AMP
-    setting = 1; // Channel ID 0-STIM_CHANNEL_USED
-    //param = 0.5; // 0-1 for float for 0%-100% of gain factor
-    // update board 1, change channel 1 PW gain factor to 50%.
-    sucessStatus *= cwru_stim_update(&cwru_stim_brd1, cmd, mode, setting, param);
-    */
-
-  } // end for(;;)
+    bd_putStringReady(array);
+    bd_putStringReady(" Check\n");
+  } while (data != 0);
 }
 
-void stim_crtPercSchedEvents(cwru_stim_struct_t *stim_board, uint8_t ipi) {
-  const int NUM_EVENTS = 12;
+static char getPCdata() {
+  char uart_buffer[128] = {0};
+  uint8_t uart_count = USBUART_1_GetCount();
 
-  stimint_initPercBoard(stim_board, ipi);
+  /* Check for input data from PC */
+  if(uart_count != 0) {
+    USBUART_1_GetAll(uart_buffer);
+    bd_usbTimeout();
 
-  stim_cmd_crt_sched(stim_board, UECU_SYNC_MSG, ipi); // Sync signal = 0xAA, duration 29msec.
-  CyDelay(BD_DELAY); //this delay needs to be here
-
-  for (size_t i = 0; i < NUM_EVENTS; ++i) {
-    stim_cmd_crt_evnt(stim_board,
-        1,  // sched_id = 1
-        0,  // delay = 0msec
-        0,  // priority = 0
-        3,  // event_type = 3, for for Stimulus Event
-        i,  // port_chn_id = 0;
-        0, // pulse_width set to 0,
-        0x10, // amplitude set to 0,
-        0); // zone not implemented;
-  }
+    return uart_buffer[0];
+  } //end if(uart_count
+  return 0;
 }
 
-void stimpat_initPattern(stim_pattern_t *stim_pattern,
-  uint16_t (*Active_LUT_PP)[12][8],
-  uint8_t  (*Active_LUT_PW)[12][8],
-  float pattern_time,
-  uint16_t counts_per_second) {
-
-  stimpat_resetTimeAndPercent(stim_pattern);
-  stimpat_setActivePattern(stim_pattern,
-      Active_LUT_PP,
-      Active_LUT_PW);
-
-  stimpat_setPatternTime(stim_pattern, pattern_time);
-  stimpat_setCountsPerSecond(stim_pattern, counts_per_second);
-  stimpat_deactivatePattern(stim_pattern);
-}
-
-void stimint_initPercBoardUART(cwru_stim_struct_t *stim_board,
-    uint8_t port_id) {
-  stim_board->brd_type = STIM_BRD_PERC;
-  stim_board->port_id = port_id;
-  stim_board->setting = STIM_SETTING_DEFAULT | STIM_SETTING_SINGLE_SCHEDULER;
-
-  hal_uart_start(stim_board->port_id);
-  //bd_putStringReady("Uart started\n");
-  CyDelay(BD_DELAY);
-}
-
-void stimpat_test_new() {
-  cwru_stim_struct_t cwru_stim_brd1;
-  cwru_stim_struct_t cwru_stim_brd2;
-  /* ... wtf there's something about it needing to be
-   * 100ms
-   */
-  uint16_t cycle_percent = 0;
-  char pc_input = 0;
-  stim_pattern_t active_stim_pattern;
-  stimpat_initPattern(&active_stim_pattern,
-      &gait_stand_B1_PP,
-      &gait_stand_B1_PW,
-      2.0,
-      1000);
-
-  //setupBoard();
-
-  stimint_initPercBoardUART(&cwru_stim_brd1, STIM_UART_PORT_1);
-  stim_crtPercSchedEvents(&cwru_stim_brd1, 30);
-  stim_cmd_sync_msg(&cwru_stim_brd1, UECU_SYNC_MSG);
-
-  CyDelay(5000);
-  bd_putStringReady("end delay\n");
-
-  //checkdata();
-
-  bool start_simulation = false;
-  for (;;) {
-    const uint8_t THREAD_DELAY = 20;
-    char new_val[30] = {0};
-
-    pc_input = getPCdata();
-
-    if (pc_input != 0) {
-      switch(pc_input) {
-        case '+':
-          cycle_percent += 200;
-          break;
-        case '-':
-          cycle_percent -= 200;
-          break;
-
-        case ' ':
-          stimpat_resetTimeAndPercent(&active_stim_pattern);
-          stimpat_activatePattern(&active_stim_pattern);
-
-          break;
-      }
-
-      /*
-      stimpat_applyPatternPWPercOneChannel(&cwru_stim_brd1,
-          &active_stim_pattern, 0, 1, 38);
-          */
-    } //end if
-
-    stimpat_applyPatternPercLoop(&cwru_stim_brd1, &active_stim_pattern);
-    stimpat_incrementCounter(&active_stim_pattern, 20);
-    CyDelay(THREAD_DELAY);
-
-  } //end for(;;);
-}
-
-/* TODO:
- * set all zero
- * x check if all chan works
- * x? setup stim thread
- * x mock time
- * add state for sit to stand
- * x does zero after step?
- * x increment counter
- * x calc perc pattern due to properties
- * test ipi changing
- */

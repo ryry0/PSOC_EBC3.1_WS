@@ -189,7 +189,7 @@ void setupStim(volatile exo_t *exo) {
       2.0,
       1000);
 
-  stimint_initPercBoardUART(cwru_stim_brd1, STIM_UART_PORT_0);
+  stimint_initPercBoardUART(cwru_stim_brd1, STIM_UART_PORT_0); //SCB J115
   stim_crtPercSchedEvents(cwru_stim_brd1, 30);
   stim_cmd_sync_msg(cwru_stim_brd1, UECU_SYNC_MSG);
 
@@ -199,7 +199,7 @@ void setupStim(volatile exo_t *exo) {
       2.0,
       1000);
 
-  stimint_initPercBoardUART(cwru_stim_brd2, STIM_UART_PORT_1);
+  stimint_initPercBoardUART(cwru_stim_brd2, STIM_UART_PORT_1); //SCB J116
   stim_crtPercSchedEvents(cwru_stim_brd2, 30);
   stim_cmd_sync_msg(cwru_stim_brd2, UECU_SYNC_MSG);
 }
