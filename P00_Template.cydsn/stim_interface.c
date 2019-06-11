@@ -14,10 +14,7 @@
  *
  * Initialize the board:
  *   stimint_initPercBoardUART(&cwru_stim_brd1, STIM_UART_PORT_1);
- *   stim_crtPercSchedEvents(&cwru_stim_brd1, 30);
- *
- * Send a sync message to start it
- *   stim_cmd_sync_msg(&cwru_stim_brd1, UECU_SYNC_MSG);
+ *   stimint_initPercBoard(&cwru_stim_brd1, 30);
  *
  * Apply the pattern, increment the counter
  *  stimpat_applyPatternPercLoop(&cwru_stim_brd1, &active_stim_pattern);
@@ -96,13 +93,13 @@ void stimpat_crtStimEvent_wrap(cwru_stim_struct_t *stim_board,
 
   stim_cmd_crt_evnt(stim_board,
       schedule_id,  // sched_id = 1
-      delay,  // delay = 0msec
-      0,  // priority = 0
-      3,  // event_type = 3, for for Stimulus Event
-      0,  // port_chn_id = 0;
-      pulse_width, // pulse_width set to 0,
-      amplitude, // amplitude set to 0,
-      0); // zone not implemented;
+      delay,        // delay = 0msec
+      0,            // priority = 0
+      3,            // event_type = 3, for for Stimulus Event
+      0,            // port_chn_id = 0;
+      pulse_width,  // pulse_width set to 0,
+      amplitude,    // amplitude set to 0,
+      0);           // zone not implemented;
 }
 
 /*
@@ -226,7 +223,6 @@ void stimpat_applyPatternPercLoop(cwru_stim_struct_t
     bd_putStringReady(new_val);
     */
 
-
     stimpat_deactivatePatternWhenComplete(stim_pattern);
   }
 }
@@ -239,14 +235,14 @@ void stim_crtPercSchedEvents(cwru_stim_struct_t *stim_board, uint8_t ipi) {
 
   for (size_t i = 0; i < NUM_EVENTS; ++i) {
     stim_cmd_crt_evnt(stim_board,
-        1,  // sched_id = 1
-        0,  // delay = 0msec
-        0,  // priority = 0
-        3,  // event_type = 3, for for Stimulus Event
-        i,  // port_chn_id = 0;
-        0, // pulse_width set to 0,
+        1,    // sched_id = 1
+        0,    // delay = 0msec
+        0,    // priority = 0
+        3,    // event_type = 3, for for Stimulus Event
+        i,    // port_chn_id = 0;
+        0,    // pulse_width set to 0,
         0x10, // amplitude set to 0,
-        0); // zone not implemented;
+        0);   // zone not implemented;
   }
 }
 
@@ -319,10 +315,10 @@ void stimpat_test_new() {
       1000);
 
   //setupBoard();
+  const uint8_t STIM_BOARD_IPI = 30;
 
   stimint_initPercBoardUART(&cwru_stim_brd1, STIM_UART_PORT_1);
-  stim_crtPercSchedEvents(&cwru_stim_brd1, 30);
-  stim_cmd_sync_msg(&cwru_stim_brd1, UECU_SYNC_MSG);
+  stimint_initPercBoard(&cwru_stim_brd1, STIM_BOARD_IPI);
 
   CyDelay(5000);
   bd_putStringReady("end delay\n");
