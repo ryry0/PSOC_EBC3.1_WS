@@ -1,7 +1,66 @@
 #include <stim_interface.h>
 #include <board_io.h>
 
+/* example usage:
+ * to set up the stim board:
+ *
+ * create a pattern:
+ *  stim_pattern_t active_stim_pattern;
+ *  stimpat_initPattern(&active_stim_pattern,
+ *      &gait_stand_B1_PP,
+ *      &gait_stand_B1_PW,
+ *      2.0,
+ *      1000);
+ *
+ * Initialize the board:
+ *   stimint_initPercBoardUART(&cwru_stim_brd1, STIM_UART_PORT_1);
+ *   stim_crtPercSchedEvents(&cwru_stim_brd1, 30);
+ *
+ * Send a sync message to start it
+ *   stim_cmd_sync_msg(&cwru_stim_brd1, UECU_SYNC_MSG);
+ *
+ * Apply the pattern, increment the counter
+ *  stimpat_applyPatternPercLoop(&cwru_stim_brd1, &active_stim_pattern);
+ *  stimpat_incrementCounter(&active_stim_pattern, 20);
+ *
+ * Reset time and percent for next cycle
+ *  stimpat_resetTimeAndPercent(&active_stim_pattern);
+ *
+ * Set the pattern as active
+ *  stimpat_activatePattern(&active_stim_pattern);
+ */
+
 #define BD_DELAY 100 //set this?
+
+//defines for IST 16 board
+#define MSG_DES_ADDR_ICM 0x0A
+
+// Magic number setup for implant
+// 0A 80 20 05 04 00 00 00 00 4C (IRS 8, Port 0)
+static const uint8_t ICM_IRS_SET_0_MSG[] = {MSG_DES_ADDR_ICM, MSG_SRC_ADDR,
+                                        0x20, 0x05, 0x04, 0x00,
+                                        0x00, 0x00, 0x00, 0x4C};
+
+// 0A 80 20 05 05 00 00 00 00 4B (IRS 8, Port 1)
+static const uint8_t ICM_IRS_SET_1_MSG[] = {MSG_DES_ADDR_ICM, MSG_SRC_ADDR,
+                                        0x20, 0x05, 0x05, 0x00,
+                                        0x00, 0x00, 0x00, 0x4B};
+
+// 0A 80 20 05 10 00 00 00 00 40 (IST16, Port 0)
+static const uint8_t ICM_IST_SET_0_MSG[] = {MSG_DES_ADDR_ICM, MSG_SRC_ADDR,
+                                        0x20, 0x05, 0x10, 0x00,
+                                        0x00, 0x00, 0x00, 0x40};
+
+// 0A 80 20 05 11 00 00 00 00 3F (IST16, Port 1)
+static const uint8_t ICM_IST_SET_1_MSG[] = {MSG_DES_ADDR_ICM, MSG_SRC_ADDR,
+                                        0x20, 0x05, 0x11, 0x00,
+                                        0x00, 0x00, 0x00, 0x40};
+
+// send those two msg at the end of setup
+static const uint8_t ICM_RFPWR_EVNT_0[] = {MSG_DES_ADDR_ICM, MSG_SRC_ADDR,
+                                  0x1C, 0x04, 0x06, 0x80, 0x00, 0xFF, 0xCE};                //Port 0
+static const uint8_t ICM_RFPWR_EVNT_1[] = {MSG_DES_ADDR_ICM, MSG_SRC_ADDR,
+                                  0x1C, 0x04, 0x06, 0x80, 0x40, 0xFF, 0x8E};                //Port 1
 
 static void checkdata();
 
@@ -217,6 +276,16 @@ void stimint_initPercBoardUART(cwru_stim_struct_t *stim_board,
   CyDelay(BD_DELAY);
 }
 
+void stimint_initISTBoardUART(cwru_stim_struct_t *stim_board, uint8_t port_id) {
+  stim_board->brd_type = STIM_BRD_ICM_IST16;
+  stim_board->port_id = port_id;
+  stim_board->setting = STIM_SETTING_DEFAULT | STIM_SETTING_SINGLE_SCHEDULER;
+
+  hal_uart_start(stim_board->port_id);
+  //bd_putStringReady("Uart started\n");
+  CyDelay(BD_DELAY);
+}
+
 /* TODO:
  * set all zero
  * x check if all chan works
@@ -233,34 +302,6 @@ void stimint_initPercBoardUART(cwru_stim_struct_t *stim_board,
 /* TEST FUNCTIONS FOUND BELOW: -----------------------------------------------
  */
 
-/* example usage:
- * to set up the stim board:
- *
- * create a pattern:
- *  stim_pattern_t active_stim_pattern;
- *  stimpat_initPattern(&active_stim_pattern,
- *      &gait_stand_B1_PP,
- *      &gait_stand_B1_PW,
- *      2.0,
- *      1000);
- *
- * Initialize the board:
- *   stimint_initPercBoardUART(&cwru_stim_brd1, STIM_UART_PORT_1);
- *   stim_crtPercSchedEvents(&cwru_stim_brd1, 30);
- *
- * Send a sync message to start it
- *   stim_cmd_sync_msg(&cwru_stim_brd1, UECU_SYNC_MSG);
- *
- * Apply the pattern, increment the counter
- *  stimpat_applyPatternPercLoop(&cwru_stim_brd1, &active_stim_pattern);
- *  stimpat_incrementCounter(&active_stim_pattern, 20);
- *
- * Reset time and percent for next cycle
- *  stimpat_resetTimeAndPercent(&active_stim_pattern);
- *
- * Set the pattern as active
- *  stimpat_activatePattern(&active_stim_pattern);
- */
 void stimpat_test_new() {
   cwru_stim_struct_t cwru_stim_brd1;
   cwru_stim_struct_t cwru_stim_brd2;
