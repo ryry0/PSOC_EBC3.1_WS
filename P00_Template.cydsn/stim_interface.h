@@ -43,12 +43,12 @@ void stimint_initPercBoard(cwru_stim_struct_t *stim_board, uint8_t ipi);
 //void stimpat_setevent_wrap(cwru_stim_struct_t *stim_board);
 
 /**
- * \brief Initialize a percutaneous board's uart
+ * \brief Initialize a board's uart
  *
  * \param stim_board The stim board.
  * \param port_id The ID of the UART used to communicate with perc board
  */
-void stimint_initPercBoardUART(cwru_stim_struct_t *stim_board,
+void stimint_initBoardUART(cwru_stim_struct_t *stim_board,
     uint8_t port_id);
 
 

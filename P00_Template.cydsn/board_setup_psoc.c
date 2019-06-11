@@ -190,7 +190,7 @@ void setupStim(volatile exo_t *exo) {
       1000);
   const uint8_t STIM_BOARD_IPI = 30;
 
-  stimint_initPercBoardUART(cwru_stim_brd1, STIM_UART_PORT_0); //SCB J115
+  stimint_initBoardUART(cwru_stim_brd1, STIM_UART_PORT_0); //SCB J115
   stimint_initPercBoard(cwru_stim_brd1, STIM_BOARD_IPI);
 
   stimpat_initPattern(pattern_brd2,
@@ -199,7 +199,7 @@ void setupStim(volatile exo_t *exo) {
       2.0,
       1000);
 
-  stimint_initPercBoardUART(cwru_stim_brd2, STIM_UART_PORT_1); //SCB J116
+  stimint_initBoardUART(cwru_stim_brd2, STIM_UART_PORT_1); //SCB J116
   stimint_initPercBoard(cwru_stim_brd2, STIM_BOARD_IPI);
 }
 

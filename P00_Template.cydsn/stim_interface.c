@@ -72,6 +72,8 @@ static char getPCdata();
  * to start stim:
  */
 void stimint_initPercBoard(cwru_stim_struct_t *stim_board, uint8_t ipi) {
+  stim_board->brd_type = STIM_BRD_PERC;
+  stim_board->setting = STIM_SETTING_DEFAULT | STIM_SETTING_SINGLE_SCHEDULER;
 
   //need to make sure init-pattern and crt_sched ipi match
   //this IPI sets _current_ipi and doesn't set things on board
@@ -262,21 +264,9 @@ void stimpat_initPattern(stim_pattern_t *stim_pattern,
   stimpat_deactivatePattern(stim_pattern);
 }
 
-void stimint_initPercBoardUART(cwru_stim_struct_t *stim_board,
+void stimint_initBoardUART(cwru_stim_struct_t *stim_board,
     uint8_t port_id) {
-  stim_board->brd_type = STIM_BRD_PERC;
   stim_board->port_id = port_id;
-  stim_board->setting = STIM_SETTING_DEFAULT | STIM_SETTING_SINGLE_SCHEDULER;
-
-  hal_uart_start(stim_board->port_id);
-  //bd_putStringReady("Uart started\n");
-  CyDelay(BD_DELAY);
-}
-
-void stimint_initISTBoardUART(cwru_stim_struct_t *stim_board, uint8_t port_id) {
-  stim_board->brd_type = STIM_BRD_ICM_IST16;
-  stim_board->port_id = port_id;
-  stim_board->setting = STIM_SETTING_DEFAULT | STIM_SETTING_SINGLE_SCHEDULER;
 
   hal_uart_start(stim_board->port_id);
   //bd_putStringReady("Uart started\n");
