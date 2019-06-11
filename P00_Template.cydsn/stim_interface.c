@@ -83,6 +83,9 @@ void stimint_initPercBoard(cwru_stim_struct_t *stim_board, uint8_t ipi) {
 
   stim_init_brd_perc(stim_board);
   CyDelay(BD_DELAY);
+
+  stim_crtPercSchedEvents(stim_board, ipi);
+  stim_cmd_sync_msg(stim_board, UECU_SYNC_MSG);
 }
 
 void stimpat_crtStimEvent_wrap(cwru_stim_struct_t *stim_board,
@@ -230,8 +233,6 @@ void stimpat_applyPatternPercLoop(cwru_stim_struct_t
 
 void stim_crtPercSchedEvents(cwru_stim_struct_t *stim_board, uint8_t ipi) {
   const int NUM_EVENTS = 12;
-
-  stimint_initPercBoard(stim_board, ipi);
 
   stim_cmd_crt_sched(stim_board, UECU_SYNC_MSG, ipi); // Sync signal = 0xAA, duration 29msec.
   CyDelay(BD_DELAY); //this delay needs to be here

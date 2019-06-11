@@ -188,10 +188,10 @@ void setupStim(volatile exo_t *exo) {
       &gait_stand_B1_PW,
       2.0,
       1000);
+  const uint8_t STIM_BOARD_IPI = 30;
 
   stimint_initPercBoardUART(cwru_stim_brd1, STIM_UART_PORT_0); //SCB J115
-  stim_crtPercSchedEvents(cwru_stim_brd1, 30);
-  stim_cmd_sync_msg(cwru_stim_brd1, UECU_SYNC_MSG);
+  stimint_initPercBoard(cwru_stim_brd1, STIM_BOARD_IPI);
 
   stimpat_initPattern(pattern_brd2,
       &gait_stand_B2_PP,
@@ -200,7 +200,6 @@ void setupStim(volatile exo_t *exo) {
       1000);
 
   stimint_initPercBoardUART(cwru_stim_brd2, STIM_UART_PORT_1); //SCB J116
-  stim_crtPercSchedEvents(cwru_stim_brd2, 30);
-  stim_cmd_sync_msg(cwru_stim_brd2, UECU_SYNC_MSG);
+  stimint_initPercBoard(cwru_stim_brd2, STIM_BOARD_IPI);
 }
 
