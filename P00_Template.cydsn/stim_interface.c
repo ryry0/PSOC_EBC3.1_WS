@@ -87,6 +87,51 @@ void stimint_initPercBoard(cwru_stim_struct_t *stim_board, uint8_t ipi) {
   stim_cmd_sync_msg(stim_board, UECU_SYNC_MSG);
 }
 
+void stimint_initSurfBoard(cwru_stim_struct_t *stim_board, uint8_t ipi) {
+  stim_board->brd_type = STIM_BRD_SURF;
+  stim_board->setting = STIM_SETTING_DEFAULT | STIM_SETTING_SINGLE_SCHEDULER;
+
+  //need to make sure init-pattern and crt_sched ipi match
+  //this IPI sets _current_ipi and doesn't set things on board
+  stim_init_pattern(stim_board, UECU_SYNC_MSG, ipi);
+  CyDelay(BD_DELAY);
+
+  stim_init_brd_surf(stim_board);
+  CyDelay(BD_DELAY);
+
+  stim_init_chan_surf(stim_board);
+  stim_init_evnt_surf(stim_board);
+
+  stim_cmd_sync_msg(stim_board, UECU_SYNC_MSG);
+}
+
+/*
+ */
+void stimint_initIST16Board(cwru_stim_struct_t *stim_board, uint8_t ipi) {
+  stim_board->brd_type = STIM_BRD_ICM_IST16;
+  stim_board->setting = STIM_SETTING_DEFAULT | STIM_SETTING_SINGLE_SCHEDULER;
+
+  //need to make sure init-pattern and crt_sched ipi match
+  //this IPI sets _current_ipi and doesn't set things on board
+  stim_init_pattern(stim_board, UECU_SYNC_MSG, ipi);
+  CyDelay(BD_DELAY);
+
+
+  stim_uart_print_array(stim_board, ICM_IST_SET_0_MSG,
+      sizeof(ICM_IST_SET_0_MSG)/sizeof(uint8_t)); CyDelay(BD_DELAY);
+
+  CyDelay(BD_DELAY);
+
+  stim_uart_print_array(stim_board, ICM_RFPWR_EVNT_0 ,
+      sizeof(ICM_RFPWR_EVNT_0)/sizeof(uint8_t));
+
+  CyDelay(BD_DELAY);
+
+
+  stim_crtISTSchedEvents(stim_board, ipi); //TODO NEED TO CHANGE THIS
+  stim_cmd_sync_msg(stim_board, UECU_SYNC_MSG);
+}
+
 void stimpat_crtStimEvent_wrap(cwru_stim_struct_t *stim_board,
     uint8_t schedule_id,
     uint16_t delay,
@@ -226,6 +271,25 @@ void stimpat_applyPatternPercLoop(cwru_stim_struct_t
     */
 
     stimpat_deactivatePatternWhenComplete(stim_pattern);
+  }
+}
+
+void stim_crtISTSchedEvents(cwru_stim_struct_t *stim_board, uint8_t ipi) {
+  const int NUM_EVENTS = 12;
+
+  stim_cmd_crt_sched(stim_board, UECU_SYNC_MSG, ipi); // Sync signal = 0xAA, duration 29msec.
+  CyDelay(BD_DELAY); //this delay needs to be here
+
+  for (size_t i = 0; i < NUM_EVENTS; ++i) {
+    stim_cmd_crt_evnt(stim_board,
+        1,    // sched_id = 1
+        0,    // delay = 0msec
+        0,    // priority = 0
+        3,    // event_type = 3, for for Stimulus Event
+        i,    // port_chn_id = 0;
+        0,    // pulse_width set to 0,
+        0x08, // amplitude set to 0,
+        0);   // zone not implemented;
   }
 }
 
