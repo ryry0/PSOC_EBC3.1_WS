@@ -124,31 +124,31 @@ static ged_state_t ged_locked_no_send = {
 };
 
 
-/* LEFT STEP */
+/* LEFT SWING */
 /*----------------------------------------------------------------------------*/
-static void ged_leftStepOnEntry(void *v_exo);
-static void ged_leftStepRun(void *v_exo);
-static void ged_leftStepCheckTrans(ged_state_machine_t *state_machine, void
+static void ged_leftSwingOnEntry(void *v_exo);
+static void ged_leftSwingRun(void *v_exo);
+static void ged_leftSwingCheckTrans(ged_state_machine_t *state_machine, void
     *exo);
 
-static ged_state_t ged_leftStep = {
-  .id = GED_LEFT_STEP,
-  .onentry_func = ged_leftStepOnEntry,
-  .checktrans_func = ged_leftStepCheckTrans,
+static ged_state_t ged_leftSwing = {
+  .id = GED_LEFT_SWING,
+  .onentry_func = ged_leftSwingOnEntry,
+  .checktrans_func = ged_leftSwingCheckTrans,
   .run_func = ged_generic_nopRun,
 };
 
-/* RIGHT STEP */
+/* RIGHT SWING */
 /*----------------------------------------------------------------------------*/
-static void ged_rightStepOnEntry(void *v_exo);
-static void ged_rightStepRun(void *v_exo);
-static void ged_rightStepCheckTrans(ged_state_machine_t *state_machine, void
+static void ged_rightSwingOnEntry(void *v_exo);
+static void ged_rightSwingRun(void *v_exo);
+static void ged_rightSwingCheckTrans(ged_state_machine_t *state_machine, void
     *exo);
 
-static ged_state_t ged_rightStep = {
-  .id = GED_RIGHT_STEP,
-  .onentry_func = ged_rightStepOnEntry,
-  .checktrans_func = ged_rightStepCheckTrans,
+static ged_state_t ged_rightSwing = {
+  .id = GED_RIGHT_SWING,
+  .onentry_func = ged_rightSwingOnEntry,
+  .checktrans_func = ged_rightSwingCheckTrans,
   .run_func = ged_generic_nopRun,
 };
 
@@ -209,12 +209,12 @@ void ged_forceTrans(ged_state_machine_t *state_machine, void *v_exo,
       ged_transition(state_machine, ged_locked, exo);
       break;
 
-    case GED_LEFT_STEP:
-      ged_transition(state_machine, ged_leftStep, exo);
+    case GED_LEFT_SWING:
+      ged_transition(state_machine, ged_leftSwing, exo);
       break;
 
-    case GED_RIGHT_STEP:
-      ged_transition(state_machine, ged_rightStep, exo);
+    case GED_RIGHT_SWING:
+      ged_transition(state_machine, ged_rightSwing, exo);
       break;
 
     case GED_LEFT_DBL_STANCE:
@@ -287,14 +287,14 @@ void ged_unlockedRun(void *v_exo) { //run the friction compensator
 void ged_lockedCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
   exo_t *exo = (exo_t *) v_exo;
   if (bd_getFSW(&exo->sensor_inputs, BD_GREEN_FSW))
-    ged_transition(state_machine, ged_leftStep, exo);
+    ged_transition(state_machine, ged_leftSwing, exo);
 }
 
 /*----------------------------------------------------------------------------*/
-/*                                L STEP                                      */
+/*                                L SWING                                      */
 /*----------------------------------------------------------------------------*/
 
-void ged_leftStepOnEntry(void *v_exo) {
+void ged_leftSwingOnEntry(void *v_exo) {
   exo_t *exo = (exo_t *) v_exo;
   stim_pattern_t *const pattern_brd1  = &exo->pattern_brd1;
   stim_pattern_t *const pattern_brd2  = &exo->pattern_brd2;
@@ -317,13 +317,13 @@ void ged_leftStepOnEntry(void *v_exo) {
 
 }
 
-void ged_leftStepRun(void *v_exo) {
+void ged_leftSwingRun(void *v_exo) {
   exo_t *exo = (exo_t *) v_exo;
   bd_inputs_t *const sensor_inputs = &exo->sensor_inputs;
 
 }
 
-void ged_leftStepCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
+void ged_leftSwingCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
   exo_t *exo = (exo_t *) v_exo;
 
   const float l_hip_angle = bd_analogToLHipAngle(bd_getAin(&exo->sensor_inputs,
@@ -342,10 +342,10 @@ void ged_leftStepCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
 }
 
 /*----------------------------------------------------------------------------*/
-/*                                R STEP                                      */
+/*                                R SWING                                      */
 /*----------------------------------------------------------------------------*/
 
-void ged_rightStepOnEntry(void *v_exo) {
+void ged_rightSwingOnEntry(void *v_exo) {
   exo_t *exo = (exo_t *) v_exo;
 
   stim_pattern_t *const pattern_brd1  = &exo->pattern_brd1;
@@ -366,12 +366,12 @@ void ged_rightStepOnEntry(void *v_exo) {
   stimpat_activatePattern(pattern_brd2);
 }
 
-void ged_rightStepRun(void *v_exo) {
+void ged_rightSwingRun(void *v_exo) {
   exo_t *exo = (exo_t *) v_exo;
   bd_inputs_t *const sensor_inputs = &exo->sensor_inputs;
 }
 
-void ged_rightStepCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
+void ged_rightSwingCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
   exo_t *exo = (exo_t *) v_exo;
 
   const float r_hip_angle = bd_analogToRHipAngle(bd_getAin(&exo->sensor_inputs,
@@ -396,12 +396,12 @@ void ged_rightStepCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
 void ged_leftDblStanceCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
   exo_t *exo = (exo_t *) v_exo;
   if (bd_getFSW(&exo->sensor_inputs, BD_GREEN_FSW))
-    ged_transition(state_machine, ged_rightStep, exo);
+    ged_transition(state_machine, ged_rightSwing, exo);
 
   if (exo->auto_walk &&
       (bd_getAin(&exo->sensor_inputs, BD_AN_0_L_FSR_HEEL) > exo->l_high_fsr_thresh) &&
       (bd_getAin(&exo->sensor_inputs, BD_AN_2_R_FSR_HEEL) < exo->r_low_fsr_thresh))
-    ged_transition(state_machine, ged_rightStep, exo);
+    ged_transition(state_machine, ged_rightSwing, exo);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -412,11 +412,11 @@ void ged_leftDblStanceCheckTrans(ged_state_machine_t *state_machine, void *v_exo
 void ged_rightDblStanceCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
   exo_t *exo = (exo_t *) v_exo;
   if (bd_getFSW(&exo->sensor_inputs, BD_GREEN_FSW))
-    ged_transition(state_machine, ged_leftStep, exo);
+    ged_transition(state_machine, ged_leftSwing, exo);
 
   if (exo->auto_walk &&
       (bd_getAin(&exo->sensor_inputs, BD_AN_2_R_FSR_HEEL) > exo->r_high_fsr_thresh) &&
       (bd_getAin(&exo->sensor_inputs, BD_AN_0_L_FSR_HEEL) < exo->l_low_fsr_thresh))
-    ged_transition(state_machine, ged_leftStep, exo);
+    ged_transition(state_machine, ged_leftSwing, exo);
 }
 
