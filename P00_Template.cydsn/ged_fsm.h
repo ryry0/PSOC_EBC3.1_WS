@@ -16,6 +16,10 @@ typedef enum ged_states_e {
   GED_RIGHT_STEP,
   GED_LEFT_DBL_STANCE,
   GED_RIGHT_DBL_STANCE
+  GED_PASSIVE,
+  GED_SIT_TO_STAND,
+  GED_STAND_TO_SIT,
+  GED_STATE_MAX
 } ged_state_id_t;
 
 typedef struct ged_state_machine_s ged_state_machine_t;

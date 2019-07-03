@@ -56,6 +56,42 @@ static void ged_generic_unlockJointsOnEntry(void *v_exo);
 static void ged_generic_nopRun(void *v_exo);
 static void ged_generic_nopCheckTrans(ged_state_machine_t *state_machine, void *v_exo);
 
+/* see documentation in hybrid-module on how to add new states */
+
+/* SIT TO STAND */
+/*----------------------------------------------------------------------------*/
+
+static void ged_sitToStandRun(void *v_exo);
+
+static ged_state_t ged_sit_to_stand = {
+  .id = GED_SIT_TO_STAND,
+  .onentry_func = ged_generic_unlockJointsOnEntry,
+  .checktrans_func = ged_generic_nopCheckTrans,
+  .run_func = ged_sitToStandRun
+};
+
+static void ged_sitToStandRun(void *v_exo) {
+  exo_t *exo = (exo_t *) v_exo;
+
+}
+
+/* STAND TO SIT */
+/*----------------------------------------------------------------------------*/
+
+static void ged_standToSitRun(void *v_exo);
+
+static ged_state_t ged_stand_to_sit = {
+  .id = GED_STAND_TO_SIT,
+  .onentry_func = ged_generic_unlockJointsOnEntry,
+  .checktrans_func = ged_generic_nopCheckTrans,
+  .run_func = ged_standToSitRun
+};
+
+static void ged_standToSitRun(void *v_exo) {
+  exo_t *exo = (exo_t *) v_exo;
+
+}
+
 /* UNLOCKED */
 /*----------------------------------------------------------------------------*/
 static void ged_unlockedRun(void *v_exo);
