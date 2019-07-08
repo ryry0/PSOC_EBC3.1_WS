@@ -62,10 +62,11 @@ static void ged_generic_nopCheckTrans(ged_state_machine_t *state_machine, void *
 /*----------------------------------------------------------------------------*/
 
 static void ged_sitToStandRun(void *v_exo);
+static void ged_sitToStandOnEntry(void *v_exo);
 
 static ged_state_t ged_sit_to_stand = {
   .id = GED_SIT_TO_STAND,
-  .onentry_func = ged_generic_unlockJointsOnEntry,
+  .onentry_func = ged_sitToStandOnEntry,
   .checktrans_func = ged_generic_nopCheckTrans,
   .run_func = ged_sitToStandRun
 };
@@ -75,14 +76,35 @@ static void ged_sitToStandRun(void *v_exo) {
 
 }
 
+static void ged_sitToStandOnEntry(void *v_exo) {
+  exo_t *exo = (exo_t *) v_exo;
+  stim_pattern_t *const pattern_brd1  = &exo->pattern_brd1;
+  stim_pattern_t *const pattern_brd2  = &exo->pattern_brd2;
+
+  stimpat_initPattern(pattern_brd1,
+  &gait_stand_B1_PP,
+  &gait_stand_B2_PW,
+  gait_stand_duration,
+  1000);
+  stimpat_activatePattern(pattern_brd1);
+
+  stimpat_initPattern(pattern_brd2,
+  &gait_stand_B2_PP,
+  &gait_stand_B2_PW,
+  gait_stand_duration,
+  1000);
+  stimpat_activatePattern(pattern_brd2);
+}
+
 /* STAND TO SIT */
 /*----------------------------------------------------------------------------*/
 
 static void ged_standToSitRun(void *v_exo);
+static void ged_standToSitOnEntry(void *v_exo);
 
 static ged_state_t ged_stand_to_sit = {
   .id = GED_STAND_TO_SIT,
-  .onentry_func = ged_generic_unlockJointsOnEntry,
+  .onentry_func = ged_standToSitOnEntry,
   .checktrans_func = ged_generic_nopCheckTrans,
   .run_func = ged_standToSitRun
 };
@@ -90,6 +112,26 @@ static ged_state_t ged_stand_to_sit = {
 static void ged_standToSitRun(void *v_exo) {
   exo_t *exo = (exo_t *) v_exo;
 
+}
+
+static void ged_standToSitOnEntry(void *v_exo) {
+  exo_t *exo = (exo_t *) v_exo;
+  stim_pattern_t *const pattern_brd1  = &exo->pattern_brd1;
+  stim_pattern_t *const pattern_brd2  = &exo->pattern_brd2;
+
+  stimpat_initPattern(pattern_brd1,
+  &gait_sit_B1_PP,
+  &gait_sit_B1_PW,
+  gait_sit_duration,
+  1000);
+  stimpat_activatePattern(pattern_brd1);
+
+  stimpat_initPattern(pattern_brd2,
+  &gait_sit_B2_PP,
+  &gait_sit_B2_PW,
+  gait_sit_duration,
+  1000);
+  stimpat_activatePattern(pattern_brd2);
 }
 
 /* UNLOCKED */
