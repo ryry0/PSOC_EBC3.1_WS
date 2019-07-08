@@ -153,7 +153,7 @@ void writeThread() {
       break;
 
     case '2':
-      sendStateMsg(GED_RIGHT_STEP);
+      sendStateMsg(GED_RIGHT_SWING);
       break;
 
     case '3':
@@ -161,7 +161,19 @@ void writeThread() {
       break;
 
     case '4':
-      sendStateMsg(GED_LEFT_STEP);
+      sendStateMsg(GED_LEFT_SWING);
+      break;
+
+    case '5':
+      sendStateMsg(GED_PASSIVE);
+      break;
+
+    case '6':
+      sendStateMsg(GED_SIT_TO_STAND);
+      break;
+
+    case '7':
+      sendStateMsg(GED_STAND_TO_SIT);
       break;
 
     case 's':
