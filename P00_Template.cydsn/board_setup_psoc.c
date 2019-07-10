@@ -180,13 +180,15 @@ void setupBoard() {
 void setupStim(volatile exo_t *exo) {
   stim_pattern_t *const pattern_brd1  = (stim_pattern_t *) &exo->pattern_brd1;
   stim_pattern_t *const pattern_brd2  = (stim_pattern_t *) &exo->pattern_brd2;
+  stim_pattern_t *const pattern_brd3  = (stim_pattern_t *) &exo->pattern_brd3;
   cwru_stim_struct_t *const cwru_stim_brd1  = (cwru_stim_struct_t *) &exo->cwru_stim_brd1;
   cwru_stim_struct_t *const cwru_stim_brd2  = (cwru_stim_struct_t *) &exo->cwru_stim_brd2;
+  cwru_stim_struct_t *const cwru_stim_brd3  = (cwru_stim_struct_t *) &exo->cwru_stim_brd3;
 
   stimpat_initPattern(pattern_brd1,
       &gait_stand_B1_PP,
       &gait_stand_B1_PW,
-      2.0,
+      gait_stand_duration,
       1000);
   const uint8_t STIM_BOARD_IPI = 30;
 
@@ -196,10 +198,19 @@ void setupStim(volatile exo_t *exo) {
   stimpat_initPattern(pattern_brd2,
       &gait_stand_B2_PP,
       &gait_stand_B2_PW,
-      2.0,
+      gait_stand_duration,
       1000);
 
   stimint_initBoardUART(cwru_stim_brd2, STIM_UART_PORT_1); //SCB J116
   stimint_initPercBoard(cwru_stim_brd2, STIM_BOARD_IPI);
+
+  stimpat_initPattern(pattern_brd3,
+      &gait_stand_B2_PP,
+      &gait_stand_B2_PW,
+      gait_stand_duration,
+      1000);
+
+  stimint_initBoardUART(cwru_stim_brd3, STIM_UART_PORT_2); //SCB J116
+  stimint_initPercBoard(cwru_stim_brd3, STIM_BOARD_IPI);
 }
 

@@ -50,8 +50,10 @@ typedef enum exo_swing_mode_e {
 typedef struct exo_s {
   stim_pattern_t pattern_brd1;
   stim_pattern_t pattern_brd2;
+  stim_pattern_t pattern_brd3;
   cwru_stim_struct_t cwru_stim_brd1;
   cwru_stim_struct_t cwru_stim_brd2;
+  cwru_stim_struct_t cwru_stim_brd3;
 
   float max_knee_angle;
   float max_hip_angle;
