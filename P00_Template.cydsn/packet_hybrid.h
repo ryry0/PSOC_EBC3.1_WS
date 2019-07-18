@@ -28,6 +28,7 @@ typedef enum pkt_type_e {
   PKT_MODULE_SET_PARAMS,
   PKT_MODULE_GET_PARAMS,
   PKT_MODULE_GET_PARAMS_REPLY,
+  PKT_MODULE_SET_SHARED_PARAMS,
   PKT_DATA_START  = 's',
   PKT_DATA_STOP   = 'n',
   PKT_EN_MOTOR    = 'e',
@@ -56,7 +57,7 @@ typedef enum pkt_type_e {
   PARAM(TF)                         \
   PARAM(TPS_PERC)                   \
   PARAM(HEAD_MODULE_BC_THRESH)           \
-  PARAM(HEAD_MODULE_BC_CURRENT)          \
+  PARAM(HEAD_MODULE_BC_TORQUE)          \
   PARAM(R_WEIGHT_ACC_FSR_THRESH)      \
   PARAM(R_LOW_FSR_THRESH)             \
   PARAM(R_HIGH_FSR_THRESH)            \
@@ -67,7 +68,7 @@ typedef enum pkt_type_e {
   PARAM(L_HIP_FLEXION_THRESH)    \
   PARAM(R_KNEE_EXTENSION_THRESH)    \
   PARAM(R_HIP_FLEXION_THRESH)    \
-  PARAM(POSITION_CONTROL)           \
+  PARAM(MODE)           \
   PARAM(AUTO_WALK)                  \
   PARAM(MOTOR_FORCE_OFF)          \
   PARAM(PKT_PARAM_MAX)              \
@@ -85,10 +86,18 @@ typedef enum pkt_type_e {
   PARAM(PKT_MODULE_SPEED_PID_AW_UB)     \
   PARAM(PKT_MODULE_SPEED_PID_AW_LB)     \
   PARAM(PKT_MODULE_FC_ALPHA)            \
-  PARAM(PKT_MODULE_BC_CURRENT)          \
+  PARAM(PKT_MODULE_BC_TORQUE)          \
   PARAM(PKT_MODULE_BC_THRESH)           \
   PARAM(PKT_MODULE_MOTOR_FORCE_OFF)     \
   PARAM(PKT_MODULE_PARAM_MAX)       \
+
+#define FOREACH_SHARED_MODULE_PARAM(PARAM) \
+  PARAM(PKT_SHARED_BC_TORQUE) \
+  PARAM(PKT_SHARED_BC_THRESH) \
+  PARAM(PKT_SHARED_ASSIST_TORQUE) \
+  PARAM(PKT_SHARED_ASSIST_SWITCH_ANGLE) \
+  PARAM(PKT_SHARED_MODE) \
+  PARAM(PKT_SHARED_MAX) \
 
 #define GENERATE_ENUM(ENUM) ENUM,
 #define GENERATE_STRING(STRING) #STRING,
@@ -100,6 +109,10 @@ typedef enum pkt_param_e {
 typedef enum pkt_module_param_e {
   FOREACH_MODULE_PARAM(GENERATE_ENUM)
 } pkt_module_param_t;
+
+typedef enum pkt_shared_module_param_e {
+  FOREACH_SHARED_MODULE_PARAM(GENERATE_ENUM)
+} pkt_shared_module_param_t;
 
 typedef enum pkt_pid_id_e {
   PKT_PID_L_KNEE_POSITION,
@@ -160,6 +173,7 @@ typedef struct {
 /*----------------------------------------------------------------------------*/
 typedef struct {
   float float_params[PKT_MODULE_PARAM_MAX];
+  uint8_t mode;
   uint8_t module_id;
 } pkt_module_params_t;
 
@@ -240,4 +254,11 @@ typedef struct {
 } pkt_query_module_t;
 
 typedef pkt_query_module_t pkt_module_get_params_t;
+
+/*----------------------------------------------------------------------------*/
+typedef struct {
+  float float_params[PKT_SHARED_MAX];
+} pkt_shared_module_params_t;
+
+typedef pkt_shared_module_params_t pkt_set_shared_module_params_t;
 #endif
