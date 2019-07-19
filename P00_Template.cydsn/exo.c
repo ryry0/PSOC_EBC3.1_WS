@@ -314,7 +314,7 @@ static void setParameters(pkt_generic_t *packet,
   exo->min_hip_angle = parameter_packet->float_params[MIN_HIP_ANGLE];
   exo->max_hip_angle = parameter_packet->float_params[MAX_HIP_ANGLE];
   exo->max_knee_angle = parameter_packet->float_params[MAX_KNEE_ANGLE];
-  exo->position_control = parameter_packet->float_params[POSITION_CONTROL];
+  exo->position_control = parameter_packet->float_params[MODE];
 
   /* AUTO WALKING */
   exo->auto_walk = parameter_packet->float_params[AUTO_WALK];
@@ -352,7 +352,7 @@ static void getParameters(volatile exo_t *exo) {
   parameter_packet->float_params[MIN_HIP_ANGLE] = exo->min_hip_angle;
   parameter_packet->float_params[MAX_HIP_ANGLE] = exo->max_hip_angle;
   parameter_packet->float_params[MAX_KNEE_ANGLE] = exo->max_knee_angle;
-  parameter_packet->float_params[POSITION_CONTROL] = exo->position_control;
+  parameter_packet->float_params[MODE] = exo->position_control;
   parameter_packet->float_params[AUTO_WALK] = exo->auto_walk;
 
   parameter_packet->float_params[MOTOR_FORCE_OFF] = exo->motor_force_off;

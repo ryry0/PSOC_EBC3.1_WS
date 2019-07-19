@@ -3,6 +3,7 @@
 #include <ged_fsm.h>
 #include <stim_interface.h>
 #include <board_can.h>
+#include <stim_configurable.h>
 
 /*---------------------------------------------------------------------------*/
 /* Setup Functions */
@@ -181,14 +182,16 @@ void setupStim(volatile exo_t *exo) {
   stim_pattern_t *const pattern_brd1  = (stim_pattern_t *) &exo->pattern_brd1;
   stim_pattern_t *const pattern_brd2  = (stim_pattern_t *) &exo->pattern_brd2;
   stim_pattern_t *const pattern_brd3  = (stim_pattern_t *) &exo->pattern_brd3;
+  stim_pattern_t *const configurable_pattern  = (stim_pattern_t *) &exo->configurable_pattern;
+
   cwru_stim_struct_t *const cwru_stim_brd1  = (cwru_stim_struct_t *) &exo->cwru_stim_brd1;
   cwru_stim_struct_t *const cwru_stim_brd2  = (cwru_stim_struct_t *) &exo->cwru_stim_brd2;
   cwru_stim_struct_t *const cwru_stim_brd3  = (cwru_stim_struct_t *) &exo->cwru_stim_brd3;
 
   stimpat_initPattern(pattern_brd1,
-      &gait_stand_B1_PP,
-      &gait_stand_B1_PW,
-      gait_stand_duration,
+      &configurable_pattern1_PP,
+      &configurable_pattern1_PW,
+      configurable_pattern1_duration,
       1000);
   const uint8_t STIM_BOARD_IPI = 30;
 

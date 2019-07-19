@@ -55,6 +55,8 @@ typedef struct exo_s {
   cwru_stim_struct_t cwru_stim_brd2;
   cwru_stim_struct_t cwru_stim_brd3;
 
+  stim_pattern_t configurable_pattern;
+
   float max_knee_angle;
   float max_hip_angle;
   float min_hip_angle;
