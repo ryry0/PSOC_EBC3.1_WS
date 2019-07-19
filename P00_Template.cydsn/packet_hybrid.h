@@ -29,7 +29,7 @@ typedef enum pkt_type_e {
   PKT_MODULE_GET_PARAMS,
   PKT_MODULE_GET_PARAMS_REPLY,
   PKT_MODULE_SET_SHARED_PARAMS,
-  PKT_MODULE_SET_STIM_PATTERN,
+  PKT_MODULE_SET_STIM_PATTERN_CHANNEL,
   PKT_DATA_START  = 's',
   PKT_DATA_STOP   = 'n',
   PKT_EN_MOTOR    = 'e',
@@ -262,4 +262,15 @@ typedef struct {
 } pkt_shared_module_params_t;
 
 typedef pkt_shared_module_params_t pkt_set_shared_module_params_t;
+
+/*----------------------------------------------------------------------------*/
+typedef struct {
+  uint16_t pulse_percentages[8];
+  uint8_t pulse_widths[8];
+  uint8_t board_number;
+  uint8_t stim_pattern_number;
+  uint8_t channel_number;
+} pkt_set_stim_pattern_channel;
+
+typedef pkt_set_stim_pattern_channel pkt_get_stim_pattern_channel;
 #endif

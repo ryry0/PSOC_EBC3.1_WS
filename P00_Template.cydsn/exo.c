@@ -7,6 +7,7 @@
 #include <board_setup.h>
 #include <stim_interface.h>
 #include <board_can.h>
+#include <stim_configurable.h>
 
 /** Global variables */
 volatile exo_t hybrid_exoskeleton = {
@@ -297,6 +298,21 @@ void handlePacketMsg(
       }
       break;
       */
+
+    case PKT_MODULE_SET_STIM_PATTERN_CHANNEL:
+      {
+      pkt_set_stim_pattern_channel *stim_packet_payload =
+        pkt_interpPtr(pkt_set_stim_pattern_channel, packet);
+
+      const uint8_t channel_number = stim_packet_payload->channel_number;
+
+      memcpy(&configurable_pattern1_PW[channel_number][0],
+          stim_packet_payload->pulse_widths, sizeof(uint8_t)*STIM_NUM_POINTS);
+
+      memcpy(&configurable_pattern1_PP[channel_number][0],
+          stim_packet_payload->pulse_percentages, sizeof(uint16_t)*STIM_NUM_POINTS);
+      }
+      break;
 
     default:
       break;
