@@ -41,6 +41,32 @@
 #define EXO_KNEE_EXTENSION_THRESH 15
 #define EXO_HIP_FLEXION_THRESH 0
 
+
+#define STIM_CONFIG_2_PERC //configure 2 perc boards
+
+//#define STIM_CONFIG_2_IMPLANT //configure 2 implant boards.
+
+//#define STIM_CONFIG_3RD_SURFACE
+
+#if defined(STIM_CONFIG_2_PERC)
+
+#define STIM_SETUP_FUNC stimint_initPercBoard
+#define STIM_PATTERN_B1_PP
+#define STIM_PATTERN_B1_PW
+
+#define STIM_PATTERN_B2_PP
+#define STIM_PATTERN_B2_PW
+
+#elif defined(STIM_CONFIG_2_IMPLANT)
+
+#define STIM_SETUP_FUNC stimint_initIST16Board
+#define STIM_PATTERN_B1_PP
+#define STIM_PATTERN_B1_PW
+
+#define STIM_PATTERN_B2_PP
+#define STIM_PATTERN_B2_PW
+#endif
+
 typedef enum exo_swing_mode_e {
   EXO_MODE_FLOAT,
   EXO_MODE_POSITION_CONTROL,

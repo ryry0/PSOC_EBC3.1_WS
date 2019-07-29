@@ -196,7 +196,7 @@ void setupStim(volatile exo_t *exo) {
   const uint8_t STIM_BOARD_IPI = 30;
 
   stimint_initBoardUART(cwru_stim_brd1, STIM_UART_PORT_0); //SCB J115
-  stimint_initPercBoard(cwru_stim_brd1, STIM_BOARD_IPI);
+  STIM_SETUP_FUNC(cwru_stim_brd1, STIM_BOARD_IPI);
 
   stimpat_initPattern(pattern_brd2,
       &gait_stand_B2_PP,
@@ -205,8 +205,9 @@ void setupStim(volatile exo_t *exo) {
       1000);
 
   stimint_initBoardUART(cwru_stim_brd2, STIM_UART_PORT_1); //SCB J116
-  stimint_initPercBoard(cwru_stim_brd2, STIM_BOARD_IPI);
+  STIM_SETUP_FUNC(cwru_stim_brd2, STIM_BOARD_IPI);
 
+#if defined(STIM_CONFIG_3RD_SURFACE)
   stimpat_initPattern(pattern_brd3,
       &gait_stand_B2_PP,
       &gait_stand_B2_PW,
@@ -214,6 +215,7 @@ void setupStim(volatile exo_t *exo) {
       1000);
 
   stimint_initBoardUART(cwru_stim_brd3, STIM_UART_PORT_2); //SCB J116
-  stimint_initPercBoard(cwru_stim_brd3, STIM_BOARD_IPI);
+  stimint_initPercBoard(cwru_stim_brd3, STIM_BOARD_IPI); //TODO: setup as surface board
+#endif
 }
 

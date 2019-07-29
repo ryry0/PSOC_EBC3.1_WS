@@ -33,6 +33,15 @@ typedef struct {
  */
 void stimint_initPercBoard(cwru_stim_struct_t *stim_board, uint8_t ipi);
 
+
+/**
+ * \brief Initialize an implant board
+ *
+ * \param stim_board The stim board.
+ * \param ipi Interpulse interval. - TODO should remove.
+ */
+void stimint_initIST16Board(cwru_stim_struct_t *stim_board, uint8_t ipi);
+
 //stim_cmd_crt_sched(&cwru_stim_brd1, UECU_SYNC_MSG, ipi); // Sync signal = 0xAA, duration 29msec.
 
 
