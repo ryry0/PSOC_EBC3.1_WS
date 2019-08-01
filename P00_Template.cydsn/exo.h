@@ -58,6 +58,8 @@
 #define STIM_PATTERN_B2_PP
 #define STIM_PATTERN_B2_PW
 
+#define STIM_AMPLITUDE 38
+
 #elif defined(STIM_CONFIG_2_IMPLANT)
 
 #define STIM_SETUP_FUNC stimint_initIST16Board
@@ -66,6 +68,9 @@
 
 #define STIM_PATTERN_B2_PP
 #define STIM_PATTERN_B2_PW
+
+#define STIM_AMPLITUDE 0x08
+
 #endif
 
 typedef enum exo_swing_mode_e {

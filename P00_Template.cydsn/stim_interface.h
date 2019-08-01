@@ -42,6 +42,14 @@ void stimint_initPercBoard(cwru_stim_struct_t *stim_board, uint8_t ipi);
  */
 void stimint_initIST16Board(cwru_stim_struct_t *stim_board, uint8_t ipi);
 
+
+/**
+ * \brief Initialize surface board
+ *
+ * \param stim_board The stim board.
+ * \param ipi Interpulse interval. - TODO should remove.
+ */
+void stimint_initSurfBoard(cwru_stim_struct_t *stim_board, uint8_t ipi);
 //stim_cmd_crt_sched(&cwru_stim_brd1, UECU_SYNC_MSG, ipi); // Sync signal = 0xAA, duration 29msec.
 
 
@@ -90,9 +98,10 @@ void stim_crtPercSchedEvents(cwru_stim_struct_t *stim_board, uint8_t ipi);
  *
  * \param stim_board The stim board.
  * \param stim_pattern The stim pattern struct which stores pattern metadata.
+ * \param amplitude The amplitude of all channels
  */
-void stimpat_applyPatternPercLoop(cwru_stim_struct_t
-    *stim_board, stim_pattern_t *stim_pattern);
+void stimpat_applyPatternLoop(cwru_stim_struct_t
+    *stim_board, stim_pattern_t *stim_pattern, uint8_t amplitude);
 
 
 /**

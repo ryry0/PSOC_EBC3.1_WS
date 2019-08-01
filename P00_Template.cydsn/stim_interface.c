@@ -222,7 +222,7 @@ void stimpat_setCyclePercent(stim_pattern_t *stim_pattern, uint16_t
   stim_pattern->cycle_percent = cycle_percent;
 }
 
-void stimpat_applyPatternPWPercOneChannel(cwru_stim_struct_t *stim_board,
+void stimpat_applyPatternPWOneChannel(cwru_stim_struct_t *stim_board,
                         stim_pattern_t *stim_pattern,
                         uint8_t channel,
                         uint8_t event,
@@ -248,22 +248,22 @@ void stimpat_applyPatternPWPercOneChannel(cwru_stim_struct_t *stim_board,
 /* assumes event ID's are consecutive numbered you can't use this if you
  * delete then add events
  */
-void stimpat_applyPatternPercAllChannels(cwru_stim_struct_t *stim_board,
-                        stim_pattern_t *stim_pattern) { //0-10000
+void stimpat_applyPatternAllChannels(cwru_stim_struct_t *stim_board,
+                        stim_pattern_t *stim_pattern, uint8_t amplitude) { //0-10000
 
   for (size_t i = 0; i < STIM_CHANNEL_MAX; ++i) {
-    stimpat_applyPatternPWPercOneChannel(stim_board, stim_pattern, i, i+1, 38);
+    stimpat_applyPatternPWOneChannel(stim_board, stim_pattern, i, i+1, amplitude);
   }
 }
 
-void stimpat_applyPatternPercLoop(cwru_stim_struct_t
-    *stim_board, stim_pattern_t *stim_pattern) {
+void stimpat_applyPatternLoop(cwru_stim_struct_t
+    *stim_board, stim_pattern_t *stim_pattern, uint8_t amplitude) {
 
   if (stimpat_isActive(stim_pattern)) {
     stimpat_calcPatternPercent(stim_pattern);
 
-    stimpat_applyPatternPercAllChannels(stim_board,
-        stim_pattern);
+    stimpat_applyPatternAllChannels(stim_board,
+        stim_pattern, amplitude);
 
     /*
     sprintf(new_val, "%d\n", active_stim_pattern.cycle_percent);

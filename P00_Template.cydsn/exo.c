@@ -390,14 +390,21 @@ void stimThread(coop_args_t *args) {
   volatile exo_t *exo = args->exo;
   stim_pattern_t *const pattern_brd1  = &exo->pattern_brd1;
   stim_pattern_t *const pattern_brd2  = &exo->pattern_brd2;
+  stim_pattern_t *const pattern_brd3  = &exo->pattern_brd3;
   cwru_stim_struct_t *const cwru_stim_brd1  = &exo->cwru_stim_brd1;
   cwru_stim_struct_t *const cwru_stim_brd2  = &exo->cwru_stim_brd2;
+  cwru_stim_struct_t *const cwru_stim_brd3  = &exo->cwru_stim_brd3;
 
-  stimpat_applyPatternPercLoop(cwru_stim_brd1, pattern_brd1);
+  stimpat_applyPatternLoop(cwru_stim_brd1, pattern_brd1, STIM_AMPLITUDE);
   stimpat_incrementCounter(pattern_brd1, 20);
 
-  stimpat_applyPatternPercLoop(cwru_stim_brd2, pattern_brd2);
+  stimpat_applyPatternLoop(cwru_stim_brd2, pattern_brd2, STIM_AMPLITUDE);
   stimpat_incrementCounter(pattern_brd2, 20);
+
+#if defined(STIM_CONFIG_3RD_SURFACE)
+  stimpat_applyPatternLoop(cwru_stim_brd3, pattern_brd3, STIM_AMPLITUDE);
+  stimpat_incrementCounter(pattern_brd2, 20);
+#endif
 }
 
 void CANInputThread(coop_args_t *args) {
