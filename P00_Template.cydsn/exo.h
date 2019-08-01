@@ -41,6 +41,7 @@
 #define EXO_KNEE_EXTENSION_THRESH 15
 #define EXO_HIP_FLEXION_THRESH 0
 
+#define EXO_ENABLE_USB
 
 #define STIM_CONFIG_2_PERC //configure 2 perc boards
 
@@ -133,7 +134,9 @@ typedef struct exo_s {
 
 typedef enum {
   //EXO_USB_OUTPUT_TASK,
-  //EXO_USB_INPUT_TASK,
+#ifdef EXO_ENABLE_USB
+  EXO_USB_INPUT_TASK,
+#endif
   EXO_CAN_INPUT_TASK,
   //EXO_QUERY_TASK,
   EXO_STIM_TASK,

@@ -30,13 +30,15 @@ void setupThreads(struct coop_task_list_s *task_list, struct coop_task_s
     .period = 10, //10 @ 10 ms/100Hz
     .countdown = 0
   };
+  */
 
+#ifdef EXO_ENABLE_USB
   task_arr[EXO_USB_INPUT_TASK]= (struct coop_task_s) {
     .task_func = USBInputThread,
     .period = 0, //always scheduled
     .countdown = 0
   };
-  */
+#endif
 
   task_arr[EXO_STIM_TASK]= (struct coop_task_s) {
     .task_func = stimThread,
@@ -165,11 +167,13 @@ void setupBoard() {
 
   /* Place your initialization/startup code here (e.g. MyInst_Start()) */
   /* Initialize the serial communications interface */
-  /*
+
+#ifdef EXO_ENABLE_USB
   USBUART_1_Start(0, USBUART_1_3V_OPERATION);//!!NOTE!! Make sure this matches your board voltage!
   while(!USBUART_1_bGetConfiguration());
   USBUART_1_CDC_Init();
-  */
+#endif
+
   AMuxSeq_1_Init();
   ADC_SAR_1_Start(); //initialize the adc
   Counter_1_Start();
