@@ -117,19 +117,20 @@ void stimint_initIST16Board(cwru_stim_struct_t *stim_board, uint8_t ipi) {
   CyDelay(BD_DELAY);
 
 
-  stim_uart_print_array(stim_board, ICM_IST_SET_0_MSG,
-      sizeof(ICM_IST_SET_0_MSG)/sizeof(uint8_t)); CyDelay(BD_DELAY);
+  stim_uart_print_array(stim_board, ICM_IST_SET_1_MSG,
+      sizeof(ICM_IST_SET_1_MSG)/sizeof(uint8_t)); CyDelay(BD_DELAY);
 
   CyDelay(BD_DELAY);
 
-  stim_uart_print_array(stim_board, ICM_RFPWR_EVNT_0 ,
-      sizeof(ICM_RFPWR_EVNT_0)/sizeof(uint8_t));
+  stim_crtISTSchedEvents(stim_board, ipi);
 
-  CyDelay(BD_DELAY);
-
-
-  stim_crtISTSchedEvents(stim_board, ipi); //TODO NEED TO CHANGE THIS
   stim_cmd_sync_msg(stim_board, UECU_SYNC_MSG);
+  CyDelay(BD_DELAY);
+
+  stim_uart_print_array(stim_board, ICM_RFPWR_EVNT_1 ,
+      sizeof(ICM_RFPWR_EVNT_1)/sizeof(uint8_t));
+
+  CyDelay(BD_DELAY);
 }
 
 void stimpat_crtStimEvent_wrap(cwru_stim_struct_t *stim_board,

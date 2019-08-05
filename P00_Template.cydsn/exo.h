@@ -43,9 +43,9 @@
 
 #define EXO_ENABLE_USB
 
-#define STIM_CONFIG_2_PERC //configure 2 perc boards
+//#define STIM_CONFIG_2_PERC //configure 2 perc boards
 
-//#define STIM_CONFIG_2_IMPLANT //configure 2 implant boards.
+#define STIM_CONFIG_2_IMPLANT //configure 2 implant boards.
 
 //#define STIM_CONFIG_3RD_SURFACE
 
