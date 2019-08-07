@@ -31,6 +31,7 @@
 
 //defines for IST 16 board
 #define MSG_DES_ADDR_ICM 0x0A
+#define CHANNEL_MAX_IST 16
 
 // Magic number setup for implant
 // 0A 80 20 05 04 00 00 00 00 4C (IRS 8, Port 0)
@@ -117,9 +118,8 @@ void stimint_initIST16Board(cwru_stim_struct_t *stim_board, uint8_t ipi) {
   CyDelay(BD_DELAY);
 
 
-  stim_uart_print_array(stim_board, ICM_IST_SET_1_MSG,
-      sizeof(ICM_IST_SET_1_MSG)/sizeof(uint8_t)); CyDelay(BD_DELAY);
-
+  stim_uart_print_array(stim_board, ICM_IST_SET_0_MSG,
+      sizeof(ICM_IST_SET_0_MSG)/sizeof(uint8_t)); CyDelay(BD_DELAY);
   CyDelay(BD_DELAY);
 
   stim_crtISTSchedEvents(stim_board, ipi);
@@ -127,9 +127,8 @@ void stimint_initIST16Board(cwru_stim_struct_t *stim_board, uint8_t ipi) {
   stim_cmd_sync_msg(stim_board, UECU_SYNC_MSG);
   CyDelay(BD_DELAY);
 
-  stim_uart_print_array(stim_board, ICM_RFPWR_EVNT_1 ,
-      sizeof(ICM_RFPWR_EVNT_1)/sizeof(uint8_t));
-
+  stim_uart_print_array(stim_board, ICM_RFPWR_EVNT_0 ,
+      sizeof(ICM_RFPWR_EVNT_0)/sizeof(uint8_t));
   CyDelay(BD_DELAY);
 }
 
@@ -276,7 +275,7 @@ void stimpat_applyPatternLoop(cwru_stim_struct_t
 }
 
 void stim_crtISTSchedEvents(cwru_stim_struct_t *stim_board, uint8_t ipi) {
-  const int NUM_EVENTS = 12;
+  const int NUM_EVENTS = CHANNEL_MAX_IST;
 
   stim_cmd_crt_sched(stim_board, UECU_SYNC_MSG, ipi); // Sync signal = 0xAA, duration 29msec.
   CyDelay(BD_DELAY); //this delay needs to be here
@@ -284,12 +283,12 @@ void stim_crtISTSchedEvents(cwru_stim_struct_t *stim_board, uint8_t ipi) {
   for (size_t i = 0; i < NUM_EVENTS; ++i) {
     stim_cmd_crt_evnt(stim_board,
         1,    // sched_id = 1
-        0,    // delay = 0msec
+        i*2,    // delay = 0msec
         0,    // priority = 0
         3,    // event_type = 3, for for Stimulus Event
         i,    // port_chn_id = 0;
         0,    // pulse_width set to 0,
-        0x08, // amplitude set to 0,
+        0x00, // amplitude set to 0,
         0);   // zone not implemented;
   }
 }
