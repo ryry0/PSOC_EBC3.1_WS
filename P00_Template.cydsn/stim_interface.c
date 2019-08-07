@@ -117,9 +117,15 @@ void stimint_initIST16Board(cwru_stim_struct_t *stim_board, uint8_t ipi) {
   stim_init_pattern(stim_board, UECU_SYNC_MSG, ipi);
   CyDelay(BD_DELAY);
 
+  //{ this is equivalent of stim_init_brd_perc
+  stim_board->MSG_DES_ADDR = MSG_DES_ADDR_ICM;
+  stim_board->STIM_CHANNEL_USED = CHANNEL_MAX_IST;
+
+  stim_cmd_halt_rset(stim_board, UECU_RESET);
+  //}
 
   stim_uart_print_array(stim_board, ICM_IST_SET_0_MSG,
-      sizeof(ICM_IST_SET_0_MSG)/sizeof(uint8_t)); CyDelay(BD_DELAY);
+      sizeof(ICM_IST_SET_0_MSG)/sizeof(uint8_t));
   CyDelay(BD_DELAY);
 
   stim_crtISTSchedEvents(stim_board, ipi);
@@ -275,7 +281,7 @@ void stimpat_applyPatternLoop(cwru_stim_struct_t
 }
 
 void stim_crtISTSchedEvents(cwru_stim_struct_t *stim_board, uint8_t ipi) {
-  const int NUM_EVENTS = CHANNEL_MAX_IST;
+  const int NUM_EVENTS = stim_board->STIM_CHANNEL_USED;
 
   stim_cmd_crt_sched(stim_board, UECU_SYNC_MSG, ipi); // Sync signal = 0xAA, duration 29msec.
   CyDelay(BD_DELAY); //this delay needs to be here
@@ -719,3 +725,149 @@ static char getPCdata() {
   return 0;
 }
 
+void stimpat_testImplant() {
+  cwru_stim_struct_t cwru_stim_brd1;
+  //cwru_stim_struct_t cwru_stim_brd2;
+
+  uint8_t sched_id = 1;
+  uint8_t pulse_width = 0xF0;
+  uint8_t amplitude = 0x26;
+  uint8_t ipi = FIXED_SCHED_ID1_IPI;
+
+
+  //setupBoard();
+
+  CyDelay(5000);
+
+  bd_putStringReady("end delay\n");
+
+  cwru_stim_brd1.brd_type = STIM_BRD_ICM_IST16;
+  cwru_stim_brd1.port_id = STIM_UART_PORT_0;
+  cwru_stim_brd1.setting =
+    STIM_SETTING_DEFAULT | STIM_SETTING_SINGLE_SCHEDULER;
+
+  hal_uart_start(cwru_stim_brd1.port_id);
+  bd_putStringReady("Uart started\n");
+  CyDelay(BD_DELAY);
+  checkdata();
+
+  //need to make sure init-pattern and crt_sched ipi match
+  stim_init_pattern(&cwru_stim_brd1, UECU_SYNC_MSG, ipi);
+  bd_putStringReady("Init Pattern\n");
+  CyDelay(BD_DELAY);
+  checkdata();
+
+  stim_init_brd_perc(&cwru_stim_brd1);
+  bd_putStringReady("init brd\n");
+  CyDelay(BD_DELAY);
+  checkdata();
+
+  stim_cmd_crt_sched(&cwru_stim_brd1, UECU_SYNC_MSG, ipi); // Sync signal = 0xAA, duration 29msec.
+  bd_putStringReady("crt_sched\n");
+  CyDelay(BD_DELAY);
+  checkdata();
+
+  stim_cmd_crt_evnt(&cwru_stim_brd1,
+      sched_id,  // sched_id = 1
+      10,  // delay = 0msec
+      0,  // priority = 0
+      3,  // event_type = 3, for for Stimulus Event
+      0,  // port_chn_id = 0;
+      pulse_width, // pulse_width set to 0,
+      amplitude, // amplitude set to 0,
+      0); // zone not implemented;
+
+  bd_putStringReady("crt_event\n");
+  CyDelay(BD_DELAY);
+  checkdata();
+
+  bd_putStringReady("Finish Bd setup\n");
+
+  stim_cmd_sync_msg(&cwru_stim_brd1, UECU_SYNC_MSG);
+  bd_putStringReady("sync\n");
+  CyDelay(BD_DELAY);
+  checkdata();
+
+  bd_putStringReady("Start\n");
+
+  for(uint8_t i = 0;; i++) {
+    uint8_t data = 0;
+    char array[30] = {0};
+    char pc_input = 0;
+
+    // Check for input data from PC
+    data = UART_STIM_1_GetChar();
+    sprintf(array, "%x", data);
+    //bd_putLargeDataReady(&data, 1);
+
+    //bd_putStringReady(array);
+
+    pc_input = getPCdata();
+
+    if (pc_input != 0) {
+      char new_val[30] = {0};
+
+      switch(pc_input) {
+        case '+':
+          pulse_width += 5;
+          stim_cmd_set_evnt(&cwru_stim_brd1,
+              1, //uint8_t event_id,
+              pulse_width,
+              amplitude, 0);
+          break;
+
+        case '-':
+          pulse_width -= 5;
+          stim_cmd_set_evnt(&cwru_stim_brd1,
+              1, //uint8_t event_id,
+              pulse_width,
+              amplitude, 0);
+          break;
+
+        case ']':
+          amplitude += 1;
+          stim_cmd_set_evnt(&cwru_stim_brd1,
+              1, //uint8_t event_id,
+              pulse_width,
+              amplitude, 0);
+          break;
+
+        case '[':
+          amplitude -= 1;
+          stim_cmd_set_evnt(&cwru_stim_brd1,
+              1, //uint8_t event_id,
+              pulse_width,
+              amplitude, 0);
+          break;
+
+        case ',':
+          ipi -= 5;
+          stim_cmd_set_sched(&cwru_stim_brd1, sched_id, UECU_SYNC_MSG, ipi);
+          break;
+
+        case '.':
+          ipi += 5;
+          stim_cmd_set_sched(&cwru_stim_brd1, sched_id, UECU_SYNC_MSG, ipi);
+          //this command changes
+          //stim_cmd_chg_evnt_sched(&cwru_stim_brd1,
+          //1, //uint8_t event_id,
+          //1, //uint8_t sched_id,
+          //, //uint16_t delay,
+          //0)
+          //
+          break;
+      }
+
+      bd_putStringReady("Change\n");
+
+      sprintf(new_val, "%x", pulse_width);
+      bd_putStringReady(new_val);
+    }
+
+
+    //psoc_putStringReady("D: ");
+    //bd_putLargeDataReady(&i,
+    //1);
+    //CyDelay(100);
+  }
+}

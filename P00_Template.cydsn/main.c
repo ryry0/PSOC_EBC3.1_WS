@@ -81,7 +81,7 @@ int main() {
   coop_args_t coop_args;
 
   setupExo(tasks, &coop_args, &hybrid_exoskeleton);
-  //stimpat_test_new();
+  //stimpat_testImplant();
 
   for(;;) {
     coop_executeTasks(

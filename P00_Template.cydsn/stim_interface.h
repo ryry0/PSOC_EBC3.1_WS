@@ -174,6 +174,7 @@ void stimpat_deactivatePattern(stim_pattern_t *stim_pattern);
 void stimpat_test();
 void stimpat_test_lib();
 void stimpat_test_new();
+void stimpat_testImplant();
 
 
 
