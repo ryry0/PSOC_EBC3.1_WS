@@ -32,6 +32,9 @@
 //defines for IST 16 board
 #define MSG_DES_ADDR_ICM 0x0A
 #define CHANNEL_MAX_IST 16
+#define REFRESH_MSG_LEN 3
+#define EVENT_COMMAND_MSG 0x1C
+#define REFRESH_EVENT 21
 
 // Magic number setup for implant
 // 0A 80 20 05 04 00 00 00 00 4C (IRS 8, Port 0)
@@ -63,6 +66,31 @@ static const uint8_t ICM_RFPWR_EVNT_1[] = {MSG_DES_ADDR_ICM, MSG_SRC_ADDR,
 static void checkdata();
 
 static char getPCdata();
+void stim_crtISTSchedEvents(cwru_stim_struct_t *stim_board, uint8_t ipi);
+
+void stim_sendRefreshEvent(cwru_stim_struct_t *stim_board);
+
+void stim_sendRefreshEvent(cwru_stim_struct_t *stim_board) {
+  // calculate message size
+  size_t size = REFRESH_MSG_LEN + UECU_MSG_EXTRAL_LEN;
+  // build message content
+  uint8_t msg[REFRESH_MSG_LEN + UECU_MSG_EXTRAL_LEN] =
+  { stim_board->MSG_DES_ADDR,
+    MSG_SRC_ADDR,
+    EVENT_COMMAND_MSG,
+    REFRESH_MSG_LEN,
+    REFRESH_EVENT,
+    0x00, //priority
+    0x00, //port/channel
+    0x00
+  };
+
+  // Insert checksum byte
+  msg[size-1] = stim_checksum(msg,size);
+
+  // Send message
+  return stim_uart_print_array (stim_board, msg, sizeof(msg)/sizeof(uint8_t));
+}
 
 /*
  * to start associated serial: hal_uart_start(cwru_stim_brd1.port_id);
@@ -377,7 +405,7 @@ void stimpat_test_new() {
   //setupBoard();
   const uint8_t STIM_BOARD_IPI = 30;
 
-  stimint_initPercBoardUART(&cwru_stim_brd1, STIM_UART_PORT_1);
+  stimint_initBoardUART(&cwru_stim_brd1, STIM_UART_PORT_1);
   stimint_initPercBoard(&cwru_stim_brd1, STIM_BOARD_IPI);
 
   CyDelay(5000);
@@ -414,7 +442,7 @@ void stimpat_test_new() {
           */
     } //end if
 
-    stimpat_applyPatternPercLoop(&cwru_stim_brd1, &active_stim_pattern);
+    stimpat_applyPatternLoop(&cwru_stim_brd1, &active_stim_pattern, 0x26);
     stimpat_incrementCounter(&active_stim_pattern, 20);
     CyDelay(THREAD_DELAY);
 
@@ -730,8 +758,8 @@ void stimpat_testImplant() {
   //cwru_stim_struct_t cwru_stim_brd2;
 
   uint8_t sched_id = 1;
-  uint8_t pulse_width = 0xF0;
-  uint8_t amplitude = 0x26;
+  uint8_t pulse_width = 0x64;
+  uint8_t amplitude = 0x08;
   uint8_t ipi = FIXED_SCHED_ID1_IPI;
 
 
@@ -742,7 +770,7 @@ void stimpat_testImplant() {
   bd_putStringReady("end delay\n");
 
   cwru_stim_brd1.brd_type = STIM_BRD_ICM_IST16;
-  cwru_stim_brd1.port_id = STIM_UART_PORT_0;
+  cwru_stim_brd1.port_id = STIM_UART_PORT_1;
   cwru_stim_brd1.setting =
     STIM_SETTING_DEFAULT | STIM_SETTING_SINGLE_SCHEDULER;
 
@@ -757,22 +785,55 @@ void stimpat_testImplant() {
   CyDelay(BD_DELAY);
   checkdata();
 
-  stim_init_brd_perc(&cwru_stim_brd1);
+  //initialize the board.
+  cwru_stim_brd1.MSG_DES_ADDR = MSG_DES_ADDR_ICM;
+  cwru_stim_brd1.STIM_CHANNEL_USED = CHANNEL_MAX_IST;
+
+  stim_cmd_halt_rset(&cwru_stim_brd1, UECU_RESET);
+
   bd_putStringReady("init brd\n");
   CyDelay(BD_DELAY);
   checkdata();
+
+  /*
+  //refresh event
+  stim_sendRefreshEvent(&cwru_stim_brd1);
+  bd_putStringReady("refresh event\n");
+  CyDelay(BD_DELAY);
+  checkdata();
+  */
+
+  //crt_sched
 
   stim_cmd_crt_sched(&cwru_stim_brd1, UECU_SYNC_MSG, ipi); // Sync signal = 0xAA, duration 29msec.
   bd_putStringReady("crt_sched\n");
   CyDelay(BD_DELAY);
   checkdata();
 
+
+  //send the setup signal
+  stim_uart_print_array(&cwru_stim_brd1, ICM_IST_SET_0_MSG,
+      sizeof(ICM_IST_SET_0_MSG)/sizeof(uint8_t));
+  bd_putStringReady("icm ist set 0\n");
+  CyDelay(BD_DELAY);
+  checkdata();
+
+  //send the setup signal
+  /*
+  stim_uart_print_array(&cwru_stim_brd1, ICM_IST_SET_1_MSG,
+      sizeof(ICM_IST_SET_1_MSG)/sizeof(uint8_t));
+  bd_putStringReady("icm ist set 0\n");
+  CyDelay(BD_DELAY);
+  checkdata();
+  */
+
+  //create an event
   stim_cmd_crt_evnt(&cwru_stim_brd1,
       sched_id,  // sched_id = 1
       10,  // delay = 0msec
       0,  // priority = 0
       3,  // event_type = 3, for for Stimulus Event
-      0,  // port_chn_id = 0;
+      2,  // port_chn_id = 0;
       pulse_width, // pulse_width set to 0,
       amplitude, // amplitude set to 0,
       0); // zone not implemented;
@@ -783,10 +844,25 @@ void stimpat_testImplant() {
 
   bd_putStringReady("Finish Bd setup\n");
 
+  //send a sync message
   stim_cmd_sync_msg(&cwru_stim_brd1, UECU_SYNC_MSG);
   bd_putStringReady("sync\n");
   CyDelay(BD_DELAY);
   checkdata();
+
+  //send rfpower event
+  stim_uart_print_array(&cwru_stim_brd1, ICM_RFPWR_EVNT_0 ,
+      sizeof(ICM_RFPWR_EVNT_0)/sizeof(uint8_t));
+  CyDelay(BD_DELAY);
+  checkdata();
+
+  /*
+  //send rfpower event
+  stim_uart_print_array(&cwru_stim_brd1, ICM_RFPWR_EVNT_1 ,
+      sizeof(ICM_RFPWR_EVNT_1)/sizeof(uint8_t));
+  CyDelay(BD_DELAY);
+  checkdata();
+  */
 
   bd_putStringReady("Start\n");
 
@@ -860,7 +936,7 @@ void stimpat_testImplant() {
 
       bd_putStringReady("Change\n");
 
-      sprintf(new_val, "%x", pulse_width);
+      sprintf(new_val, "%x %x\n", pulse_width, amplitude);
       bd_putStringReady(new_val);
     }
 
