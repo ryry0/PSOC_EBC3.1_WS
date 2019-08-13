@@ -31,7 +31,7 @@
 
 //defines for IST 16 board
 #define MSG_DES_ADDR_ICM 0x0A
-#define CHANNEL_MAX_IST 16
+#define CHANNEL_MAX_IST STIM_CHANNEL_MAX //should be 16
 #define REFRESH_MSG_LEN 3
 #define EVENT_COMMAND_MSG 0x1C
 #define REFRESH_EVENT 21
@@ -151,10 +151,6 @@ void stimint_initIST16Board(cwru_stim_struct_t *stim_board, uint8_t ipi) {
 
   stim_cmd_halt_rset(stim_board, UECU_RESET);
   //}
-
-  stim_uart_print_array(stim_board, ICM_IST_SET_0_MSG,
-      sizeof(ICM_IST_SET_0_MSG)/sizeof(uint8_t));
-  CyDelay(BD_DELAY);
 
   stim_crtISTSchedEvents(stim_board, ipi);
 
@@ -313,6 +309,10 @@ void stim_crtISTSchedEvents(cwru_stim_struct_t *stim_board, uint8_t ipi) {
 
   stim_cmd_crt_sched(stim_board, UECU_SYNC_MSG, ipi); // Sync signal = 0xAA, duration 29msec.
   CyDelay(BD_DELAY); //this delay needs to be here
+
+  stim_uart_print_array(stim_board, ICM_IST_SET_0_MSG,
+      sizeof(ICM_IST_SET_0_MSG)/sizeof(uint8_t));
+  CyDelay(BD_DELAY);
 
   for (size_t i = 0; i < NUM_EVENTS; ++i) {
     stim_cmd_crt_evnt(stim_board,
@@ -838,6 +838,18 @@ void stimpat_testImplant() {
       amplitude, // amplitude set to 0,
       0); // zone not implemented;
 
+  //create another event
+  stim_cmd_crt_evnt(&cwru_stim_brd1,
+      sched_id,  // sched_id = 1
+      10,  // delay = 0msec
+      0,  // priority = 0
+      3,  // event_type = 3, for for Stimulus Event
+      0,  // port_chn_id = 0;
+      pulse_width, // pulse_width set to 0,
+      amplitude, // amplitude set to 0,
+      0); // zone not implemented;
+
+
   bd_putStringReady("crt_event\n");
   CyDelay(BD_DELAY);
   checkdata();
@@ -886,34 +898,18 @@ void stimpat_testImplant() {
       switch(pc_input) {
         case '+':
           pulse_width += 5;
-          stim_cmd_set_evnt(&cwru_stim_brd1,
-              1, //uint8_t event_id,
-              pulse_width,
-              amplitude, 0);
           break;
 
         case '-':
           pulse_width -= 5;
-          stim_cmd_set_evnt(&cwru_stim_brd1,
-              1, //uint8_t event_id,
-              pulse_width,
-              amplitude, 0);
           break;
 
         case ']':
           amplitude += 1;
-          stim_cmd_set_evnt(&cwru_stim_brd1,
-              1, //uint8_t event_id,
-              pulse_width,
-              amplitude, 0);
           break;
 
         case '[':
           amplitude -= 1;
-          stim_cmd_set_evnt(&cwru_stim_brd1,
-              1, //uint8_t event_id,
-              pulse_width,
-              amplitude, 0);
           break;
 
         case ',':
@@ -933,6 +929,16 @@ void stimpat_testImplant() {
           //
           break;
       }
+
+      stim_cmd_set_evnt(&cwru_stim_brd1,
+          1, //uint8_t event_id,
+          pulse_width,
+          amplitude, 0);
+
+      stim_cmd_set_evnt(&cwru_stim_brd1,
+          2, //uint8_t event_id,
+          0xff - pulse_width,
+          8 - amplitude, 0);
 
       bd_putStringReady("Change\n");
 
