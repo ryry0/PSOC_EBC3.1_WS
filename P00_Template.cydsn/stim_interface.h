@@ -175,7 +175,8 @@ void stimpat_test();
 void stimpat_test_lib();
 void stimpat_test_new();
 void stimpat_testImplant();
-
+void stimpat_testImplantPattern();
+void stimpat_testImplantIntermediate();
 
 
 #endif
