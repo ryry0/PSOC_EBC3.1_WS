@@ -57,6 +57,49 @@ static void ged_generic_nopRun(void *v_exo);
 static void ged_generic_nopCheckTrans(ged_state_machine_t *state_machine, void *v_exo);
 
 /* see documentation in hybrid-module on how to add new states */
+/* HALF LEFT STEP*/
+/*----------------------------------------------------------------------------*/
+
+static void ged_leftSwingOnEntry(void *v_exo);
+static void ged_halfLeftStepRun(void *v_exo);
+static void ged_halfLeftStepCheckTrans(ged_state_machine_t *state_machine, void *v_exo);
+static ged_state_t ged_half_left_late_swing;
+
+static ged_state_t ged_half_left_step = {
+  .id = GED_HALF_LEFT_STEP,
+  .onentry_func = ged_generic_LockJointsOnEntry,
+  .checktrans_func = ged_halfLeftStepCheckTrans,
+  .run_func = ged_halfLeftStepRun
+};
+
+static void ged_halfLeftStepRun(void *v_exo) {
+  exo_t *exo = (exo_t *) v_exo;
+
+}
+
+void ged_halfLeftStepCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
+}
+
+/* HALF LEFT LATE SWING */
+/*----------------------------------------------------------------------------*/
+
+static void ged_halfLeftLateSwingRun(void *v_exo);
+static void ged_halfLeftLateSwingCheckTrans(ged_state_machine_t *state_machine, void *v_exo);
+
+static ged_state_t ged_half_left_late_swing = {
+  .id = GED_HALF_LEFT_LATE_SWING,
+  .onentry_func = ged_generic_LockJointsOnEntry,
+  .checktrans_func = ged_halfLeftLateSwingCheckTrans,
+  .run_func = ged_halfLeftLateSwingRun
+};
+
+static void ged_halfLeftLateSwingRun(void *v_exo) {
+  exo_t *exo = (exo_t *) v_exo;
+
+}
+
+void ged_halfLeftLateSwingCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
+}
 
 /* SIT TO STAND */
 /*----------------------------------------------------------------------------*/
@@ -158,6 +201,7 @@ static ged_state_t ged_locked = {
 };
 
 
+
 static ged_state_t ged_locked_no_send = {
   .id = GED_LOCKED,
   .onentry_func = ged_generic_LockJointsOnEntry,
@@ -165,6 +209,15 @@ static ged_state_t ged_locked_no_send = {
   .run_func = ged_generic_nopRun,
 };
 
+
+/* PASSIVE */
+/*----------------------------------------------------------------------------*/
+static ged_state_t ged_passive = {
+  .id = GED_PASSIVE,
+  .onentry_func = ged_generic_LockJointsOnEntry,
+  .checktrans_func = ged_lockedCheckTrans,
+  .run_func = ged_generic_nopRun,
+};
 
 /* LEFT SWING */
 /*----------------------------------------------------------------------------*/
@@ -265,6 +318,22 @@ void ged_forceTrans(ged_state_machine_t *state_machine, void *v_exo,
 
     case GED_RIGHT_DBL_STANCE:
       ged_transition(state_machine, ged_rightDblStance, exo);
+      break;
+
+    case GED_PASSIVE:
+      ged_transition(state_machine, ged_passive, exo);
+      break;
+
+    case GED_SIT_TO_STAND:
+      ged_transition(state_machine, ged_sit_to_stand, exo);
+      break;
+
+    case GED_STAND_TO_SIT:
+      ged_transition(state_machine, ged_stand_to_sit, exo);
+      break;
+
+    case GED_HALF_LEFT_STEP:
+      ged_transition(state_machine, ged_half_left_step, exo);
       break;
 
     default:

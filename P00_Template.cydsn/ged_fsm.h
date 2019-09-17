@@ -19,6 +19,8 @@ typedef enum ged_states_e {
   GED_PASSIVE,
   GED_SIT_TO_STAND,
   GED_STAND_TO_SIT,
+  GED_HALF_LEFT_STEP,
+  GED_HALF_LEFT_LATE_SWING,
   GED_STATE_MAX
 } ged_state_id_t;
 
