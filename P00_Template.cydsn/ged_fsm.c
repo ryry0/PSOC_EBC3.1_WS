@@ -3,6 +3,7 @@
 #include <joint.h>
 #include <exo.h>
 #include <board_can.h>
+#include <gait_zero_pattern.h>
 
 #define KNEE_ANGLE_EXTENSION_LIMIT 15
 /*----------------------------------------------------------------------------*/
