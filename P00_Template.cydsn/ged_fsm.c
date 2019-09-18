@@ -337,6 +337,10 @@ void ged_forceTrans(ged_state_machine_t *state_machine, void *v_exo,
       ged_transition(state_machine, ged_half_left_step, exo);
       break;
 
+    case GED_HALF_LEFT_LATE_SWING:
+      ged_transition(state_machine, ged_half_left_late_swing, exo);
+      break;
+
     default:
       break;
   }
