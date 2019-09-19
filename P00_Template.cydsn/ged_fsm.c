@@ -58,6 +58,90 @@ static void ged_generic_nopRun(void *v_exo);
 static void ged_generic_nopCheckTrans(ged_state_machine_t *state_machine, void *v_exo);
 
 /* see documentation in hybrid-module on how to add new states */
+/* RIGHT WEIGHT ACCEPTANCE */
+/*----------------------------------------------------------------------------*/
+
+static void ged_rightWeightAcceptOnEntry(void *v_exo);
+static void ged_rightWeightAcceptRun(void *v_exo);
+static void ged_rightWeightAcceptCheckTrans(ged_state_machine_t *state_machine, void *v_exo);
+
+static ged_state_t ged_right_weight_accept = {
+  .id = GED_RIGHT_WEIGHT_ACCEPTANCE,
+  .onentry_func = ged_rightWeightAcceptOnEntry,
+  .checktrans_func = ged_rightWeightAcceptCheckTrans,
+  .run_func = ged_rightWeightAcceptRun
+};
+
+static void ged_rightWeightAcceptRun(void *v_exo) {
+  exo_t *exo = (exo_t *) v_exo;
+
+}
+
+void ged_rightWeightAcceptCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
+}
+
+static void ged_rightWeightAcceptOnEntry(void *v_exo) {
+  exo_t *exo = (exo_t *) v_exo;
+  stim_pattern_t *const pattern_brd1  = &exo->pattern_brd1;
+  stim_pattern_t *const pattern_brd2  = &exo->pattern_brd2;
+
+  stimpat_initPattern(pattern_brd1,
+  &gait_misc1_B1_PP,
+  &gait_misc1_B1_PW,
+  gait_sit_duration,
+  1000);
+  stimpat_activatePattern(pattern_brd1);
+
+  stimpat_initPattern(pattern_brd2,
+  &gait_misc1_B2_PP,
+  &gait_misc1_B2_PW,
+  gait_sit_duration,
+  1000);
+  stimpat_activatePattern(pattern_brd2);
+}
+
+/* LEFT WEIGHT ACCEPTANCE */
+/*----------------------------------------------------------------------------*/
+
+static void ged_leftWeightAcceptOnEntry(void *v_exo);
+static void ged_leftWeightAcceptRun(void *v_exo);
+static void ged_leftWeightAcceptCheckTrans(ged_state_machine_t *state_machine, void *v_exo);
+
+static ged_state_t ged_left_weight_accept = {
+  .id = GED_LEFT_WEIGHT_ACCEPTANCE,
+  .onentry_func = ged_leftWeightAcceptOnEntry,
+  .checktrans_func = ged_leftWeightAcceptCheckTrans,
+  .run_func = ged_leftWeightAcceptRun
+};
+
+static void ged_leftWeightAcceptRun(void *v_exo) {
+  exo_t *exo = (exo_t *) v_exo;
+
+}
+
+void ged_leftWeightAcceptCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
+}
+
+static void ged_leftWeightAcceptOnEntry(void *v_exo) {
+  exo_t *exo = (exo_t *) v_exo;
+  stim_pattern_t *const pattern_brd1  = &exo->pattern_brd1;
+  stim_pattern_t *const pattern_brd2  = &exo->pattern_brd2;
+
+  stimpat_initPattern(pattern_brd1,
+  &gait_misc2_B1_PP,
+  &gait_misc2_B1_PW,
+  gait_sit_duration,
+  1000);
+  stimpat_activatePattern(pattern_brd1);
+
+  stimpat_initPattern(pattern_brd2,
+  &gait_misc2_B2_PP,
+  &gait_misc2_B2_PW,
+  gait_sit_duration,
+  1000);
+  stimpat_activatePattern(pattern_brd2);
+}
+
 /* HALF LEFT STEP*/
 /*----------------------------------------------------------------------------*/
 
@@ -339,6 +423,14 @@ void ged_forceTrans(ged_state_machine_t *state_machine, void *v_exo,
 
     case GED_HALF_LEFT_LATE_SWING:
       ged_transition(state_machine, ged_half_left_late_swing, exo);
+      break;
+
+    case GED_LEFT_WEIGHT_ACCEPTANCE:
+      ged_transition(state_machine, ged_left_weight_accept, exo);
+      break;
+
+    case GED_RIGHT_WEIGHT_ACCEPTANCE:
+      ged_transition(state_machine, ged_right_weight_accept, exo);
       break;
 
     default:
