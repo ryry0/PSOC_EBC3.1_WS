@@ -69,13 +69,19 @@ typedef enum pkt_type_e {
   PARAM(L_HIP_FLEXION_THRESH)    \
   PARAM(R_KNEE_EXTENSION_THRESH)    \
   PARAM(R_HIP_FLEXION_THRESH)    \
+  PARAM(THIGH_MASS) \
+  PARAM(THIGH_COM) \
+  PARAM(THIGH_LENGTH) \
+  PARAM(SHANK_MASS) \
+  PARAM(SHANK_COM)  \
+  PARAM(GRAVITY)    \
   PARAM(MODE)           \
   PARAM(AUTO_WALK)                  \
   PARAM(MOTOR_FORCE_OFF)          \
   PARAM(PKT_PARAM_MAX)              \
 
 
-#define FOREACH_MODULE_PARAM(PARAM)            \
+#define FOREACH_MODULE_PARAM(PARAM)     \
   PARAM(PKT_MODULE_POSITION_PID_KP)     \
   PARAM(PKT_MODULE_POSITION_PID_KI)     \
   PARAM(PKT_MODULE_POSITION_PID_KD)     \
@@ -87,10 +93,16 @@ typedef enum pkt_type_e {
   PARAM(PKT_MODULE_SPEED_PID_AW_UB)     \
   PARAM(PKT_MODULE_SPEED_PID_AW_LB)     \
   PARAM(PKT_MODULE_FC_ALPHA)            \
-  PARAM(PKT_MODULE_BC_TORQUE)          \
+  PARAM(PKT_MODULE_BC_TORQUE)           \
   PARAM(PKT_MODULE_BC_THRESH)           \
+  PARAM(PKT_MODULE_THIGH_MASS)          \
+  PARAM(PKT_MODULE_THIGH_COM)           \
+  PARAM(PKT_MODULE_THIGH_LENGTH)        \
+  PARAM(PKT_MODULE_SHANK_MASS)          \
+  PARAM(PKT_MODULE_SHANK_COM)           \
+  PARAM(PKT_MODULE_GRAVITY)             \
   PARAM(PKT_MODULE_MOTOR_FORCE_OFF)     \
-  PARAM(PKT_MODULE_PARAM_MAX)       \
+  PARAM(PKT_MODULE_PARAM_MAX)           \
 
 #define FOREACH_SHARED_MODULE_PARAM(PARAM) \
   PARAM(PKT_SHARED_BC_TORQUE) \
@@ -231,6 +243,7 @@ typedef struct {
 
   float bus_voltage;
   float bus_current;
+  float load_cell;
 
   uint8_t module_id;
 } pkt_module_data_t;
