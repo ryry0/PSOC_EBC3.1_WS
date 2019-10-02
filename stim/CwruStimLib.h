@@ -21,7 +21,8 @@
 #include "CwruStimLibCmd.h"
 #include "CwruStimLibExe.h"
 #include "CwruStimLibInit.h"
-#include "PresetPatterns/GaitVCK5.h"
+//#include "PresetPatterns/GaitVCK5.h"
+#include <HNP1_gait_withmisc.h>
 
 #define ARCH_PSOC
 // #define ARCH_ARDUINO
