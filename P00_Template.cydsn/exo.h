@@ -41,11 +41,11 @@
 #define EXO_KNEE_EXTENSION_THRESH 15
 #define EXO_HIP_FLEXION_THRESH 0
 
-#define EXO_ENABLE_USB
+//#define EXO_ENABLE_USB
 
-//#define STIM_CONFIG_2_PERC //configure 2 perc boards
+#define STIM_CONFIG_2_PERC //configure 2 perc boards
 
-#define STIM_CONFIG_2_IMPLANT //configure 2 implant boards.
+//#define STIM_CONFIG_2_IMPLANT //configure 2 implant boards.
 
 //#define STIM_CONFIG_3RD_SURFACE
 
