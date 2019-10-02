@@ -301,6 +301,7 @@ void handlePacketMsg(
 
     case PKT_MODULE_SET_STIM_PATTERN_CHANNEL:
       {
+        /*
       pkt_set_stim_pattern_channel *stim_packet_payload =
         pkt_interpPtr(pkt_set_stim_pattern_channel, packet);
 
@@ -311,6 +312,7 @@ void handlePacketMsg(
 
       memcpy(&configurable_pattern1_PP[channel_number][0],
           stim_packet_payload->pulse_percentages, sizeof(uint16_t)*STIM_NUM_POINTS);
+        */
       }
       break;
 

@@ -1,6 +1,6 @@
 #include "gait_zero_pattern.h"
 
-uint16_t gait_zero_PP[12][8] = {
+uint16_t gait_zero_pulse_percent[12][8] = {
 		{ 0,		5000,	5500,	6000,	7500,	8800,	9400,	10000 },
 		{ 0,		1000,	5000,	7500,	8800,	9400,	9500,	10000 },
 		{ 0,		5000,	5500,	6000,	7500,	8800,	9400,	10000 },
@@ -17,7 +17,7 @@ uint16_t gait_zero_PP[12][8] = {
 
 
 // Pulse Width
-uint8_t gait_zero_PW[12][8] = {
+uint8_t gait_zero_pulse_width[12][8] = {
 		{ 0,		0,		0,		0,		0,		0,		0,		0 },
 		{ 0,		0,		0,		0,		0,		0,		0,		0 },
 		{ 0,		0,		0,		0,		0,		0,		0,		0 },
