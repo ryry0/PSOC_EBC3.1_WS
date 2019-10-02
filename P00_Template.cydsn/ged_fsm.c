@@ -379,6 +379,13 @@ void ged_forceTrans(ged_state_machine_t *state_machine, void *v_exo,
     ged_state_id_t state_id) {
 
   exo_t *exo = (exo_t *) v_exo;
+  ged_state_id_t current_state = ged_getStateID((ged_state_machine_t *) &exo->state_machine);
+
+  if (state_id == current_state)
+    return; //do nothing
+
+  if (state_id >= GED_STATE_MAX) //if it's an invalid state
+    return; //do nothing
 
   switch(state_id) {
     case GED_UNLOCKED:
