@@ -145,17 +145,37 @@ static void ged_leftWeightAcceptOnEntry(void *v_exo) {
 /* HALF LEFT STEP*/
 /*----------------------------------------------------------------------------*/
 
-static void ged_leftSwingOnEntry(void *v_exo);
+static void ged_halfLeftStepOnEntry(void *v_exo);
 static void ged_halfLeftStepRun(void *v_exo);
 static void ged_halfLeftStepCheckTrans(ged_state_machine_t *state_machine, void *v_exo);
 static ged_state_t ged_half_left_late_swing;
 
 static ged_state_t ged_half_left_step = {
   .id = GED_HALF_LEFT_STEP,
-  .onentry_func = ged_generic_LockJointsOnEntry,
+  .onentry_func = ged_halfLeftStepOnEntry,
   .checktrans_func = ged_halfLeftStepCheckTrans,
   .run_func = ged_halfLeftStepRun
 };
+
+static void ged_halfLeftStepOnEntry(void *v_exo) {
+  exo_t *exo = (exo_t *) v_exo;
+  stim_pattern_t *const pattern_brd1  = &exo->pattern_brd1;
+  stim_pattern_t *const pattern_brd2  = &exo->pattern_brd2;
+
+  stimpat_initPattern(pattern_brd1,
+  &gait_walk_L_B1_PP,
+  &gait_walk_L_B1_PW,
+  gait_walk_L_duration,
+  1000);
+  stimpat_activatePattern(pattern_brd1);
+
+  stimpat_initPattern(pattern_brd2,
+  &gait_walk_L_B2_PP,
+  &gait_walk_L_B2_PW,
+  gait_walk_L_duration,
+  1000);
+  stimpat_activatePattern(pattern_brd2);
+}
 
 static void ged_halfLeftStepRun(void *v_exo) {
   exo_t *exo = (exo_t *) v_exo;
@@ -168,15 +188,19 @@ void ged_halfLeftStepCheckTrans(ged_state_machine_t *state_machine, void *v_exo)
 /* HALF LEFT LATE SWING */
 /*----------------------------------------------------------------------------*/
 
+static void ged_halfLeftLateSwingOnEntry(void *v_exo);
 static void ged_halfLeftLateSwingRun(void *v_exo);
 static void ged_halfLeftLateSwingCheckTrans(ged_state_machine_t *state_machine, void *v_exo);
 
 static ged_state_t ged_half_left_late_swing = {
   .id = GED_HALF_LEFT_LATE_SWING,
-  .onentry_func = ged_generic_LockJointsOnEntry,
+  .onentry_func = ged_halfLeftLateSwingOnEntry,
   .checktrans_func = ged_halfLeftLateSwingCheckTrans,
   .run_func = ged_halfLeftLateSwingRun
 };
+
+static void ged_halfLeftLateSwingOnEntry(void *v_exo) {
+}
 
 static void ged_halfLeftLateSwingRun(void *v_exo) {
   exo_t *exo = (exo_t *) v_exo;
