@@ -272,15 +272,15 @@ static void ged_standToSitOnEntry(void *v_exo) {
   stim_pattern_t *const pattern_brd2  = &exo->pattern_brd2;
 
   stimpat_initPattern(pattern_brd1,
-  &gait_sit_B1_PP,
-  &gait_sit_B1_PW,
+  &gait_zero_PP,
+  &gait_zero_PW,
   gait_sit_duration,
   1000);
   stimpat_activatePattern(pattern_brd1);
 
   stimpat_initPattern(pattern_brd2,
-  &gait_sit_B2_PP,
-  &gait_sit_B2_PW,
+  &gait_zero_PP,
+  &gait_zero_PW,
   gait_sit_duration,
   1000);
   stimpat_activatePattern(pattern_brd2);
