@@ -137,7 +137,7 @@ int8_t stim_init_evnt_surf(cwru_stim_struct_t *cwru_stim)
     // Create Event 1 for port_chn_id 0 in sched_id 1
     stim_cmd_crt_evnt( cwru_stim,
             1,  // sched_id = 1
-            0,  // delay = 0msec
+            4,  // delay = 0msec
             0,  // priority = 0
             3,  // event_type = 3, for for Stimulus Event
             0,  // port_chn_id = 0;
@@ -148,7 +148,7 @@ int8_t stim_init_evnt_surf(cwru_stim_struct_t *cwru_stim)
     // Create Event 2 for port_chn_id 0 in sched_id 1
     stim_cmd_crt_evnt( cwru_stim,
             1,  // sched_id = 1
-            0,  // delay = 0msec
+            6,  // delay = 0msec
             0,  // priority = 0
             3,  // event_type = 3, for for Stimulus Event
             1,  // port_chn_id = 1;
@@ -159,7 +159,7 @@ int8_t stim_init_evnt_surf(cwru_stim_struct_t *cwru_stim)
     // Create Event 3 for port_chn_id 0 in sched_id 1
     stim_cmd_crt_evnt( cwru_stim,
             1,  // sched_id = 1
-            0,  // delay = 0msec
+            8,  // delay = 0msec
             0,  // priority = 0
             3,  // event_type = 3, for for Stimulus Event
             2,  // port_chn_id = 2;
@@ -170,7 +170,7 @@ int8_t stim_init_evnt_surf(cwru_stim_struct_t *cwru_stim)
     // Create Event 4 for port_chn_id 0 in sched_id 1
     stim_cmd_crt_evnt( cwru_stim,
             1,  // sched_id = 1
-            0,  // delay = 0msec
+            10,  // delay = 0msec
             0,  // priority = 0
             3,  // event_type = 3, for for Stimulus Event
             3,  // port_chn_id = 3;
