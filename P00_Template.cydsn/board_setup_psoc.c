@@ -219,7 +219,7 @@ void setupStim(volatile exo_t *exo) {
       gait_stand_duration,
       1000);
 
-  stimint_initBoardUART(cwru_stim_brd3, STIM_UART_PORT_2); //SCB J116
+  stimint_initBoardUART(cwru_stim_brd3, STIM_UART_PORT_2); //PSOC EP2 Connector
   stimint_initSurfBoard(cwru_stim_brd3, STIM_BOARD_IPI);
 #endif
 }
