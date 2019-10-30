@@ -31,7 +31,8 @@
 
 //defines for IST 16 board
 #define MSG_DES_ADDR_ICM 0x0A
-#define CHANNEL_MAX_IST STIM_CHANNEL_MAX //should be 16
+#define CHANNEL_MAX_IST 16
+#define CHANNEL_MAX_PERC 12
 #define REFRESH_MSG_LEN 3
 #define EVENT_COMMAND_MSG 0x1C
 #define REFRESH_EVENT 21
@@ -330,7 +331,7 @@ void stim_crtISTSchedEvents(cwru_stim_struct_t *stim_board, uint8_t ipi) {
 }
 
 void stim_crtPercSchedEvents(cwru_stim_struct_t *stim_board, uint8_t ipi) {
-  const int NUM_EVENTS = 12;
+  const int NUM_EVENTS = stim_board->STIM_CHANNEL_USED;
 
   stim_cmd_crt_sched(stim_board, UECU_SYNC_MSG, ipi); // Sync signal = 0xAA, duration 29msec.
   CyDelay(BD_DELAY); //this delay needs to be here
