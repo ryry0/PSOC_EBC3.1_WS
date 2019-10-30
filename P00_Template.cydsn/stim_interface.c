@@ -319,7 +319,7 @@ void stim_crtISTSchedEvents(cwru_stim_struct_t *stim_board, uint8_t ipi) {
   for (size_t i = 0; i < NUM_EVENTS; ++i) {
     stim_cmd_crt_evnt(stim_board,
         1,    // sched_id = 1
-        i*2,    // delay = 0msec
+        4+i,    // delay = 0msec
         0,    // priority = 0
         3,    // event_type = 3, for for Stimulus Event
         i,    // port_chn_id = 0;
@@ -339,7 +339,7 @@ void stim_crtPercSchedEvents(cwru_stim_struct_t *stim_board, uint8_t ipi) {
   for (size_t i = 0; i < NUM_EVENTS; ++i) {
     stim_cmd_crt_evnt(stim_board,
         1,    // sched_id = 1
-        0,    // delay = 0msec
+        4+i*2,    // delay = 0msec
         0,    // priority = 0
         3,    // event_type = 3, for for Stimulus Event
         i,    // port_chn_id = 0;
