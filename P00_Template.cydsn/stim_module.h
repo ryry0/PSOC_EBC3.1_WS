@@ -16,11 +16,9 @@
 #include <project.h>
 
 /** Module includes */
-#include <trajectory.h>
 #include <coop.h>
 #include <packet_hybrid.h>
 #include <board_io.h>
-#include <joint.h>
 #include <ged_fsm.h>
 #include <stim_interface.h>
 

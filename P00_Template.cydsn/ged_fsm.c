@@ -1,6 +1,5 @@
 #include <ged_fsm.h>
 #include <board_io.h>
-#include <joint.h>
 #include <stim_module.h>
 #include <board_can.h>
 #include <gait_zero_pattern.h>
