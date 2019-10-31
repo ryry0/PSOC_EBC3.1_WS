@@ -15,7 +15,7 @@
 
 /** \brief Struct that represents the arguments to the threads */
 typedef struct coop_args_s {
-    volatile struct exo_s *exo;
+    volatile struct stim_module_s *stimulator;
 } coop_args_t;
 
 /** \brief function signature of a cooperative thread */

@@ -15,7 +15,7 @@
  * ========================================
  */
 
-#include <exo.h>
+#include <stim_module.h>
 #include <board_setup.h>
 #include <coop.h> //cooperative thread structure
 #include <CwruStimLib.h>
@@ -77,15 +77,15 @@
  * Sets up the program and hardware, then executes all cooperative threads.
  */
 int main() {
-  coop_task_t tasks[EXO_TASK_MAX];
+  coop_task_t tasks[STIM_TASK_MAX];
   coop_args_t coop_args;
 
-  setupExo(tasks, &coop_args, &hybrid_exoskeleton);
+  setupStimulator(tasks, &coop_args, &hybrid_stimulator);
   //stimpat_testImplant();
 
   for(;;) {
     coop_executeTasks(
-        (struct coop_task_list_s *) &hybrid_exoskeleton.coop_task_list, &coop_args);
+        (struct coop_task_list_s *) &hybrid_stimulator.coop_task_list, &coop_args);
   } // end for(;;) loop
 } // end main
 

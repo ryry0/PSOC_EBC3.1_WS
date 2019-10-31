@@ -1,7 +1,7 @@
 #include <ged_fsm.h>
 #include <board_io.h>
 #include <joint.h>
-#include <exo.h>
+#include <stim_module.h>
 #include <board_can.h>
 #include <gait_zero_pattern.h>
 
@@ -9,19 +9,19 @@
 /*----------------------------------------------------------------------------*/
 /*                    GENERAL API IMPLEMENTATION                              */
 /*----------------------------------------------------------------------------*/
-void ged_runState(const ged_state_machine_t *state_machine, void *v_exo) {
-  (*state_machine->state.run_func)(v_exo);
+void ged_runState(const ged_state_machine_t *state_machine, void *v_stimulator) {
+  (*state_machine->state.run_func)(v_stimulator);
 }
 
-void ged_checkTransitions(ged_state_machine_t *state_machine, void *v_exo) {
-  (*state_machine->state.checktrans_func)(state_machine, v_exo);
-  ged_defaultTrans(state_machine, v_exo);
+void ged_checkTransitions(ged_state_machine_t *state_machine, void *v_stimulator) {
+  (*state_machine->state.checktrans_func)(state_machine, v_stimulator);
+  ged_defaultTrans(state_machine, v_stimulator);
 }
 
 void ged_transition(ged_state_machine_t *state_machine, ged_state_t state, void
-    *v_exo) {
+    *v_stimulator) {
   state_machine->state = state;
-  (*state_machine->state.onentry_func)(v_exo);
+  (*state_machine->state.onentry_func)(v_stimulator);
 }
 
 ged_state_id_t ged_getStateID(ged_state_machine_t *state_machine) {
@@ -51,19 +51,19 @@ static void ged_sendStateMsg(uint8_t state) {
 /*                    STATE FUNCTION AND TYPE PROTOTYPES                      */
 /*----------------------------------------------------------------------------*/
 
-static void ged_generic_LockJointsOnEntryCANSend(void *v_exo);
-static void ged_generic_LockJointsOnEntry(void *v_exo);
-static void ged_generic_unlockJointsOnEntry(void *v_exo);
-static void ged_generic_nopRun(void *v_exo);
-static void ged_generic_nopCheckTrans(ged_state_machine_t *state_machine, void *v_exo);
+static void ged_generic_LockJointsOnEntryCANSend(void *v_stimulator);
+static void ged_generic_LockJointsOnEntry(void *v_stimulator);
+static void ged_generic_unlockJointsOnEntry(void *v_stimulator);
+static void ged_generic_nopRun(void *v_stimulator);
+static void ged_generic_nopCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator);
 
 /* see documentation in hybrid-module on how to add new states */
 /* RIGHT WEIGHT ACCEPTANCE */
 /*----------------------------------------------------------------------------*/
 
-static void ged_rightWeightAcceptOnEntry(void *v_exo);
-static void ged_rightWeightAcceptRun(void *v_exo);
-static void ged_rightWeightAcceptCheckTrans(ged_state_machine_t *state_machine, void *v_exo);
+static void ged_rightWeightAcceptOnEntry(void *v_stimulator);
+static void ged_rightWeightAcceptRun(void *v_stimulator);
+static void ged_rightWeightAcceptCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator);
 
 static ged_state_t ged_right_weight_accept = {
   .id = GED_RIGHT_WEIGHT_ACCEPTANCE,
@@ -72,18 +72,17 @@ static ged_state_t ged_right_weight_accept = {
   .run_func = ged_rightWeightAcceptRun
 };
 
-static void ged_rightWeightAcceptRun(void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
+static void ged_rightWeightAcceptRun(void *v_stimulator) {
 
 }
 
-void ged_rightWeightAcceptCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
+void ged_rightWeightAcceptCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator) {
 }
 
-static void ged_rightWeightAcceptOnEntry(void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
-  stim_pattern_t *const pattern_brd1  = &exo->pattern_brd1;
-  stim_pattern_t *const pattern_brd2  = &exo->pattern_brd2;
+static void ged_rightWeightAcceptOnEntry(void *v_stimulator) {
+  stim_module_t *stimulator = (stim_module_t *) v_stimulator;
+  stim_pattern_t *const pattern_brd1  = &stimulator->pattern_brd1;
+  stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
 
   stimpat_initPattern(pattern_brd1,
   &gait_misc1_B1_PP,
@@ -103,9 +102,9 @@ static void ged_rightWeightAcceptOnEntry(void *v_exo) {
 /* LEFT WEIGHT ACCEPTANCE */
 /*----------------------------------------------------------------------------*/
 
-static void ged_leftWeightAcceptOnEntry(void *v_exo);
-static void ged_leftWeightAcceptRun(void *v_exo);
-static void ged_leftWeightAcceptCheckTrans(ged_state_machine_t *state_machine, void *v_exo);
+static void ged_leftWeightAcceptOnEntry(void *v_stimulator);
+static void ged_leftWeightAcceptRun(void *v_stimulator);
+static void ged_leftWeightAcceptCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator);
 
 static ged_state_t ged_left_weight_accept = {
   .id = GED_LEFT_WEIGHT_ACCEPTANCE,
@@ -114,18 +113,17 @@ static ged_state_t ged_left_weight_accept = {
   .run_func = ged_leftWeightAcceptRun
 };
 
-static void ged_leftWeightAcceptRun(void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
+static void ged_leftWeightAcceptRun(void *v_stimulator) {
 
 }
 
-void ged_leftWeightAcceptCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
+void ged_leftWeightAcceptCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator) {
 }
 
-static void ged_leftWeightAcceptOnEntry(void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
-  stim_pattern_t *const pattern_brd1  = &exo->pattern_brd1;
-  stim_pattern_t *const pattern_brd2  = &exo->pattern_brd2;
+static void ged_leftWeightAcceptOnEntry(void *v_stimulator) {
+  stim_module_t *stimulator = (stim_module_t *) v_stimulator;
+  stim_pattern_t *const pattern_brd1  = &stimulator->pattern_brd1;
+  stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
 
   stimpat_initPattern(pattern_brd1,
   &gait_misc2_B1_PP,
@@ -145,9 +143,9 @@ static void ged_leftWeightAcceptOnEntry(void *v_exo) {
 /* HALF LEFT STEP*/
 /*----------------------------------------------------------------------------*/
 
-static void ged_halfLeftStepOnEntry(void *v_exo);
-static void ged_halfLeftStepRun(void *v_exo);
-static void ged_halfLeftStepCheckTrans(ged_state_machine_t *state_machine, void *v_exo);
+static void ged_halfLeftStepOnEntry(void *v_stimulator);
+static void ged_halfLeftStepRun(void *v_stimulator);
+static void ged_halfLeftStepCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator);
 static ged_state_t ged_half_left_late_swing;
 
 static ged_state_t ged_half_left_step = {
@@ -157,10 +155,10 @@ static ged_state_t ged_half_left_step = {
   .run_func = ged_halfLeftStepRun
 };
 
-static void ged_halfLeftStepOnEntry(void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
-  stim_pattern_t *const pattern_brd1  = &exo->pattern_brd1;
-  stim_pattern_t *const pattern_brd2  = &exo->pattern_brd2;
+static void ged_halfLeftStepOnEntry(void *v_stimulator) {
+  stim_module_t *stimulator = (stim_module_t *) v_stimulator;
+  stim_pattern_t *const pattern_brd1  = &stimulator->pattern_brd1;
+  stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
 
   stimpat_initPattern(pattern_brd1,
   &gait_walk_L_B1_PP,
@@ -177,20 +175,19 @@ static void ged_halfLeftStepOnEntry(void *v_exo) {
   stimpat_activatePattern(pattern_brd2);
 }
 
-static void ged_halfLeftStepRun(void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
+static void ged_halfLeftStepRun(void *v_stimulator) {
 
 }
 
-void ged_halfLeftStepCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
+void ged_halfLeftStepCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator) {
 }
 
 /* HALF LEFT LATE SWING */
 /*----------------------------------------------------------------------------*/
 
-static void ged_halfLeftLateSwingOnEntry(void *v_exo);
-static void ged_halfLeftLateSwingRun(void *v_exo);
-static void ged_halfLeftLateSwingCheckTrans(ged_state_machine_t *state_machine, void *v_exo);
+static void ged_halfLeftLateSwingOnEntry(void *v_stimulator);
+static void ged_halfLeftLateSwingRun(void *v_stimulator);
+static void ged_halfLeftLateSwingCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator);
 
 static ged_state_t ged_half_left_late_swing = {
   .id = GED_HALF_LEFT_LATE_SWING,
@@ -199,22 +196,21 @@ static ged_state_t ged_half_left_late_swing = {
   .run_func = ged_halfLeftLateSwingRun
 };
 
-static void ged_halfLeftLateSwingOnEntry(void *v_exo) {
+static void ged_halfLeftLateSwingOnEntry(void *v_stimulator) {
 }
 
-static void ged_halfLeftLateSwingRun(void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
+static void ged_halfLeftLateSwingRun(void *v_stimulator) {
 
 }
 
-void ged_halfLeftLateSwingCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
+void ged_halfLeftLateSwingCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator) {
 }
 
 /* SIT TO STAND */
 /*----------------------------------------------------------------------------*/
 
-static void ged_sitToStandRun(void *v_exo);
-static void ged_sitToStandOnEntry(void *v_exo);
+static void ged_sitToStandRun(void *v_stimulator);
+static void ged_sitToStandOnEntry(void *v_stimulator);
 
 static ged_state_t ged_sit_to_stand = {
   .id = GED_SIT_TO_STAND,
@@ -223,15 +219,14 @@ static ged_state_t ged_sit_to_stand = {
   .run_func = ged_sitToStandRun
 };
 
-static void ged_sitToStandRun(void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
+static void ged_sitToStandRun(void *v_stimulator) {
 
 }
 
-static void ged_sitToStandOnEntry(void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
-  stim_pattern_t *const pattern_brd1  = &exo->pattern_brd1;
-  stim_pattern_t *const pattern_brd2  = &exo->pattern_brd2;
+static void ged_sitToStandOnEntry(void *v_stimulator) {
+  stim_module_t *stimulator = (stim_module_t *) v_stimulator;
+  stim_pattern_t *const pattern_brd1  = &stimulator->pattern_brd1;
+  stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
 
   stimpat_initPattern(pattern_brd1,
   &gait_stand_B1_PP,
@@ -251,8 +246,8 @@ static void ged_sitToStandOnEntry(void *v_exo) {
 /* STAND TO SIT */
 /*----------------------------------------------------------------------------*/
 
-static void ged_standToSitRun(void *v_exo);
-static void ged_standToSitOnEntry(void *v_exo);
+static void ged_standToSitRun(void *v_stimulator);
+static void ged_standToSitOnEntry(void *v_stimulator);
 
 static ged_state_t ged_stand_to_sit = {
   .id = GED_STAND_TO_SIT,
@@ -261,15 +256,14 @@ static ged_state_t ged_stand_to_sit = {
   .run_func = ged_standToSitRun
 };
 
-static void ged_standToSitRun(void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
+static void ged_standToSitRun(void *v_stimulator) {
 
 }
 
-static void ged_standToSitOnEntry(void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
-  stim_pattern_t *const pattern_brd1  = &exo->pattern_brd1;
-  stim_pattern_t *const pattern_brd2  = &exo->pattern_brd2;
+static void ged_standToSitOnEntry(void *v_stimulator) {
+  stim_module_t *stimulator = (stim_module_t *) v_stimulator;
+  stim_pattern_t *const pattern_brd1  = &stimulator->pattern_brd1;
+  stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
 
   stimpat_initPattern(pattern_brd1,
   &gait_zero_PP,
@@ -288,8 +282,6 @@ static void ged_standToSitOnEntry(void *v_exo) {
 
 /* UNLOCKED */
 /*----------------------------------------------------------------------------*/
-static void ged_unlockedRun(void *v_exo);
-
 static ged_state_t ged_unlocked = {
   .id = GED_UNLOCKED,
   .onentry_func = ged_generic_unlockJointsOnEntry,
@@ -300,7 +292,7 @@ static ged_state_t ged_unlocked = {
 /* LOCKED */
 /*----------------------------------------------------------------------------*/
 static void ged_lockedCheckTrans(ged_state_machine_t *state_machine, void
-    *exo);
+    *stimulator);
 
 static ged_state_t ged_locked = {
   .id = GED_LOCKED,
@@ -330,10 +322,9 @@ static ged_state_t ged_passive = {
 
 /* LEFT SWING */
 /*----------------------------------------------------------------------------*/
-static void ged_leftSwingOnEntry(void *v_exo);
-static void ged_leftSwingRun(void *v_exo);
+static void ged_leftSwingOnEntry(void *v_stimulator);
 static void ged_leftSwingCheckTrans(ged_state_machine_t *state_machine, void
-    *exo);
+    *stimulator);
 
 static ged_state_t ged_leftSwing = {
   .id = GED_LEFT_SWING,
@@ -344,10 +335,9 @@ static ged_state_t ged_leftSwing = {
 
 /* RIGHT SWING */
 /*----------------------------------------------------------------------------*/
-static void ged_rightSwingOnEntry(void *v_exo);
-static void ged_rightSwingRun(void *v_exo);
+static void ged_rightSwingOnEntry(void *v_stimulator);
 static void ged_rightSwingCheckTrans(ged_state_machine_t *state_machine, void
-    *exo);
+    *stimulator);
 
 static ged_state_t ged_rightSwing = {
   .id = GED_RIGHT_SWING,
@@ -359,7 +349,7 @@ static ged_state_t ged_rightSwing = {
 
 /* LEFT DBL STANCE */
 /*----------------------------------------------------------------------------*/
-void ged_leftDblStanceCheckTrans(ged_state_machine_t *state_machine, void *v_exo);
+void ged_leftDblStanceCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator);
 
 static ged_state_t ged_leftDblStance = {
   .id = GED_LEFT_DBL_STANCE,
@@ -370,7 +360,7 @@ static ged_state_t ged_leftDblStance = {
 
 /* RIGHT DBL STANCE */
 /*----------------------------------------------------------------------------*/
-void ged_rightDblStanceCheckTrans(ged_state_machine_t *state_machine, void *v_exo);
+void ged_rightDblStanceCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator);
 
 static ged_state_t ged_rightDblStance = {
   .id = GED_RIGHT_DBL_STANCE,
@@ -383,27 +373,27 @@ static ged_state_t ged_rightDblStance = {
 /*                             STATE IMPLEMENTATION                           */
 /*----------------------------------------------------------------------------*/
 
-void ged_init(ged_state_machine_t *state_machine, void *v_exo) {
-  ged_transition(state_machine, ged_locked_no_send, v_exo);
+void ged_init(ged_state_machine_t *state_machine, void *v_stimulator) {
+  ged_transition(state_machine, ged_locked_no_send, v_stimulator);
 }
 
-void ged_defaultTrans(ged_state_machine_t *state_machine, void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
-  if (bd_getFSW(&exo->sensor_inputs, BD_BLUE_FSW)) {
-    ged_transition(state_machine, ged_unlocked, exo);
+void ged_defaultTrans(ged_state_machine_t *state_machine, void *v_stimulator) {
+  stim_module_t *stimulator = (stim_module_t *) v_stimulator;
+  if (bd_getFSW(&stimulator->sensor_inputs, BD_BLUE_FSW)) {
+    ged_transition(state_machine, ged_unlocked, stimulator);
     ged_sendStateMsg(GED_UNLOCKED);
   }
-  else if (bd_getFSW(&exo->sensor_inputs, BD_RED_FSW)) {
-    ged_transition(state_machine, ged_locked, exo);
+  else if (bd_getFSW(&stimulator->sensor_inputs, BD_RED_FSW)) {
+    ged_transition(state_machine, ged_locked, stimulator);
     ged_sendStateMsg(GED_LOCKED);
   }
 }
 
-void ged_forceTrans(ged_state_machine_t *state_machine, void *v_exo,
+void ged_forceTrans(ged_state_machine_t *state_machine, void *v_stimulator,
     ged_state_id_t state_id) {
 
-  exo_t *exo = (exo_t *) v_exo;
-  ged_state_id_t current_state = ged_getStateID((ged_state_machine_t *) &exo->state_machine);
+  stim_module_t *stimulator = (stim_module_t *) v_stimulator;
+  ged_state_id_t current_state = ged_getStateID((ged_state_machine_t *) &stimulator->state_machine);
 
   if (state_id == current_state)
     return; //do nothing
@@ -413,55 +403,55 @@ void ged_forceTrans(ged_state_machine_t *state_machine, void *v_exo,
 
   switch(state_id) {
     case GED_UNLOCKED:
-      ged_transition(state_machine, ged_unlocked, exo);
+      ged_transition(state_machine, ged_unlocked, stimulator);
       break;
 
     case GED_LOCKED:
-      ged_transition(state_machine, ged_locked, exo);
+      ged_transition(state_machine, ged_locked, stimulator);
       break;
 
     case GED_LEFT_SWING:
-      ged_transition(state_machine, ged_leftSwing, exo);
+      ged_transition(state_machine, ged_leftSwing, stimulator);
       break;
 
     case GED_RIGHT_SWING:
-      ged_transition(state_machine, ged_rightSwing, exo);
+      ged_transition(state_machine, ged_rightSwing, stimulator);
       break;
 
     case GED_LEFT_DBL_STANCE:
-      ged_transition(state_machine, ged_leftDblStance, exo);
+      ged_transition(state_machine, ged_leftDblStance, stimulator);
       break;
 
     case GED_RIGHT_DBL_STANCE:
-      ged_transition(state_machine, ged_rightDblStance, exo);
+      ged_transition(state_machine, ged_rightDblStance, stimulator);
       break;
 
     case GED_PASSIVE:
-      ged_transition(state_machine, ged_passive, exo);
+      ged_transition(state_machine, ged_passive, stimulator);
       break;
 
     case GED_SIT_TO_STAND:
-      ged_transition(state_machine, ged_sit_to_stand, exo);
+      ged_transition(state_machine, ged_sit_to_stand, stimulator);
       break;
 
     case GED_STAND_TO_SIT:
-      ged_transition(state_machine, ged_stand_to_sit, exo);
+      ged_transition(state_machine, ged_stand_to_sit, stimulator);
       break;
 
     case GED_HALF_LEFT_STEP:
-      ged_transition(state_machine, ged_half_left_step, exo);
+      ged_transition(state_machine, ged_half_left_step, stimulator);
       break;
 
     case GED_HALF_LEFT_LATE_SWING:
-      ged_transition(state_machine, ged_half_left_late_swing, exo);
+      ged_transition(state_machine, ged_half_left_late_swing, stimulator);
       break;
 
     case GED_LEFT_WEIGHT_ACCEPTANCE:
-      ged_transition(state_machine, ged_left_weight_accept, exo);
+      ged_transition(state_machine, ged_left_weight_accept, stimulator);
       break;
 
     case GED_RIGHT_WEIGHT_ACCEPTANCE:
-      ged_transition(state_machine, ged_right_weight_accept, exo);
+      ged_transition(state_machine, ged_right_weight_accept, stimulator);
       break;
 
     default:
@@ -472,10 +462,10 @@ void ged_forceTrans(ged_state_machine_t *state_machine, void *v_exo,
 /*                     GENERIC STATE IMPLEMENTATION                           */
 /*----------------------------------------------------------------------------*/
 
-void ged_generic_LockJointsOnEntry(void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
-  stim_pattern_t *const pattern_brd1  = &exo->pattern_brd1;
-  stim_pattern_t *const pattern_brd2  = &exo->pattern_brd2;
+void ged_generic_LockJointsOnEntry(void *v_stimulator) {
+  stim_module_t *stimulator = (stim_module_t *) v_stimulator;
+  stim_pattern_t *const pattern_brd1  = &stimulator->pattern_brd1;
+  stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
 
   stimpat_initPattern(pattern_brd1,
   &gait_zero_PP,
@@ -494,49 +484,41 @@ void ged_generic_LockJointsOnEntry(void *v_exo) {
 
 }
 
-void ged_generic_LockJointsOnEntryCANSend(void *v_exo) {
-  ged_generic_LockJointsOnEntry(v_exo);
+void ged_generic_LockJointsOnEntryCANSend(void *v_stimulator) {
+  ged_generic_LockJointsOnEntry(v_stimulator);
   ged_sendStateMsg(GED_LOCKED);
 }
 
-void ged_generic_unlockJointsOnEntry(void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
+void ged_generic_unlockJointsOnEntry(void *v_stimulator) {
 
   ged_sendStateMsg(GED_UNLOCKED);
 }
 
-void ged_generic_nopRun(void *v_exo) {
+void ged_generic_nopRun(void *v_stimulator) {
 }
 
-void ged_generic_nopCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
+void ged_generic_nopCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator) {
 }
 
-/*----------------------------------------------------------------------------*/
-/*                             UNLOCKED                                       */
-/*----------------------------------------------------------------------------*/
-
-void ged_unlockedRun(void *v_exo) { //run the friction compensator
-  exo_t *exo = (exo_t *) v_exo;
-}
 
 /*----------------------------------------------------------------------------*/
 /*                                LOCKED                                      */
 /*----------------------------------------------------------------------------*/
 
-void ged_lockedCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
-  if (bd_getFSW(&exo->sensor_inputs, BD_GREEN_FSW))
-    ged_transition(state_machine, ged_leftSwing, exo);
+void ged_lockedCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator) {
+  stim_module_t *stimulator = (stim_module_t *) v_stimulator;
+  if (bd_getFSW(&stimulator->sensor_inputs, BD_GREEN_FSW))
+    ged_transition(state_machine, ged_leftSwing, stimulator);
 }
 
 /*----------------------------------------------------------------------------*/
 /*                                L SWING                                      */
 /*----------------------------------------------------------------------------*/
 
-void ged_leftSwingOnEntry(void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
-  stim_pattern_t *const pattern_brd1  = &exo->pattern_brd1;
-  stim_pattern_t *const pattern_brd2  = &exo->pattern_brd2;
+void ged_leftSwingOnEntry(void *v_stimulator) {
+  stim_module_t *stimulator = (stim_module_t *) v_stimulator;
+  stim_pattern_t *const pattern_brd1  = &stimulator->pattern_brd1;
+  stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
 
   stimpat_initPattern(pattern_brd1,
   &gait_walk_L_B1_PP,
@@ -556,39 +538,19 @@ void ged_leftSwingOnEntry(void *v_exo) {
 
 }
 
-void ged_leftSwingRun(void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
-  bd_inputs_t *const sensor_inputs = &exo->sensor_inputs;
 
-}
-
-void ged_leftSwingCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
-
-  const float l_hip_angle = bd_analogToLHipAngle(bd_getAin(&exo->sensor_inputs,
-        BD_AN_4_L_HIP_ENC), exo->l_hip_zero_offset);
-
-  if (bd_getFSW(&exo->sensor_inputs, BD_GREEN_FSW))
-    ged_transition(state_machine, ged_leftDblStance, exo);
-
-  if ((exo->l_knee_joint.position < exo->l_knee_extension_thresh) &&
-      (l_hip_angle > exo->l_hip_flexion_thresh)) {
-    if (bd_getAin(&exo->sensor_inputs, BD_AN_0_L_FSR_HEEL) >
-        exo->l_weight_acc_fsr_thresh) {
-      ged_transition(state_machine, ged_leftDblStance, exo);
-    }
-  }
+void ged_leftSwingCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator) {
 }
 
 /*----------------------------------------------------------------------------*/
 /*                                R SWING                                      */
 /*----------------------------------------------------------------------------*/
 
-void ged_rightSwingOnEntry(void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
+void ged_rightSwingOnEntry(void *v_stimulator) {
+  stim_module_t *stimulator = (stim_module_t *) v_stimulator;
 
-  stim_pattern_t *const pattern_brd1  = &exo->pattern_brd1;
-  stim_pattern_t *const pattern_brd2  = &exo->pattern_brd2;
+  stim_pattern_t *const pattern_brd1  = &stimulator->pattern_brd1;
+  stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
 
   stimpat_initPattern(pattern_brd1,
   &gait_walk_R_B1_PP,
@@ -605,42 +567,14 @@ void ged_rightSwingOnEntry(void *v_exo) {
   stimpat_activatePattern(pattern_brd2);
 }
 
-void ged_rightSwingRun(void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
-  bd_inputs_t *const sensor_inputs = &exo->sensor_inputs;
-}
-
-void ged_rightSwingCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
-
-  const float r_hip_angle = bd_analogToRHipAngle(bd_getAin(&exo->sensor_inputs,
-        BD_AN_5_R_HIP_ENC), exo->r_hip_zero_offset);
-
-  if (bd_getFSW(&exo->sensor_inputs, BD_GREEN_FSW))
-    ged_transition(state_machine, ged_rightDblStance, exo);
-
-  if ((exo->r_knee_joint.position < exo->r_knee_extension_thresh) &&
-      (r_hip_angle > exo->r_hip_flexion_thresh)) {
-    if (bd_getAin(&exo->sensor_inputs, BD_AN_2_R_FSR_HEEL) >
-        exo->r_weight_acc_fsr_thresh) {
-      ged_transition(state_machine, ged_rightDblStance, exo);
-    }
-  }
+void ged_rightSwingCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator) {
 }
 
 /*----------------------------------------------------------------------------*/
 /*                                L DBL STANCE                                */
 /*----------------------------------------------------------------------------*/
 
-void ged_leftDblStanceCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
-  if (bd_getFSW(&exo->sensor_inputs, BD_GREEN_FSW))
-    ged_transition(state_machine, ged_rightSwing, exo);
-
-  if (exo->auto_walk &&
-      (bd_getAin(&exo->sensor_inputs, BD_AN_0_L_FSR_HEEL) > exo->l_high_fsr_thresh) &&
-      (bd_getAin(&exo->sensor_inputs, BD_AN_2_R_FSR_HEEL) < exo->r_low_fsr_thresh))
-    ged_transition(state_machine, ged_rightSwing, exo);
+void ged_leftDblStanceCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator) {
 }
 
 /*----------------------------------------------------------------------------*/
@@ -648,14 +582,6 @@ void ged_leftDblStanceCheckTrans(ged_state_machine_t *state_machine, void *v_exo
 /*----------------------------------------------------------------------------*/
 
 
-void ged_rightDblStanceCheckTrans(ged_state_machine_t *state_machine, void *v_exo) {
-  exo_t *exo = (exo_t *) v_exo;
-  if (bd_getFSW(&exo->sensor_inputs, BD_GREEN_FSW))
-    ged_transition(state_machine, ged_leftSwing, exo);
-
-  if (exo->auto_walk &&
-      (bd_getAin(&exo->sensor_inputs, BD_AN_2_R_FSR_HEEL) > exo->r_high_fsr_thresh) &&
-      (bd_getAin(&exo->sensor_inputs, BD_AN_0_L_FSR_HEEL) < exo->l_low_fsr_thresh))
-    ged_transition(state_machine, ged_leftSwing, exo);
+void ged_rightDblStanceCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator) {
 }
 

@@ -6,7 +6,7 @@
  */
 #ifndef BOARD_SETUP_H_
 #define BOARD_SETUP_H_
-#include <exo.h>
+#include <stim_module.h>
 
 /** Hardware and Software Initialization  */
 
@@ -17,12 +17,12 @@
  *
  * \param task_arr The array of cooperative threads.
  * \param coop_args The arguments to the cooperative threads.
- * \param exo The exoskeleton structure.
+ * \param stimulator The stim_module structure
  */
-void setupExo(
+void setupStimulator(
     struct coop_task_s *task_arr,
     coop_args_t *coop_args,
-    volatile exo_t *exo);
+    volatile stim_module_t *stimulator);
 
 /**
  * \brief Sets up the cooperative threads
@@ -39,9 +39,9 @@ void setupThreads(struct coop_task_list_s *task_list, struct coop_task_s
 /**
  * \brief Sets up the variables associated with the exoskeleton
  *
- * \param exo The exoskeleton structure.
+ * \param stimulator The stim_module structure
  */
-void setupExoVars(volatile exo_t *exo);
+void setupStimulatorVars(volatile stim_module_t *stimulator);
 
 /**
  * \brief Sets up board specific hardware things - usb serial, timers, etc.
@@ -49,23 +49,8 @@ void setupExoVars(volatile exo_t *exo);
 void setupBoard();
 
 /**
- * \brief Initializes the joint.
- */
-void setupRightKneeJoint(joint_t *r_knee_joint);
-
-/**
- * \brief Initializes the joint.
- */
-void setupLeftKneeJoint(joint_t *l_knee_joint);
-
-/**
- * \brief Calculates the trajectories used in the lookup tables.
- */
-void setupTrajectories(volatile exo_t *exo);
-
-/**
  * \brief Sets up the stimulation boards
  */
-void setupStim(volatile exo_t *exo);
+void setupStim(volatile stim_module_t *stimulator);
 
 #endif

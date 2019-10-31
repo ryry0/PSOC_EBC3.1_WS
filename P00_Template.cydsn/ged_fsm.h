@@ -49,25 +49,25 @@ struct ged_state_machine_s {
 /**
  * \brief Run the necessary control algorithms, etc associated with a particular
  * state */
-void ged_runState(const ged_state_machine_t *state_machine, void *v_exo);
+void ged_runState(const ged_state_machine_t *state_machine, void *v_stimulator);
 
 /**
  * \brief Checks the transitions into and out of states, responsible for
  * switching states.
  */
-void ged_checkTransitions(ged_state_machine_t *state_machine, void *v_exo);
+void ged_checkTransitions(ged_state_machine_t *state_machine, void *v_stimulator);
 
 /**
  * \brief Transitions to a new state
  * switching states.
  */
 void ged_transition(ged_state_machine_t *state_machine, ged_state_t state, void
-    *v_exo);
+    *v_stimulator);
 
 /**
  * \brief Initialize the state machine into a certain state
  */
-void ged_init(ged_state_machine_t *state_machine, void *v_exo);
+void ged_init(ged_state_machine_t *state_machine, void *v_stimulator);
 
 /**
  * \brief Initialize the state machine into a certain state
@@ -78,12 +78,12 @@ ged_state_machine_t *ged_create();
  * \brief Default transitions that will apply for every state (can be
  * overridden)
  */
-void ged_defaultTrans(ged_state_machine_t *state_machine, void *v_exo);
+void ged_defaultTrans(ged_state_machine_t *state_machine, void *v_stimulator);
 
 /**
  * \brief Force a state transition depending on the ged_state_id_t enum
  */
-void ged_forceTrans(ged_state_machine_t *state_machine, void *v_exo,
+void ged_forceTrans(ged_state_machine_t *state_machine, void *v_stimulator,
     ged_state_id_t state_id);
 
 ged_state_id_t ged_getStateID(ged_state_machine_t *state_machine);

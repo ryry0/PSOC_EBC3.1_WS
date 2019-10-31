@@ -11,20 +11,13 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stim_module_constants.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #define MAX_WAIT_ATTEMPTS 5
-
-typedef enum {
-  MODULE_RIGHT_HIP_ID = 0,
-  MODULE_RIGHT_KNEE_ID,
-  MODULE_LEFT_HIP_ID,
-  MODULE_LEFT_KNEE_ID,
-  MODULE_ID_MAX
-} module_id_t;
 
 typedef struct module_logger_s {
   bool sent[MODULE_ID_MAX];
