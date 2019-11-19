@@ -10,7 +10,7 @@
 
 #include <CwruStimLib.h>
 #include <stdbool.h>
-#define NUM_CHANNELS 12
+#define NUM_CHANNELS 16
 #define NUM_POINTS 8
 
 /** this struct is used to store information corresponding to a pattern. */
@@ -79,8 +79,8 @@ void stimint_initBoardUART(cwru_stim_struct_t *stim_board,
  * \param counts_per_second How many increments does it take to get to 1 second
  */
 void stimpat_initPattern(stim_pattern_t *stim_pattern,
-  uint16_t (*Active_LUT_PP)[12][8],
-  uint8_t  (*Active_LUT_PW)[12][8],
+  uint16_t (*Active_LUT_PP)[NUM_CHANNELS][NUM_POINTS],
+  uint8_t  (*Active_LUT_PW)[NUM_CHANNELS][NUM_POINTS],
   float pattern_time,
   uint16_t counts_per_second);
 

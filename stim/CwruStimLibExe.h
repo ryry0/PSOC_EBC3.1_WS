@@ -18,8 +18,8 @@
 
 // Calulate pattern ramping function
 uint8_t stim_get_PW_ramping(int channel_i,
-                        const uint16_t (*LUT_PP_t)[12][8],
-                        const uint8_t (*LUT_PW_t)[12][8],
+                        const uint16_t (*LUT_PP_t)[16][8],
+                        const uint8_t (*LUT_PW_t)[16][8],
                         uint16_t cycle_pp_t);
 
 // channel pw gains for dynamic gait control

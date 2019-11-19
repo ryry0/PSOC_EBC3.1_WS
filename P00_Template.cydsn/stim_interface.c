@@ -69,9 +69,9 @@ static void checkdata();
 static char getPCdata();
 void stim_crtISTSchedEvents(cwru_stim_struct_t *stim_board, uint8_t ipi);
 
-void stim_sendRefreshEvent(cwru_stim_struct_t *stim_board);
+size_t stim_sendRefreshEvent(cwru_stim_struct_t *stim_board);
 
-void stim_sendRefreshEvent(cwru_stim_struct_t *stim_board) {
+size_t stim_sendRefreshEvent(cwru_stim_struct_t *stim_board) {
   // calculate message size
   size_t size = REFRESH_MSG_LEN + UECU_MSG_EXTRAL_LEN;
   // build message content
@@ -191,8 +191,8 @@ void stimpat_setevent_wrap(cwru_stim_struct_t *stim_board) {
 */
 
 void stimpat_setActivePattern(stim_pattern_t *stim_pattern,
-  uint16_t (*Active_LUT_PP)[12][8],
-  uint8_t (*Active_LUT_PW)[12][8]) {
+  uint16_t (*Active_LUT_PP)[NUM_CHANNELS][NUM_POINTS],
+  uint8_t (*Active_LUT_PW)[NUM_CHANNELS][NUM_POINTS]) {
   stim_pattern->Active_LUT_PP = Active_LUT_PP;
   stim_pattern->Active_LUT_PW = Active_LUT_PW;
 }
@@ -350,8 +350,8 @@ void stim_crtPercSchedEvents(cwru_stim_struct_t *stim_board, uint8_t ipi) {
 }
 
 void stimpat_initPattern(stim_pattern_t *stim_pattern,
-  uint16_t (*Active_LUT_PP)[12][8],
-  uint8_t  (*Active_LUT_PW)[12][8],
+  uint16_t (*Active_LUT_PP)[NUM_CHANNELS][NUM_POINTS],
+  uint8_t  (*Active_LUT_PW)[NUM_CHANNELS][NUM_POINTS],
   float pattern_time,
   uint16_t counts_per_second) {
 
@@ -390,9 +390,9 @@ void stimint_initBoardUART(cwru_stim_struct_t *stim_board,
 /* TEST FUNCTIONS FOUND BELOW: -----------------------------------------------
  */
 
+#include <BAL06_gait.h>
 void stimpat_test_new() {
   cwru_stim_struct_t cwru_stim_brd1;
-  cwru_stim_struct_t cwru_stim_brd2;
   /* ... wtf there's something about it needing to be
    * 100ms
    */
@@ -416,10 +416,8 @@ void stimpat_test_new() {
 
   //checkdata();
 
-  bool start_simulation = false;
   for (;;) {
     const uint8_t THREAD_DELAY = 20;
-    char new_val[30] = {0};
 
     pc_input = getPCdata();
 
@@ -455,7 +453,7 @@ void stimpat_test_new() {
 void stimpat_test_lib() {
   int8_t sucessStatus = 1u;
   cwru_stim_struct_t cwru_stim_brd1;
-  cwru_stim_struct_t cwru_stim_brd2;
+  //cwru_stim_struct_t cwru_stim_brd2;
 
   uint8_t cmd = 0;
   uint8_t mode = 0;
@@ -471,8 +469,8 @@ void stimpat_test_lib() {
     cwru_stim_brd1._current_pw_gains[i] = 1;
     cwru_stim_brd1._current_amp_gains[i] = 1;
 
-    cwru_stim_brd2._current_pw_gains[i] = 1;
-    cwru_stim_brd2._current_amp_gains[i] = 1;
+    //cwru_stim_brd2._current_pw_gains[i] = 1;
+    //cwru_stim_brd2._current_amp_gains[i] = 1;
   }
 
   // CwruStimLib Related
@@ -1069,11 +1067,13 @@ void stimpat_testImplantPattern() {
 
   bd_putStringReady("end delay\n");
 
+  /*
   stimpat_initPattern(&active_stim_pattern,
       &gait_walk_L_B1_PP,
       &gait_walk_L_B1_PW,
       gait_walk_L_duration,
       1000);
+      */
 
   const uint8_t STIM_BOARD_IPI = 30;
 

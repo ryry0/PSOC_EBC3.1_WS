@@ -11,8 +11,8 @@
 
 // Calulate pattern ramping function
 uint8_t stim_get_PW_ramping(int channel_i,
-                        const uint16_t (*LUT_PP_t)[12][8],
-                        const uint8_t (*LUT_PW_t)[12][8],
+                        const uint16_t (*LUT_PP_t)[16][8],
+                        const uint8_t (*LUT_PW_t)[16][8],
                         uint16_t cycle_pp_t)
 {
   // search in LUT_PP_t[i][:] find where cycle_pp_t belongs to
@@ -172,6 +172,7 @@ uint8_t stim_exe_chan_amp_gain(cwru_stim_struct_t *cwru_stim,  uint8_t channel)
 int stim_update_cycle(cwru_stim_struct_t *cwru_stim,
                       int type, int pattern, uint16_t cycle_percentage) {
 
+  /*
   // Pattern look up table temp holder.
   const uint16_t (*LUT_PP)[12][8] = NULL;
   const uint8_t (*LUT_PW)[12][8] = NULL;
@@ -484,5 +485,6 @@ int stim_update_cycle(cwru_stim_struct_t *cwru_stim,
       break;
   } // end switch (type)
 
+  */
   return 1;
 }
