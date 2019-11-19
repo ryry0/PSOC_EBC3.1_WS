@@ -257,14 +257,18 @@ void stimThread(coop_args_t *args) {
   cwru_stim_struct_t *const cwru_stim_brd1  =
     (cwru_stim_struct_t *) &stimulator->cwru_stim_brd1;
 
+  /*
   cwru_stim_struct_t *const cwru_stim_brd2  =
     (cwru_stim_struct_t *) &stimulator->cwru_stim_brd2;
+    */
 
   stimpat_applyPatternLoop(cwru_stim_brd1, pattern_brd1, STIM_AMPLITUDE);
   stimpat_incrementCounter(pattern_brd1, 20);
 
+  /*
   stimpat_applyPatternLoop(cwru_stim_brd2, pattern_brd2, STIM_AMPLITUDE);
   stimpat_incrementCounter(pattern_brd2, 20);
+  */
 
 #if defined(STIM_CONFIG_3RD_SURFACE)
   stim_pattern_t *const pattern_brd3  = &stimulator->pattern_brd3;
