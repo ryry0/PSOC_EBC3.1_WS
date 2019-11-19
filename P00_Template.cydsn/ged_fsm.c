@@ -239,8 +239,8 @@ static void ged_sitToStandOnEntry(void *v_stimulator) {
   //stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
 
   stimpat_initPattern(pattern_brd1,
-  &gait_stand_B1_PP,
-  &gait_stand_B1_PW,
+  &gait_zero_PP,
+  &gait_zero_PW,
   gait_stand_duration,
   1000);
   stimpat_activatePattern(pattern_brd1);
