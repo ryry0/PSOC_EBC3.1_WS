@@ -114,6 +114,7 @@ void setupStim(volatile stim_module_t *stimulator) {
 
   stimint_initBoardUART(cwru_stim_brd1, STIM_UART_PORT_0); //SCB J115
   STIM_SETUP_FUNC(cwru_stim_brd1, STIM_BOARD_IPI);
+  stimpat_setChannelAmplitudes(pattern_brd1, &gait_B1_AMP);
 
   /*
   stimpat_initPattern(pattern_brd2,

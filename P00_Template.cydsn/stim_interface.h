@@ -17,6 +17,7 @@
 typedef struct {
   uint16_t (*Active_LUT_PP)[NUM_CHANNELS][NUM_POINTS];
   uint8_t  (*Active_LUT_PW)[NUM_CHANNELS][NUM_POINTS];
+  uint8_t (*channel_amplitudes)[NUM_CHANNELS];
   float pattern_time;
   uint16_t counts_per_second;
   size_t counter;
@@ -33,6 +34,17 @@ typedef struct {
  */
 void stimint_initPercBoard(cwru_stim_struct_t *stim_board, uint8_t ipi);
 
+
+/**
+ * \brief Set channel amplitudes
+ *
+ * \param stim_board The stim board.
+ * \param ipi Interpulse interval. - TODO should remove.
+ */
+inline void stimpat_setChannelAmplitudes(stim_pattern_t *stim_pattern, uint8_t
+    (*channel_amplitudes)[NUM_CHANNELS]) {
+  stim_pattern->channel_amplitudes = channel_amplitudes;
+}
 
 /**
  * \brief Initialize an implant board

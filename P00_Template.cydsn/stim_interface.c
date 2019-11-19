@@ -284,7 +284,8 @@ void stimpat_applyPatternAllChannels(cwru_stim_struct_t *stim_board,
                         stim_pattern_t *stim_pattern, uint8_t amplitude) { //0-10000
 
   for (size_t i = 0; i < stim_board->STIM_CHANNEL_USED; ++i) {
-    stimpat_applyPatternPWOneChannel(stim_board, stim_pattern, i, i+1, amplitude);
+    stimpat_applyPatternPWOneChannel(stim_board, stim_pattern, i, i+1,
+        stim_pattern->channel_amplitudes[i]);
   }
 }
 
