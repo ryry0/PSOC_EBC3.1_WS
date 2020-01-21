@@ -4,9 +4,10 @@
 
 // ------ Walk ------
 
+#define scaling_factor 0.60
 // Step Duration 
- float gait_walk_R_duration = 2.25; 
- float gait_walk_L_duration = 2.25; 
+ float gait_walk_R_duration = 2.25 * scaling_factor; 
+ float gait_walk_L_duration = 2.25 * scaling_factor; 
 
 // Channel Amplitude 
  uint8_t gait_B1_AMP[16] = { 5,		8,		8,		8,		8,		8,		8,		0,		5,		4,		4,		5,		8,		4,		8,		8 };
