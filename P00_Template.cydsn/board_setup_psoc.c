@@ -4,7 +4,7 @@
 #include <stim_interface.h>
 #include <board_can.h>
 #include <stim_configurable.h>
-#include <BAL06_gait.h>
+#include <HNP1_gait_withmisc.h>
 #include <gait_zero_pattern.h>
 
 /*---------------------------------------------------------------------------*/
@@ -98,13 +98,14 @@ void setupBoard() {
 
 void setupStim(volatile stim_module_t *stimulator) {
   stim_pattern_t *const pattern_brd1  = (stim_pattern_t *) &stimulator->pattern_brd1;
-  //stim_pattern_t *const pattern_brd2  = (stim_pattern_t *) &stimulator->pattern_brd2;
+  stim_pattern_t *const pattern_brd2  = (stim_pattern_t *) &stimulator->pattern_brd2;
   //stim_pattern_t *const configurable_pattern  = (stim_pattern_t *) &stimulator->configurable_pattern;
 
   cwru_stim_struct_t *const cwru_stim_brd1  = (cwru_stim_struct_t *) &stimulator->cwru_stim_brd1;
-  //cwru_stim_struct_t *const cwru_stim_brd2  = (cwru_stim_struct_t *) &stimulator->cwru_stim_brd2;
+  cwru_stim_struct_t *const cwru_stim_brd2  = (cwru_stim_struct_t *) &stimulator->cwru_stim_brd2;
 
-  const uint8_t STIM_BOARD_IPI = 50; //everything in BAL06 is 50
+  //const uint8_t STIM_BOARD_IPI = 50; //everything in BAL06 is 50
+  const uint8_t STIM_BOARD_IPI = 30; //everything in HNP1 is 30 kinda
 
   stimpat_initPattern(pattern_brd1,
       &gait_zero_PP,
@@ -116,7 +117,6 @@ void setupStim(volatile stim_module_t *stimulator) {
   STIM_SETUP_FUNC(cwru_stim_brd1, STIM_BOARD_IPI);
   stimpat_setChannelAmplitudes(pattern_brd1, gait_B1_AMP);
 
-  /*
   stimpat_initPattern(pattern_brd2,
       &gait_stand_B2_PP,
       &gait_stand_B2_PW,
@@ -125,7 +125,6 @@ void setupStim(volatile stim_module_t *stimulator) {
 
   stimint_initBoardUART(cwru_stim_brd2, STIM_UART_PORT_1); //SCB J116
   STIM_SETUP_FUNC(cwru_stim_brd2, STIM_BOARD_IPI);
-  */
 
 #if defined(STIM_CONFIG_3RD_SURFACE)
   stim_pattern_t *const pattern_brd3  = (stim_pattern_t *) &stimulator->pattern_brd3;

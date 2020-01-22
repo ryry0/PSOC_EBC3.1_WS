@@ -10,7 +10,7 @@
 
 #include <CwruStimLib.h>
 #include <stdbool.h>
-#define NUM_CHANNELS 16
+#define NUM_CHANNELS 12
 #define NUM_POINTS 8
 
 /** this struct is used to store information corresponding to a pattern. */

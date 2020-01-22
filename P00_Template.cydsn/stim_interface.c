@@ -391,7 +391,6 @@ void stimint_initBoardUART(cwru_stim_struct_t *stim_board,
 /* TEST FUNCTIONS FOUND BELOW: -----------------------------------------------
  */
 
-#include <BAL06_gait.h>
 void stimpat_test_new() {
   cwru_stim_struct_t cwru_stim_brd1;
   /* ... wtf there's something about it needing to be
@@ -400,11 +399,13 @@ void stimpat_test_new() {
   uint16_t cycle_percent = 0;
   char pc_input = 0;
   stim_pattern_t active_stim_pattern;
+  /*
   stimpat_initPattern(&active_stim_pattern,
       &gait_stand_B1_PP,
       &gait_stand_B1_PW,
       2.0,
       1000);
+      */
 
   //setupBoard();
   const uint8_t STIM_BOARD_IPI = 30;

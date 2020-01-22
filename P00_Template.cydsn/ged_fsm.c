@@ -2,7 +2,7 @@
 #include <board_io.h>
 #include <stim_module.h>
 #include <board_can.h>
-#include <BAL06_gait.h>
+#include <HNP1_gait_withmisc.h>
 #include <gait_zero_pattern.h>
 
 #define KNEE_ANGLE_EXTENSION_LIMIT 15
@@ -166,23 +166,21 @@ static ged_state_t ged_half_left_step = {
 static void ged_halfLeftStepOnEntry(void *v_stimulator) {
   stim_module_t *stimulator = (stim_module_t *) v_stimulator;
   stim_pattern_t *const pattern_brd1  = &stimulator->pattern_brd1;
-  //stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
+  stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
 
   stimpat_initPattern(pattern_brd1,
-  &gait_walk_B1_L_PP,
-  &gait_walk_B1_L_PW,
+  &gait_walk_L_B1_PP,
+  &gait_walk_L_B1_PW,
   gait_walk_L_duration,
   1000);
   stimpat_activatePattern(pattern_brd1);
 
-  /*
   stimpat_initPattern(pattern_brd2,
   &gait_walk_L_B2_PP,
   &gait_walk_L_B2_PW,
   gait_walk_L_duration,
   1000);
   stimpat_activatePattern(pattern_brd2);
-  */
 }
 
 static void ged_halfLeftStepRun(void *v_stimulator) {
@@ -236,7 +234,7 @@ static void ged_sitToStandRun(void *v_stimulator) {
 static void ged_sitToStandOnEntry(void *v_stimulator) {
   stim_module_t *stimulator = (stim_module_t *) v_stimulator;
   stim_pattern_t *const pattern_brd1  = &stimulator->pattern_brd1;
-  //stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
+  stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
 
   stimpat_initPattern(pattern_brd1,
   &gait_stand_B1_PP,
@@ -528,23 +526,21 @@ void ged_lockedCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator
 void ged_leftSwingOnEntry(void *v_stimulator) {
   stim_module_t *stimulator = (stim_module_t *) v_stimulator;
   stim_pattern_t *const pattern_brd1  = &stimulator->pattern_brd1;
-  //stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
+  stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
 
   stimpat_initPattern(pattern_brd1,
-  &gait_walk_B1_L_PP,
-  &gait_walk_B1_L_PW,
+  &gait_walk_L_B1_PP,
+  &gait_walk_L_B1_PW,
   gait_walk_L_duration,
   1000);
   stimpat_activatePattern(pattern_brd1);
 
-  /*
   stimpat_initPattern(pattern_brd2,
   &gait_walk_L_B2_PP,
   &gait_walk_L_B2_PW,
   gait_walk_L_duration,
   1000);
   stimpat_activatePattern(pattern_brd2);
-  */
 
 }
 
@@ -560,23 +556,21 @@ void ged_rightSwingOnEntry(void *v_stimulator) {
   stim_module_t *stimulator = (stim_module_t *) v_stimulator;
 
   stim_pattern_t *const pattern_brd1  = &stimulator->pattern_brd1;
-  //stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
+  stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
 
   stimpat_initPattern(pattern_brd1,
-  &gait_walk_B1_R_PP,
-  &gait_walk_B1_R_PW,
+  &gait_walk_R_B1_PP,
+  &gait_walk_R_B1_PW,
   gait_walk_R_duration,
   1000);
   stimpat_activatePattern(pattern_brd1);
 
-  /*
   stimpat_initPattern(pattern_brd2,
   &gait_walk_R_B2_PP,
   &gait_walk_R_B2_PW,
   gait_walk_R_duration,
   1000);
   stimpat_activatePattern(pattern_brd2);
-  */
 }
 
 void ged_rightSwingCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator) {
