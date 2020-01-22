@@ -118,13 +118,14 @@ void setupStim(volatile stim_module_t *stimulator) {
   stimpat_setChannelAmplitudes(pattern_brd1, gait_B1_AMP);
 
   stimpat_initPattern(pattern_brd2,
-      &gait_stand_B2_PP,
-      &gait_stand_B2_PW,
-      gait_stand_duration,
+      &gait_zero_PP,
+      &gait_zero_PW,
+      1.0,
       1000);
 
   stimint_initBoardUART(cwru_stim_brd2, STIM_UART_PORT_1); //SCB J116
   STIM_SETUP_FUNC(cwru_stim_brd2, STIM_BOARD_IPI);
+  stimpat_setChannelAmplitudes(pattern_brd2, gait_B2_AMP);
 
 #if defined(STIM_CONFIG_3RD_SURFACE)
   stim_pattern_t *const pattern_brd3  = (stim_pattern_t *) &stimulator->pattern_brd3;
