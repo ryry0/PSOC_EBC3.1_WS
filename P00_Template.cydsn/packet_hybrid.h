@@ -29,7 +29,8 @@ typedef enum pkt_type_e {
   PKT_MODULE_GET_PARAMS,
   PKT_MODULE_GET_PARAMS_REPLY,
   PKT_MODULE_SET_SHARED_PARAMS,
-  PKT_MODULE_SET_STIM_PATTERN_CHANNEL,
+  PKT_MODULE_SET_SIT_TO_STAND_PARAMS,
+  PKT_MODULE_SET_BURST_PARAMS,
   PKT_DATA_START  = 's',
   PKT_DATA_STOP   = 'n',
   PKT_EN_MOTOR    = 'e',
@@ -40,77 +41,59 @@ typedef enum pkt_type_e {
 
 /** Macro to easily add parameters and ensure that they are synced with gui
  * labels */
-#define FOREACH_PARAM(PARAM)            \
-  PARAM(MAX_HIP_ANGLE)              \
-  PARAM(MIN_HIP_ANGLE)              \
-  PARAM(MAX_KNEE_ANGLE)             \
-  PARAM(HEAD_MODULE_POSITION_PID_KP)     \
-  PARAM(HEAD_MODULE_POSITION_PID_KI)     \
-  PARAM(HEAD_MODULE_POSITION_PID_KD)     \
-  PARAM(HEAD_MODULE_POSITION_PID_AW_UB)  \
-  PARAM(HEAD_MODULE_POSITION_PID_AW_LB)  \
-  PARAM(HEAD_MODULE_SPEED_PID_KP)        \
-  PARAM(HEAD_MODULE_SPEED_PID_KI)        \
-  PARAM(HEAD_MODULE_SPEED_PID_KD)        \
-  PARAM(HEAD_MODULE_SPEED_PID_AW_UB)     \
-  PARAM(HEAD_MODULE_SPEED_PID_AW_LB)     \
-  PARAM(HEAD_MODULE_FC_ALPHA)            \
-  PARAM(TF)                         \
-  PARAM(TPS_PERC)                   \
-  PARAM(HEAD_MODULE_BC_THRESH)           \
-  PARAM(HEAD_MODULE_BC_TORQUE)          \
-  PARAM(R_WEIGHT_ACC_FSR_THRESH)      \
-  PARAM(R_LOW_FSR_THRESH)             \
-  PARAM(R_HIGH_FSR_THRESH)            \
-  PARAM(L_WEIGHT_ACC_FSR_THRESH)      \
-  PARAM(L_LOW_FSR_THRESH)             \
-  PARAM(L_HIGH_FSR_THRESH)            \
-  PARAM(L_KNEE_EXTENSION_THRESH)    \
-  PARAM(L_HIP_FLEXION_THRESH)    \
-  PARAM(R_KNEE_EXTENSION_THRESH)    \
-  PARAM(R_HIP_FLEXION_THRESH)    \
-  PARAM(THIGH_MASS) \
-  PARAM(THIGH_COM) \
-  PARAM(THIGH_LENGTH) \
-  PARAM(SHANK_MASS) \
-  PARAM(SHANK_COM)  \
-  PARAM(GRAVITY)    \
-  PARAM(MODE)           \
-  PARAM(AUTO_WALK)                  \
-  PARAM(MOTOR_FORCE_OFF)          \
-  PARAM(PKT_PARAM_MAX)              \
+#define FOREACH_PARAM(PARAM)                      \
+  PARAM(PKT_HEAD_MODULE_FC_ALPHA)                 \
+  PARAM(PKT_HEAD_MODULE_BC_TORQUE)                \
+  PARAM(PKT_HEAD_MODULE_BC_THRESH)                \
+  PARAM(PKT_HEAD_MODULE_R_WEIGHT_ACC_FSR_THRESH)  \
+  PARAM(PKT_HEAD_MODULE_R_LOW_FSR_THRESH)         \
+  PARAM(PKT_HEAD_MODULE_R_HIGH_FSR_THRESH)        \
+  PARAM(PKT_HEAD_MODULE_L_WEIGHT_ACC_FSR_THRESH)  \
+  PARAM(PKT_HEAD_MODULE_L_LOW_FSR_THRESH)         \
+  PARAM(PKT_HEAD_MODULE_L_HIGH_FSR_THRESH)        \
+  PARAM(PKT_HEAD_MODULE_L_KNEE_EXTENSION_THRESH)  \
+  PARAM(PKT_HEAD_MODULE_L_HIP_FLEXION_THRESH)     \
+  PARAM(PKT_HEAD_MODULE_R_KNEE_EXTENSION_THRESH)  \
+  PARAM(PKT_HEAD_MODULE_R_HIP_FLEXION_THRESH)     \
+  PARAM(PKT_HEAD_MODULE_BURST_FLEXION_TORQUE)     \
+  PARAM(PKT_HEAD_MODULE_BURST_EXTENSION_TORQUE)   \
+  PARAM(PKT_HEAD_MODULE_BURST_TIME)               \
+  PARAM(PKT_HEAD_MODULE_STS_TORQUE)               \
+  PARAM(PKT_HEAD_MODULE_MODE)                     \
+  PARAM(PKT_HEAD_MODULE_AUTO_WALK)                \
+  PARAM(PKT_HEAD_MODULE_MOTOR_FORCE_OFF)          \
+  PARAM(PKT_HEAD_MODULE_PARAM_MAX)                \
 
 
 #define FOREACH_MODULE_PARAM(PARAM)     \
-  PARAM(PKT_MODULE_POSITION_PID_KP)     \
-  PARAM(PKT_MODULE_POSITION_PID_KI)     \
-  PARAM(PKT_MODULE_POSITION_PID_KD)     \
-  PARAM(PKT_MODULE_POSITION_PID_AW_UB)  \
-  PARAM(PKT_MODULE_POSITION_PID_AW_LB)  \
-  PARAM(PKT_MODULE_SPEED_PID_KP)        \
-  PARAM(PKT_MODULE_SPEED_PID_KI)        \
-  PARAM(PKT_MODULE_SPEED_PID_KD)        \
-  PARAM(PKT_MODULE_SPEED_PID_AW_UB)     \
-  PARAM(PKT_MODULE_SPEED_PID_AW_LB)     \
   PARAM(PKT_MODULE_FC_ALPHA)            \
   PARAM(PKT_MODULE_BC_TORQUE)           \
   PARAM(PKT_MODULE_BC_THRESH)           \
-  PARAM(PKT_MODULE_THIGH_MASS)          \
-  PARAM(PKT_MODULE_THIGH_COM)           \
-  PARAM(PKT_MODULE_THIGH_LENGTH)        \
-  PARAM(PKT_MODULE_SHANK_MASS)          \
-  PARAM(PKT_MODULE_SHANK_COM)           \
-  PARAM(PKT_MODULE_GRAVITY)             \
+  PARAM(PKT_MODULE_BURST_FLEXION_TORQUE)     \
+  PARAM(PKT_MODULE_BURST_EXTENSION_TORQUE)   \
+  PARAM(PKT_MODULE_BURST_TIME)               \
+  PARAM(PKT_MODULE_STS_TORQUE)               \
   PARAM(PKT_MODULE_MOTOR_FORCE_OFF)     \
   PARAM(PKT_MODULE_PARAM_MAX)           \
 
-#define FOREACH_SHARED_MODULE_PARAM(PARAM) \
-  PARAM(PKT_SHARED_BC_TORQUE) \
-  PARAM(PKT_SHARED_BC_THRESH) \
-  PARAM(PKT_SHARED_ASSIST_TORQUE) \
-  PARAM(PKT_SHARED_ASSIST_SWITCH_ANGLE) \
-  PARAM(PKT_SHARED_MODE) \
-  PARAM(PKT_SHARED_MAX) \
+#define FOREACH_SHARED_MODULE_PARAM(PARAM)  \
+  PARAM(PKT_SHARED_BC_TORQUE)               \
+  PARAM(PKT_SHARED_BC_THRESH)               \
+  PARAM(PKT_SHARED_ASSIST_TORQUE)           \
+  PARAM(PKT_SHARED_ASSIST_SWITCH_ANGLE)     \
+  PARAM(PKT_SHARED_MODE)                    \
+  PARAM(PKT_SHARED_MAX)                     \
+
+//sit to stand enum generator
+#define FOREACH_MODULE_STS_PARAM(PARAM) \
+  PARAM(PKT_MODULE_SHARED_STS_TORQUE)   \
+  PARAM(PKT_MODULE_STS_MAX)             \
+
+#define FOREACH_MODULE_SHARED_BURST_PARAM(PARAM)   \
+  PARAM(PKT_MODULE_SHARED_BURST_FLEXION_TORQUE)    \
+  PARAM(PKT_MODULE_SHARED_BURST_EXTENSION_TORQUE)  \
+  PARAM(PKT_MODULE_SHARED_BURST_TIME)              \
+  PARAM(PKT_MODULE_SHARED_BURST_MAX)               \
 
 #define GENERATE_ENUM(ENUM) ENUM,
 #define GENERATE_STRING(STRING) #STRING,
@@ -126,6 +109,14 @@ typedef enum pkt_module_param_e {
 typedef enum pkt_shared_module_param_e {
   FOREACH_SHARED_MODULE_PARAM(GENERATE_ENUM)
 } pkt_shared_module_param_t;
+
+typedef enum pkt_set_module_sts_param_e {
+  FOREACH_MODULE_STS_PARAM(GENERATE_ENUM)
+} pkt_set_module_sts_param_t;
+
+typedef enum pkt_set_module_burst_param_e {
+  FOREACH_MODULE_SHARED_BURST_PARAM(GENERATE_ENUM)
+} pkt_set_module_burst_param_t;
 
 typedef enum pkt_pid_id_e {
   PKT_PID_L_KNEE_POSITION,
@@ -199,7 +190,7 @@ typedef struct {
   //just send a bunch of floats they can get typecasted in the firmware.
   //You'll only get a couple bytes of overhead anyway.
   //It is too painful to need to update struct names manually every time.
-  float float_params[PKT_PARAM_MAX];
+  float float_params[PKT_HEAD_MODULE_PARAM_MAX];
 } pkt_log_params_t;
 
 typedef pkt_log_params_t pkt_set_params_t;
@@ -278,12 +269,12 @@ typedef pkt_shared_module_params_t pkt_set_shared_module_params_t;
 
 /*----------------------------------------------------------------------------*/
 typedef struct {
-  uint16_t pulse_percentages[8];
-  uint8_t pulse_widths[8];
-  uint8_t board_number;
-  uint8_t stim_pattern_number;
-  uint8_t channel_number;
-} pkt_set_stim_pattern_channel;
+  float float_params[PKT_MODULE_STS_MAX];
+} pkt_module_sts_params_t;
 
-typedef pkt_set_stim_pattern_channel pkt_get_stim_pattern_channel;
+/*----------------------------------------------------------------------------*/
+typedef struct {
+  float float_params[PKT_MODULE_SHARED_BURST_MAX];
+} pkt_set_module_burst_params_t;
+
 #endif

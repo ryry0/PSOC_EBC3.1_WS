@@ -126,20 +126,6 @@ void handlePacketMsg(
       sendAck();
       break;
 
-      /*
-    case PKT_SET_PID:
-      pid_packet = pkt_interpPtr(pkt_set_pid_t, packet);
-
-      //stimulator->new_setpoint = pid_packet->setpoint;
-      stimulator->r_knee_joint.position_pid.proportional_gain = pid_packet->Kp;
-      stimulator->r_knee_joint.position_pid.integral_gain = pid_packet->Ki;
-      stimulator->r_knee_joint.position_pid.derivative_gain = pid_packet->Kd;
-      stimulator->l_knee_joint.position_pid.proportional_gain = pid_packet->Kp;
-      stimulator->l_knee_joint.position_pid.integral_gain = pid_packet->Ki;
-      stimulator->l_knee_joint.position_pid.derivative_gain = pid_packet->Kd;
-      break;
-      */
-
     case PKT_GET_PARAMS:
       getParameters(stimulator);
       break;
@@ -149,12 +135,6 @@ void handlePacketMsg(
       break;
 
     case PKT_DATA_START:
-      stimulator->send_log = true;
-      break;
-
-    case PKT_ZERO_PID:
-      //pid_init(&stimulator->speed_pid, 0, 0, 0, 5000);
-      //stimulator->setpoint = stimulator->new_setpoint;
       break;
 
     case PKT_SET_STATE:
@@ -207,9 +187,9 @@ void handlePacketMsg(
       break;
       */
 
+        /*
     case PKT_MODULE_SET_STIM_PATTERN_CHANNEL:
       {
-        /*
       pkt_set_stim_pattern_channel *stim_packet_payload =
         pkt_interpPtr(pkt_set_stim_pattern_channel, packet);
 
@@ -220,9 +200,9 @@ void handlePacketMsg(
 
       memcpy(&configurable_pattern1_PP[channel_number][0],
           stim_packet_payload->pulse_percentages, sizeof(uint16_t)*STIM_NUM_POINTS);
-        */
       }
       break;
+        */
 
     default:
       break;
