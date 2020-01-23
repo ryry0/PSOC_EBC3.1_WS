@@ -31,6 +31,9 @@ typedef enum pkt_type_e {
   PKT_MODULE_SET_SHARED_PARAMS,
   PKT_MODULE_SET_SIT_TO_STAND_PARAMS,
   PKT_MODULE_SET_BURST_PARAMS,
+  PKT_SHUTDOWN_STIM,
+  PKT_REENABLE_STIM,
+  PKT_STIM_CONFIGURE,
   PKT_DATA_START  = 's',
   PKT_DATA_STOP   = 'n',
   PKT_EN_MOTOR    = 'e',
@@ -95,6 +98,12 @@ typedef enum pkt_type_e {
   PARAM(PKT_MODULE_SHARED_BURST_TIME)              \
   PARAM(PKT_MODULE_SHARED_BURST_MAX)               \
 
+#define FOREACH_STIM_CONFIG(PARAM)      \
+  PARAM(PKT_STIM_SCALING_FACTOR)        \
+  PARAM(PKT_L_KNEE_EXTEND_ASSIST_TIME)  \
+  PARAM(PKT_R_KNEE_EXTEND_ASSIST_TIME)  \
+  PARAM(PKT_STIM_CONFIG_MAX)            \
+
 #define GENERATE_ENUM(ENUM) ENUM,
 #define GENERATE_STRING(STRING) #STRING,
 
@@ -117,6 +126,10 @@ typedef enum pkt_set_module_sts_param_e {
 typedef enum pkt_set_module_burst_param_e {
   FOREACH_MODULE_SHARED_BURST_PARAM(GENERATE_ENUM)
 } pkt_set_module_burst_param_t;
+
+enum pkt_stim_config_e {
+  FOREACH_STIM_CONFIG(GENERATE_ENUM)
+};
 
 typedef enum pkt_pid_id_e {
   PKT_PID_L_KNEE_POSITION,
@@ -276,5 +289,10 @@ typedef struct {
 typedef struct {
   float float_params[PKT_MODULE_SHARED_BURST_MAX];
 } pkt_set_module_burst_params_t;
+
+/*----------------------------------------------------------------------------*/
+typedef struct {
+  float float_params[PKT_STIM_CONFIG_MAX];
+} pkt_stim_config_t;
 
 #endif

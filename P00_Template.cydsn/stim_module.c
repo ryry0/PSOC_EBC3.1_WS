@@ -15,6 +15,7 @@ volatile stim_module_t hybrid_stimulator = {
   .coop_task_list = {0},
   .state_machine = {{0}},
   .timestamp = 0,
+  .stim_scaling_factor = STIM_MODULE_SCALING_FACTOR,
 };
 
 /*---------------------------------------------------------------------------*/
@@ -28,6 +29,9 @@ static void setParameters(pkt_generic_t *packet, volatile stim_module_t *stimula
 static void getParameters(volatile stim_module_t *stimulator);
 
 static void sendAck();
+
+static void setStimParameters(pkt_generic_t *packet, volatile stim_module_t
+    *stimulator);
 
 /*---------------------------------------------------------------------------*/
 /** Threads */
@@ -204,6 +208,9 @@ void handlePacketMsg(
       break;
         */
 
+    case PKT_STIM_CONFIGURE:
+      setStimParameters(packet, stimulator);
+      break;
     default:
       break;
   }
@@ -215,6 +222,16 @@ static void setParameters(pkt_generic_t *packet,
 }
 
 static void getParameters(volatile stim_module_t *stimulator) {
+}
+
+static void setStimParameters(pkt_generic_t *packet, volatile stim_module_t
+    *stimulator) {
+
+  pkt_stim_config_t *parameter_packet =
+    pkt_interpPtr(pkt_stim_config_t, packet);
+
+  stimulator->stim_scaling_factor =
+    parameter_packet->float_params[PKT_STIM_SCALING_FACTOR];
 }
 
 void sendAck() {

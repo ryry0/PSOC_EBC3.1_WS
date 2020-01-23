@@ -38,6 +38,8 @@ typedef struct stim_module_s {
   bd_inputs_t sensor_inputs;
   ged_state_machine_t state_machine;
 
+  float stim_scaling_factor;
+
   uint32_t timestamp;
 
   pkt_generic_t input_packet;

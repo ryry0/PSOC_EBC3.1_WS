@@ -171,14 +171,14 @@ static void ged_halfLeftStepOnEntry(void *v_stimulator) {
   stimpat_initPattern(pattern_brd1,
   &gait_walk_L_B1_PP,
   &gait_walk_L_B1_PW,
-  gait_walk_L_duration,
+  gait_walk_L_duration * stimulator->stim_scaling_factor,
   1000);
   stimpat_activatePattern(pattern_brd1);
 
   stimpat_initPattern(pattern_brd2,
   &gait_walk_L_B2_PP,
   &gait_walk_L_B2_PW,
-  gait_walk_L_duration,
+  gait_walk_L_duration * stimulator->stim_scaling_factor,
   1000);
   stimpat_activatePattern(pattern_brd2);
 }
@@ -531,14 +531,14 @@ void ged_leftSwingOnEntry(void *v_stimulator) {
   stimpat_initPattern(pattern_brd1,
   &gait_walk_L_B1_PP,
   &gait_walk_L_B1_PW,
-  gait_walk_L_duration,
+  gait_walk_L_duration * stimulator->stim_scaling_factor,
   1000);
   stimpat_activatePattern(pattern_brd1);
 
   stimpat_initPattern(pattern_brd2,
   &gait_walk_L_B2_PP,
   &gait_walk_L_B2_PW,
-  gait_walk_L_duration,
+  gait_walk_L_duration * stimulator->stim_scaling_factor,
   1000);
   stimpat_activatePattern(pattern_brd2);
 
@@ -561,14 +561,14 @@ void ged_rightSwingOnEntry(void *v_stimulator) {
   stimpat_initPattern(pattern_brd1,
   &gait_walk_R_B1_PP,
   &gait_walk_R_B1_PW,
-  gait_walk_R_duration,
+  gait_walk_R_duration * stimulator->stim_scaling_factor,
   1000);
   stimpat_activatePattern(pattern_brd1);
 
   stimpat_initPattern(pattern_brd2,
   &gait_walk_R_B2_PP,
   &gait_walk_R_B2_PW,
-  gait_walk_R_duration,
+  gait_walk_R_duration * stimulator->stim_scaling_factor,
   1000);
   stimpat_activatePattern(pattern_brd2);
 }

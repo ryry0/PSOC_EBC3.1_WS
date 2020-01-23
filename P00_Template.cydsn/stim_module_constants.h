@@ -33,6 +33,8 @@
 
 #endif
 
+#define STIM_MODULE_SCALING_FACTOR 1.0
+
 typedef enum {
   MODULE_RIGHT_HIP_ID = 0,
   MODULE_RIGHT_KNEE_ID,
