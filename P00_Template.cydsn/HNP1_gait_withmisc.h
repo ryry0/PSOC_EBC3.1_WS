@@ -32,6 +32,7 @@ extern uint16_t gait_walk_L_B1_PP[12][8];
 
 // Pulse Width
 extern uint8_t gait_walk_L_B1_PW[12][8];
+extern uint8_t gait_walk_L_B1_PW_orig[12][8];
 
 // Inter Phase Interval
 extern uint8_t gait_walk_L_B1_IPI[12];
@@ -70,6 +71,7 @@ extern uint16_t gait_walk_R_B2_PP[12][8];
 
 // Pulse Width
 extern uint8_t gait_walk_R_B2_PW[12][8];
+extern uint8_t gait_walk_R_B2_PW_orig[12][8];
 
 // Inter Phase Interval
 extern uint8_t gait_walk_R_B2_IPI[12];
