@@ -24,6 +24,15 @@
 
 #include <stim_module_constants.h>
 
+
+typedef enum stim_module_mode_e {
+  STIM_MODULE_MODE_PASSIVE,
+  STIM_MODULE_MODE_FLOAT,
+  STIM_MODULE_MODE_BURST,
+  STIM_MODULE_MODE_ASSIST,
+  STIM_MODULE_MODE_GRAVITY,
+} stim_module_mode_t;
+
 /** Global Definitions */
 typedef struct stim_module_s {
   stim_pattern_t pattern_brd1;
@@ -45,6 +54,7 @@ typedef struct stim_module_s {
   pkt_generic_t input_packet;
   bool send_log;
 
+  uint8_t mode;
   pkt_module_data_t module_data[MODULE_ID_MAX];
 
   coop_task_list_t coop_task_list;

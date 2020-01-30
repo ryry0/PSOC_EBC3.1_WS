@@ -16,6 +16,7 @@ volatile stim_module_t hybrid_stimulator = {
   .state_machine = {{0}},
   .timestamp = 0,
   .stim_scaling_factor = STIM_MODULE_SCALING_FACTOR,
+  .mode = STIM_MODULE_MODE_FLOAT,
 };
 
 /*---------------------------------------------------------------------------*/
@@ -27,6 +28,8 @@ static void handlePacketMsg(pkt_generic_t *packet, volatile stim_module_t *stimu
 static void setParameters(pkt_generic_t *packet, volatile stim_module_t *stimulator);
 
 static void getParameters(volatile stim_module_t *stimulator);
+
+static void stim_setMode(pkt_generic_t *packet, volatile stim_module_t *stimulator);
 
 static void sendAck();
 
@@ -208,12 +211,27 @@ void handlePacketMsg(
       break;
         */
 
+    case PKT_MODULE_SET_SHARED_PARAMS:
+      stim_setMode(packet, stimulator);
+
+      break;
+
     case PKT_STIM_CONFIGURE:
       setStimParameters(packet, stimulator);
       break;
+
     default:
       break;
   }
+}
+
+static void stim_setMode(pkt_generic_t *packet, volatile stim_module_t *stimulator) {
+
+  pkt_shared_module_params_t *parameter_packet =
+    pkt_interpPtr(pkt_shared_module_params_t, packet);
+
+  stimulator->mode =
+    parameter_packet->float_params[PKT_SHARED_MODE];
 }
 
 static void setParameters(pkt_generic_t *packet,
