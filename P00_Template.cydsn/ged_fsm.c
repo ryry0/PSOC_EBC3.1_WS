@@ -357,25 +357,80 @@ static ged_state_t ged_rightSwing = {
 
 /* LEFT DBL STANCE */
 /*----------------------------------------------------------------------------*/
+void ged_leftDblStanceOnEntry(void
+    *v_stimulator);
 void ged_leftDblStanceCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator);
 
 static ged_state_t ged_leftDblStance = {
   .id = GED_LEFT_DBL_STANCE,
-  .onentry_func = ged_generic_LockJointsOnEntry,
+  .onentry_func = ged_leftDblStanceOnEntry,
   .checktrans_func = ged_leftDblStanceCheckTrans,
   .run_func = ged_generic_nopRun,
 };
 
+void ged_leftDblStanceOnEntry(void *v_stimulator) {
+
+  stim_module_t *stimulator = (stim_module_t *) v_stimulator;
+  stim_pattern_t *const pattern_brd1  = &stimulator->pattern_brd1;
+  stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
+
+  if (stimulator->mode == STIM_MODULE_MODE_PASSIVE) {
+  }
+  else {
+    stimpat_initPattern(pattern_brd1,
+        &gait_zero_PP,
+        &gait_zero_PW,
+        1.0,
+        1000);
+    stimpat_activatePattern(pattern_brd1);
+
+    stimpat_initPattern(pattern_brd2,
+        &gait_zero_PP,
+        &gait_zero_PW,
+        1.0,
+        1000);
+    stimpat_activatePattern(pattern_brd2);
+  }
+
+
+}
+
 /* RIGHT DBL STANCE */
 /*----------------------------------------------------------------------------*/
+void ged_rightDblStanceOnEntry(void *v_stimulator);
 void ged_rightDblStanceCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator);
 
 static ged_state_t ged_rightDblStance = {
   .id = GED_RIGHT_DBL_STANCE,
-  .onentry_func = ged_generic_LockJointsOnEntry,
+  .onentry_func = ged_rightDblStanceOnEntry,
   .checktrans_func = ged_rightDblStanceCheckTrans,
   .run_func = ged_generic_nopRun,
 };
+
+void ged_rightDblStanceOnEntry(void *v_stimulator) {
+  stim_module_t *stimulator = (stim_module_t *) v_stimulator;
+  stim_pattern_t *const pattern_brd1  = &stimulator->pattern_brd1;
+  stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
+
+  if (stimulator->mode == STIM_MODULE_MODE_PASSIVE) {
+  }
+  else {
+    stimpat_initPattern(pattern_brd1,
+        &gait_zero_PP,
+        &gait_zero_PW,
+        1.0,
+        1000);
+    stimpat_activatePattern(pattern_brd1);
+
+    stimpat_initPattern(pattern_brd2,
+        &gait_zero_PP,
+        &gait_zero_PW,
+        1.0,
+        1000);
+    stimpat_activatePattern(pattern_brd2);
+  }
+
+}
 
 /*----------------------------------------------------------------------------*/
 /*                             STATE IMPLEMENTATION                           */
