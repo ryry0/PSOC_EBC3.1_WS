@@ -374,7 +374,8 @@ void ged_leftDblStanceOnEntry(void *v_stimulator) {
   stim_pattern_t *const pattern_brd1  = &stimulator->pattern_brd1;
   stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
 
-  if (stimulator->mode == STIM_MODULE_MODE_PASSIVE) {
+  if ((stimulator->mode == STIM_MODULE_MODE_BURST) || (stimulator->mode ==
+      STIM_MODULE_MODE_FLOAT)) {
   }
   else {
     stimpat_initPattern(pattern_brd1,
@@ -412,7 +413,8 @@ void ged_rightDblStanceOnEntry(void *v_stimulator) {
   stim_pattern_t *const pattern_brd1  = &stimulator->pattern_brd1;
   stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
 
-  if (stimulator->mode == STIM_MODULE_MODE_PASSIVE) {
+  if ((stimulator->mode == STIM_MODULE_MODE_BURST) || (stimulator->mode ==
+        STIM_MODULE_MODE_FLOAT)) {
   }
   else {
     stimpat_initPattern(pattern_brd1,
@@ -583,7 +585,8 @@ void ged_leftSwingOnEntry(void *v_stimulator) {
   stim_pattern_t *const pattern_brd1  = &stimulator->pattern_brd1;
   stim_pattern_t *const pattern_brd2  = &stimulator->pattern_brd2;
 
-  if (stimulator->mode == STIM_MODULE_MODE_PASSIVE) {
+  if ((stimulator->mode == STIM_MODULE_MODE_BURST) || (stimulator->mode ==
+        STIM_MODULE_MODE_FLOAT)) {
     stimpat_initPattern(pattern_brd1,
     &gait_walk_L_B1_PP,
     &gait_walk_L_B1_PW_orig,
@@ -628,7 +631,8 @@ void ged_rightSwingOnEntry(void *v_stimulator) {
   1000);
   stimpat_activatePattern(pattern_brd1);
 
-  if (stimulator->mode == STIM_MODULE_MODE_PASSIVE) {
+  if ((stimulator->mode == STIM_MODULE_MODE_BURST) || (stimulator->mode ==
+      STIM_MODULE_MODE_FLOAT)) {
     stimpat_initPattern(pattern_brd2,
     &gait_walk_R_B2_PP,
     &gait_walk_R_B2_PW_orig,
