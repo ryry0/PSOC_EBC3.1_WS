@@ -75,13 +75,13 @@ float bd_analogToLKneeAngle(uint16_t analog_count) {
 
 void bd_usbTimeout() {
   int8_t led = 0;
-  LED_R_Write(led);
+  //LED_R_Write(led);
   while(!USBUART_1_CDCIsReady()) {
     led=!led;
-    LED_R_Write(led);
+    //LED_R_Write(led);
   }
   led = 1;
-  LED_R_Write(led);
+  //LED_R_Write(led);
 }
 
 void bd_putStringReady(char *str) {

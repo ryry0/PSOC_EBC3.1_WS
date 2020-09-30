@@ -73,6 +73,7 @@ void setupStimulatorVars(volatile stim_module_t *stimulator) {
   stimulator->send_log = false;
 
   ged_init((ged_state_machine_t *) &stimulator->state_machine, (stim_module_t *) stimulator);
+  LED_B_Write(1);
 }
 
 void setupBoard() {
@@ -94,6 +95,7 @@ void setupBoard() {
 
   bd_initCAN();
   isr_1_StartEx(timerInterruptHandler); //register the interrupt handler
+  LED_B_Write(1);
 }
 
 void setupStim(volatile stim_module_t *stimulator) {
@@ -113,7 +115,7 @@ void setupStim(volatile stim_module_t *stimulator) {
       1.0,
       1000);
 
-  stimint_initBoardUART(cwru_stim_brd1, STIM_UART_PORT_0); //SCB J115
+  stimint_initBoardUART(cwru_stim_brd1, STIM_UART_PORT_0); //SCB J115 //left
   STIM_SETUP_FUNC(cwru_stim_brd1, STIM_BOARD_IPI);
   stimpat_setChannelAmplitudes(pattern_brd1, gait_B1_AMP);
 
@@ -123,7 +125,7 @@ void setupStim(volatile stim_module_t *stimulator) {
       1.0,
       1000);
 
-  stimint_initBoardUART(cwru_stim_brd2, STIM_UART_PORT_1); //SCB J116
+  stimint_initBoardUART(cwru_stim_brd2, STIM_UART_PORT_1); //SCB J116 //right
   STIM_SETUP_FUNC(cwru_stim_brd2, STIM_BOARD_IPI);
   stimpat_setChannelAmplitudes(pattern_brd2, gait_B2_AMP);
 

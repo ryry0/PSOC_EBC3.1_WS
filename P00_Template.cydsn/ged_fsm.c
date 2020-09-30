@@ -4,6 +4,7 @@
 #include <board_can.h>
 #include <HNP1_gait_withmisc.h>
 #include <gait_zero_pattern.h>
+#include <project.h>
 
 #define KNEE_ANGLE_EXTENSION_LIMIT 15
 /*----------------------------------------------------------------------------*/
@@ -546,6 +547,8 @@ void ged_generic_LockJointsOnEntry(void *v_stimulator) {
   1000);
   stimpat_activatePattern(pattern_brd2);
 
+  LED_B_Write(0);
+  LED_G_Write(0);
 
 }
 
@@ -608,6 +611,8 @@ void ged_leftSwingOnEntry(void *v_stimulator) {
   1000);
   stimpat_activatePattern(pattern_brd2);
 
+  LED_B_Write(1);
+  LED_G_Write(0);
 }
 
 
@@ -647,6 +652,8 @@ void ged_rightSwingOnEntry(void *v_stimulator) {
   }
 
   stimpat_activatePattern(pattern_brd2);
+  LED_B_Write(0);
+  LED_G_Write(1);
 }
 
 void ged_rightSwingCheckTrans(ged_state_machine_t *state_machine, void *v_stimulator) {
