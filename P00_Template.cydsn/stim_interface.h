@@ -117,6 +117,19 @@ void stimpat_applyPatternLoop(cwru_stim_struct_t
 
 
 /**
+ * \brief Abstraction of applying a stim pattern to a board. Meant to run inside
+ * a loop.
+ *
+ * \param stim_board The stim board.
+ * \param stim_pattern The stim pattern struct which stores pattern metadata.
+ * \param amplitude The amplitude of all channels
+ * \param channel_scaling Individual pulse width scaling
+ */
+void stimpat_applyPatternLoopScaling(cwru_stim_struct_t
+    *stim_board, stim_pattern_t *stim_pattern, uint8_t amplitude, float
+    *channel_scaling);
+
+/**
  * \brief Increments counter associated with a pattern. N counts per second is
  * set in the initPattern function.
  *

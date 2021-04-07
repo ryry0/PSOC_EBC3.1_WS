@@ -277,6 +277,35 @@ void stimpat_applyPatternPWOneChannel(cwru_stim_struct_t *stim_board,
   }
 }
 
+void stimpat_applyPatternPWOneChannelScaling(cwru_stim_struct_t *stim_board,
+                        stim_pattern_t *stim_pattern,
+                        uint8_t channel,
+                        uint8_t event,
+                        uint8_t amplitude,
+                        float channel_scaling) {
+  uint8_t pulse_width_value = 0;
+  uint16_t scaled_pw_value =
+    channel_scaling*stim_get_PW_ramping(channel,
+        stim_pattern->Active_LUT_PP,
+        stim_pattern->Active_LUT_PW,
+        stim_pattern->cycle_percent);
+  if (scaled_pw_value > 255)
+    pulse_width_value = 255;
+  else
+    pulse_width_value = scaled_pw_value;
+
+  /*
+   * if different
+   * apply update
+   */
+  if (pulse_width_value != stim_board->_current_pulse_width[channel]) {
+    //is event ID always 1?
+    stim_cmd_set_evnt(stim_board, event, pulse_width_value, amplitude, 0);
+
+    stim_board->_current_pulse_width[channel] = pulse_width_value;
+  }
+}
+
 /* assumes event ID's are consecutive numbered you can't use this if you
  * delete then add events
  */
@@ -286,6 +315,15 @@ void stimpat_applyPatternAllChannels(cwru_stim_struct_t *stim_board,
   for (size_t i = 0; i < stim_board->STIM_CHANNEL_USED; ++i) {
     stimpat_applyPatternPWOneChannel(stim_board, stim_pattern, i, i+1,
         stim_pattern->channel_amplitudes[i]);
+  }
+}
+
+void stimpat_applyPatternAllChannelsScaling(cwru_stim_struct_t *stim_board,
+                        stim_pattern_t *stim_pattern, uint8_t amplitude, float *channel_scaling) { //0-10000
+
+  for (size_t i = 0; i < stim_board->STIM_CHANNEL_USED; ++i) {
+    stimpat_applyPatternPWOneChannelScaling(stim_board, stim_pattern, i, i+1,
+        stim_pattern->channel_amplitudes[i], channel_scaling[i]);
   }
 }
 
@@ -302,6 +340,20 @@ void stimpat_applyPatternLoop(cwru_stim_struct_t
     sprintf(new_val, "%d\n", active_stim_pattern.cycle_percent);
     bd_putStringReady(new_val);
     */
+
+    stimpat_deactivatePatternWhenComplete(stim_pattern);
+  }
+}
+
+void stimpat_applyPatternLoopScaling(cwru_stim_struct_t
+    *stim_board, stim_pattern_t *stim_pattern, uint8_t amplitude, float
+    *channel_scaling) {
+
+  if (stimpat_isActive(stim_pattern)) {
+    stimpat_calcPatternPercent(stim_pattern);
+
+    stimpat_applyPatternAllChannelsScaling(stim_board,
+        stim_pattern, amplitude, channel_scaling);
 
     stimpat_deactivatePatternWhenComplete(stim_pattern);
   }

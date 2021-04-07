@@ -36,7 +36,7 @@
 //time scaling factor
 #define STIM_MODULE_SCALING_FACTOR 1.0
 
-#define STIM_MODULE_AMPLITUDE_SCALING_FACTOR 1.0
+#define STIM_MODULE_PW_SCALING_FACTOR 1.0
 
 typedef enum {
   MODULE_RIGHT_HIP_ID = 0,

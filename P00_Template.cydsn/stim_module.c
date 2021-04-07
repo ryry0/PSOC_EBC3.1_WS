@@ -16,15 +16,15 @@ volatile stim_module_t hybrid_stimulator = {
   .state_machine = {{0}},
   .timestamp = 0,
   .stim_scaling_factor = STIM_MODULE_SCALING_FACTOR,
-  .biotilc_l_hip_flexion_scaling_factor = STIM_MODULE_AMPLITUDE_SCALING_FACTOR,
-  .biotilc_l_knee_flexion_scaling_factor = STIM_MODULE_AMPLITUDE_SCALING_FACTOR,
-  .biotilc_l_knee_extension_flexion_scaling_factor =
-    STIM_MODULE_AMPLITUDE_SCALING_FACTOR,
+  .biotilc_l_hip_flexion_scaling_factor = STIM_MODULE_PW_SCALING_FACTOR,
+  .biotilc_l_knee_flexion_scaling_factor = STIM_MODULE_PW_SCALING_FACTOR,
+  .biotilc_l_knee_extension_scaling_factor =
+    STIM_MODULE_PW_SCALING_FACTOR,
 
-  .biotilc_r_hip_flexion_scaling_factor = STIM_MODULE_AMPLITUDE_SCALING_FACTOR,
-  .biotilc_r_knee_flexion_scaling_factor = STIM_MODULE_AMPLITUDE_SCALING_FACTOR,
-  .biotilc_r_knee_extension_flexion_scaling_factor =
-    STIM_MODULE_AMPLITUDE_SCALING_FACTOR,
+  .biotilc_r_hip_flexion_scaling_factor = STIM_MODULE_PW_SCALING_FACTOR,
+  .biotilc_r_knee_flexion_scaling_factor = STIM_MODULE_PW_SCALING_FACTOR,
+  .biotilc_r_knee_extension_scaling_factor =
+    STIM_MODULE_PW_SCALING_FACTOR,
   .mode = STIM_MODULE_MODE_FLOAT,
 };
 
@@ -199,8 +199,8 @@ void handlePacketMsg(
           memcpy(&stimulator->module_data[ module_data_received->module_id ],
               module_data_received, sizeof(pkt_module_data_t));
 
-          ml_moduleReceived(&stimulator->module_logger,
-              module_data_received->module_id);
+          //ml_moduleReceived(&stimulator->module_logger,
+              //module_data_received->module_id);
         }
       }
       break;
@@ -253,7 +253,7 @@ static void setLeftBiotilcParams(pkt_generic_t *packet, volatile stim_module_t *
     parameter_packet->float_params[PKT_BT_HIP_FLEXION_SF];
   stimulator->biotilc_l_knee_flexion_scaling_factor =
     parameter_packet->float_params[PKT_BT_KNEE_FLEXION_SF];
-  stimulator->biotilc_l_knee_extension_flexion_scaling_factor =
+  stimulator->biotilc_l_knee_extension_scaling_factor =
     parameter_packet->float_params[PKT_BT_KNEE_EXTENSION_SF];
 }
 
@@ -265,7 +265,7 @@ static void setRightBiotilcParams(pkt_generic_t *packet, volatile stim_module_t 
     parameter_packet->float_params[PKT_BT_HIP_FLEXION_SF];
   stimulator->biotilc_r_knee_flexion_scaling_factor =
     parameter_packet->float_params[PKT_BT_KNEE_FLEXION_SF];
-  stimulator->biotilc_r_knee_extension_flexion_scaling_factor =
+  stimulator->biotilc_r_knee_extension_scaling_factor =
     parameter_packet->float_params[PKT_BT_KNEE_EXTENSION_SF];
 }
 
@@ -319,11 +319,53 @@ void stimThread(coop_args_t *args) {
   cwru_stim_struct_t *const cwru_stim_brd2  =
     (cwru_stim_struct_t *) &stimulator->cwru_stim_brd2;
 
-  stimpat_applyPatternLoop(cwru_stim_brd1, pattern_brd1, STIM_AMPLITUDE);
-  stimpat_incrementCounter(pattern_brd1, 20);
+  const uint8_t current_state = ged_getStateID((ged_state_machine_t *) &stimulator->state_machine);
 
-  stimpat_applyPatternLoop(cwru_stim_brd2, pattern_brd2, STIM_AMPLITUDE);
-  stimpat_incrementCounter(pattern_brd2, 20);
+  float left_swing_scaling[STIM_CHANNEL_USED_PERC] = {
+    stimulator->biotilc_l_knee_extension_scaling_factor,
+    stimulator->biotilc_l_knee_flexion_scaling_factor,
+    stimulator->biotilc_l_knee_extension_scaling_factor,
+    1,
+    1,
+    stimulator->biotilc_l_hip_flexion_scaling_factor,
+    stimulator->biotilc_l_hip_flexion_scaling_factor,
+    1
+  };
+
+  float right_swing_scaling[STIM_CHANNEL_USED_PERC] = {
+    stimulator->biotilc_r_knee_extension_scaling_factor,
+    stimulator->biotilc_r_hip_flexion_scaling_factor,
+    1,
+    1,
+    stimulator->biotilc_r_knee_extension_scaling_factor,
+    stimulator->biotilc_r_hip_flexion_scaling_factor,
+    stimulator->biotilc_r_knee_flexion_scaling_factor,
+    1
+  };
+
+  if (current_state == GED_LEFT_SWING) { //scale left side
+    stimpat_applyPatternLoopScaling(cwru_stim_brd1, pattern_brd1, STIM_AMPLITUDE,
+        left_swing_scaling);
+    stimpat_incrementCounter(pattern_brd1, 20);
+
+    stimpat_applyPatternLoop(cwru_stim_brd2, pattern_brd2, STIM_AMPLITUDE);
+    stimpat_incrementCounter(pattern_brd2, 20);
+  }
+  else if (current_state == GED_RIGHT_SWING) { //scale right side
+    stimpat_applyPatternLoop(cwru_stim_brd1, pattern_brd1, STIM_AMPLITUDE);
+    stimpat_incrementCounter(pattern_brd1, 20);
+
+    stimpat_applyPatternLoopScaling(cwru_stim_brd2, pattern_brd2, STIM_AMPLITUDE,
+        right_swing_scaling);
+    stimpat_incrementCounter(pattern_brd2, 20);
+  }
+  else {
+    stimpat_applyPatternLoop(cwru_stim_brd1, pattern_brd1, STIM_AMPLITUDE);
+    stimpat_incrementCounter(pattern_brd1, 20);
+
+    stimpat_applyPatternLoop(cwru_stim_brd2, pattern_brd2, STIM_AMPLITUDE);
+    stimpat_incrementCounter(pattern_brd2, 20);
+  }
 
 #if defined(STIM_CONFIG_3RD_SURFACE)
   stim_pattern_t *const pattern_brd3  = &stimulator->pattern_brd3;
