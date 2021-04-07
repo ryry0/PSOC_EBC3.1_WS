@@ -34,6 +34,10 @@ typedef enum pkt_type_e {
   PKT_SHUTDOWN_STIM,
   PKT_REENABLE_STIM,
   PKT_STIM_CONFIGURE,
+  PKT_LEFT_BIOTILC,
+  PKT_RIGHT_BIOTILC,
+  PKT_LOG_LEFT_BIOTILC,
+  PKT_LOG_RIGHT_BIOTILC,
   PKT_DATA_START  = 's',
   PKT_DATA_STOP   = 'n',
   PKT_EN_MOTOR    = 'e',
@@ -100,9 +104,48 @@ typedef enum pkt_type_e {
 
 #define FOREACH_STIM_CONFIG(PARAM)      \
   PARAM(PKT_STIM_SCALING_FACTOR)        \
-  PARAM(PKT_L_KNEE_EXTEND_ASSIST_ANGLE)  \
-  PARAM(PKT_R_KNEE_EXTEND_ASSIST_ANGLE)  \
+  PARAM(PKT_L_KNEE_EXTEND_ASSIST_ANGLE) \
+  PARAM(PKT_R_KNEE_EXTEND_ASSIST_ANGLE) \
   PARAM(PKT_STIM_CONFIG_MAX)            \
+
+#define FOREACH_BIOTILC(PARAM)        \
+  PARAM(PKT_BT_HIP_FLEXION_TORQUE)    \
+  PARAM(PKT_BT_KNEE_FLEXION_TORQUE)   \
+  PARAM(PKT_BT_KNEE_EXTENSION_TORQUE) \
+  PARAM(PKT_BT_HIP_FLEXION_SF)        \
+  PARAM(PKT_BT_KNEE_FLEXION_SF)       \
+  PARAM(PKT_BT_KNEE_EXTENSION_SF)     \
+  PARAM(PKT_BT_MAX)                   \
+
+#define FOREACH_LOG_BIOTILC(PARAM)        \
+  PARAM(PKT_LOG_BT_HIP_FLEXION_TORQUE)    \
+  PARAM(PKT_LOG_BT_KNEE_FLEXION_TORQUE)   \
+  PARAM(PKT_LOG_BT_KNEE_EXTENSION_TORQUE) \
+  PARAM(PKT_LOG_BT_HIP_FLEXION_SF)        \
+  PARAM(PKT_LOG_BT_KNEE_FLEXION_SF)       \
+  PARAM(PKT_LOG_BT_KNEE_EXTENSION_SF)     \
+  PARAM(PKT_LOG_HIP_FLEXION_ERROR)        \
+  PARAM(PKT_LOG_KNEE_FLEXION_ERROR)       \
+  PARAM(PKT_LOG_KNEE_EXTENSION_ERROR)     \
+  PARAM(PKT_LOG_PSI_11)                   \
+  PARAM(PKT_LOG_PSI_12)                   \
+  PARAM(PKT_LOG_PSI_13)                   \
+  PARAM(PKT_LOG_PSI_14)                   \
+  PARAM(PKT_LOG_PSI_15)                   \
+  PARAM(PKT_LOG_PSI_16)                   \
+  PARAM(PKT_LOG_PSI_21)                   \
+  PARAM(PKT_LOG_PSI_22)                   \
+  PARAM(PKT_LOG_PSI_23)                   \
+  PARAM(PKT_LOG_PSI_24)                   \
+  PARAM(PKT_LOG_PSI_25)                   \
+  PARAM(PKT_LOG_PSI_26)                   \
+  PARAM(PKT_LOG_PSI_31)                   \
+  PARAM(PKT_LOG_PSI_32)                   \
+  PARAM(PKT_LOG_PSI_33)                   \
+  PARAM(PKT_LOG_PSI_34)                   \
+  PARAM(PKT_LOG_PSI_35)                   \
+  PARAM(PKT_LOG_PSI_36)                   \
+  PARAM(PKT_LOG_BT_MAX)                   \
 
 #define GENERATE_ENUM(ENUM) ENUM,
 #define GENERATE_STRING(STRING) #STRING,
@@ -129,6 +172,14 @@ typedef enum pkt_set_module_burst_param_e {
 
 enum pkt_stim_config_e {
   FOREACH_STIM_CONFIG(GENERATE_ENUM)
+};
+
+enum pkt_biotilc_e {
+  FOREACH_BIOTILC(GENERATE_ENUM)
+};
+
+enum pkt_log_biotilc_e {
+  FOREACH_LOG_BIOTILC(GENERATE_ENUM)
 };
 
 typedef enum pkt_pid_id_e {
@@ -294,5 +345,15 @@ typedef struct {
 typedef struct {
   float float_params[PKT_STIM_CONFIG_MAX];
 } pkt_stim_config_t;
+
+/*----------------------------------------------------------------------------*/
+typedef struct {
+  float float_params[PKT_BT_MAX];
+} pkt_biotilc_t;
+
+/*----------------------------------------------------------------------------*/
+typedef struct {
+  float float_params[PKT_LOG_BT_MAX];
+} pkt_log_biotilc_t;
 
 #endif
