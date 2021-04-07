@@ -16,6 +16,15 @@ volatile stim_module_t hybrid_stimulator = {
   .state_machine = {{0}},
   .timestamp = 0,
   .stim_scaling_factor = STIM_MODULE_SCALING_FACTOR,
+  .biotilc_l_hip_flexion_scaling_factor = STIM_MODULE_AMPLITUDE_SCALING_FACTOR,
+  .biotilc_l_knee_flexion_scaling_factor = STIM_MODULE_AMPLITUDE_SCALING_FACTOR,
+  .biotilc_l_knee_extension_flexion_scaling_factor =
+    STIM_MODULE_AMPLITUDE_SCALING_FACTOR,
+
+  .biotilc_r_hip_flexion_scaling_factor = STIM_MODULE_AMPLITUDE_SCALING_FACTOR,
+  .biotilc_r_knee_flexion_scaling_factor = STIM_MODULE_AMPLITUDE_SCALING_FACTOR,
+  .biotilc_r_knee_extension_flexion_scaling_factor =
+    STIM_MODULE_AMPLITUDE_SCALING_FACTOR,
   .mode = STIM_MODULE_MODE_FLOAT,
 };
 
@@ -35,6 +44,9 @@ static void sendAck();
 
 static void setStimParameters(pkt_generic_t *packet, volatile stim_module_t
     *stimulator);
+
+static void setLeftBiotilcParams(pkt_generic_t *packet, volatile stim_module_t *stimulator);
+static void setRightBiotilcParams(pkt_generic_t *packet, volatile stim_module_t *stimulator);
 
 /*---------------------------------------------------------------------------*/
 /** Threads */
@@ -220,9 +232,41 @@ void handlePacketMsg(
       setStimParameters(packet, stimulator);
       break;
 
+    case PKT_LEFT_BIOTILC:
+      setLeftBiotilcParams(packet, stimulator);
+      break;
+
+    case PKT_RIGHT_BIOTILC:
+      setRightBiotilcParams(packet, stimulator);
+      break;
+
     default:
       break;
   }
+}
+
+static void setLeftBiotilcParams(pkt_generic_t *packet, volatile stim_module_t *stimulator) {
+  pkt_biotilc_t *parameter_packet =
+    pkt_interpPtr(pkt_biotilc_t, packet);
+
+  stimulator->biotilc_l_hip_flexion_scaling_factor =
+    parameter_packet->float_params[PKT_BT_HIP_FLEXION_SF];
+  stimulator->biotilc_l_knee_flexion_scaling_factor =
+    parameter_packet->float_params[PKT_BT_KNEE_FLEXION_SF];
+  stimulator->biotilc_l_knee_extension_flexion_scaling_factor =
+    parameter_packet->float_params[PKT_BT_KNEE_EXTENSION_SF];
+}
+
+static void setRightBiotilcParams(pkt_generic_t *packet, volatile stim_module_t *stimulator) {
+  pkt_biotilc_t *parameter_packet =
+    pkt_interpPtr(pkt_biotilc_t, packet);
+
+  stimulator->biotilc_r_hip_flexion_scaling_factor =
+    parameter_packet->float_params[PKT_BT_HIP_FLEXION_SF];
+  stimulator->biotilc_r_knee_flexion_scaling_factor =
+    parameter_packet->float_params[PKT_BT_KNEE_FLEXION_SF];
+  stimulator->biotilc_r_knee_extension_flexion_scaling_factor =
+    parameter_packet->float_params[PKT_BT_KNEE_EXTENSION_SF];
 }
 
 static void stim_setMode(pkt_generic_t *packet, volatile stim_module_t *stimulator) {

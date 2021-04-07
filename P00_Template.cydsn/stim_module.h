@@ -49,6 +49,15 @@ typedef struct stim_module_s {
 
   float stim_scaling_factor;
 
+  //biotilc
+  float biotilc_l_hip_flexion_scaling_factor;
+  float biotilc_l_knee_flexion_scaling_factor;
+  float biotilc_l_knee_extension_flexion_scaling_factor;
+
+  float biotilc_r_hip_flexion_scaling_factor;
+  float biotilc_r_knee_flexion_scaling_factor;
+  float biotilc_r_knee_extension_flexion_scaling_factor;
+
   uint32_t timestamp;
 
   pkt_generic_t input_packet;
