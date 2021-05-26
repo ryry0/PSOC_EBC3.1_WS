@@ -1,3 +1,5 @@
+## Stimulation Code for the Hybrid is found in Project 00
+
 ## PSOC_EBC3.1_WS
 
 Tested build environment:
